@@ -1,0 +1,36 @@
+Compiled from "GsItemGroup.java"
+public final class com.qinghuacisj.gs.content.GsItemGroup extends io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup {
+  private static final java.util.Map<java.lang.Object, java.lang.Integer> DISPLAY_TIERS;
+  private static final int DEFAULT_TIER;
+  private final java.util.List<java.lang.Object> contents;
+  private final com.qinghuacisj.gs.content.GsItemGroup$Type type;
+  private final boolean forceHidden;
+  private final boolean hasParent;
+  private final int page;
+  private final com.qinghuacisj.gs.script.Script script;
+  private final boolean seasonalVisible;
+  public static void registerDisplayTier(java.lang.Object, int);
+  public static int displayTier(java.lang.Object);
+  public com.qinghuacisj.gs.content.GsItemGroup(org.bukkit.NamespacedKey, org.bukkit.inventory.ItemStack, int, com.qinghuacisj.gs.content.GsItemGroup$Type, boolean, boolean, int, com.qinghuacisj.gs.script.Script, boolean);
+  public org.bukkit.inventory.ItemStack getItem(org.bukkit.entity.Player);
+  public void addContent(io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem);
+  public void addContent(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup);
+  public void addContent(java.lang.String);
+  public java.util.List<java.lang.Object> getContents();
+  public com.qinghuacisj.gs.content.GsItemGroup$Type type();
+  public boolean isVisible(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public boolean isVisibleInNested(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public void open(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  private com.qinghuacisj.gs.content.GsItemGroup newPage(int);
+  private boolean visibleInGroup(java.lang.Object, org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public void readAction(java.lang.String, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private static io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile profileOf(org.bukkit.entity.Player);
+  private boolean lambda$open$6(io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$open$5(io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private static boolean lambda$open$4(io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private static boolean lambda$open$3(io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.api.items.ItemGroup, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$open$2(com.qinghuacisj.gs.content.GsItemGroup, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$open$1(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, java.lang.Object);
+  private static boolean lambda$open$0(io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  static {};
+}

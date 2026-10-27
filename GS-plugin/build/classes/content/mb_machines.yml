@@ -1,0 +1,700 @@
+# ==========================================================================
+# 构思技艺 (GS) —— 多方块机器（mb_machines.yml）
+# 「万物初生，始于想象」
+# ==========================================================================
+# 构思机 · GS_RULE_CONCEPTOR      （★ 2026-10-08：原「规则构想机」改名而来）
+#
+# 结构：**只有 2 个方块**
+#
+#   ┌──────┐
+#   │雕刻南瓜│   ← 右键这里合成（work: 5）
+#   ├──────┤
+#   │ 发射器 │   ← 把材料按九宫格放进去
+#   └──────┘
+#
+#   · 上面一格 = **雕刻南瓜 CARVED_PUMPKIN** ← 右键开工（work: 5）
+#   · 下面一格 = **发射器 DISPENSER**       ← 放配方的地方（槽 8）
+#
+# ★ 2026-10-08 改动（用户要求）：
+#   · 机器**改名**：规则构想机 → **构思机**（`recipe_types.yml` 里的显示名同步改）
+#   · 机器物品**材质**：磨制黑石砖 → **雕刻南瓜**
+#   · 多方块结构：**删掉左右两块蜘蛛网**（原来 7 / 9）
+#   · 结构中心的**磨制黑石砖换成雕刻南瓜**（7 号槽位置保留，触发块仍是"发射器正上方那格"）
+#   ★ 比较只看**材质**（原版 `MultiBlock` 的 `Material[]` 逐格比 + Tag 容差；
+#     雕刻南瓜不在 MultiBlock.SUPPORTED_TAGS 里 ⇒ 是精确比对，朝向无所谓）
+#
+# 源码核对（CustomMultiBlockMachine）：
+#   · work: 5 → getFace(5) = BlockFace.SELF，触发块就是中间那格
+#   · dispenserFaceGet() 会依次找结构里的发射器：is[1]→is[3]→is[5]→is[7](=槽8)
+#     ⇒ 找到槽 8 的发射器，返回 DOWN（"从右键的方块往下找一格"）✔
+#   · 结构里必须有发射器，否则 RSC 报「缺少发射器」并跳过这台机器
+#
+# 用法：
+#   1. 把材料**按位置**摆进发射器的 9 格（isCraftable 是逐格比对的，
+#      空着的格子必须真的空着，多放东西会匹配失败）
+#   2. 右键上面那块「雕刻南瓜」
+#   3. 产物优先进旁边的「输出箱」，没有就放回发射器，再放不下掉地上
+# ==========================================================================
+
+GS_RULE_CONCEPTOR:
+  item_group: gs_machines
+  display_tier: 1              # ★ 放在「构思机器」分类的第一格
+  item:
+    name: "&6构思机"
+    material: CARVED_PUMPKIN               # 雕刻南瓜（指南里这台机器的图标 = 结构触发块）
+    lore:
+      - "&7以规则约束构想"
+      - ""
+      - "&8材料按九宫格放进发射器，"
+      - "&8右键上面的「雕刻南瓜」合成"
+
+  # ---------- 多方块结构（必须含发射器）----------
+  recipe:
+    5:
+      material: CARVED_PUMPKIN             # 中上：雕刻南瓜 ← 点击合成
+    8:
+      material: DISPENSER                  # 底中：发射器 ← 放配方
+
+  # 工作方块 = 结构第 5 格（中间的雕刻南瓜）。粘液本体限制只能 2 / 5 / 8。
+  work: 5
+
+  # 合成成功时的音效（Slimefun 的 SoundEffect 枚举名）
+  sound: ANCIENT_ALTAR_FINISH_SOUND
+
+  # ---------- 真正的合成配方 ----------
+  # input 是九宫格（槽 1~9），output 是单个产物
+  # ★★ 格位对照（槽 1~9）：
+  #      ┌───┬───┬───┐
+  #      │ 1 │ 2 │ 3 │
+  #      ├───┼───┼───┤
+  #      │ 4 │ 5 │ 6 │
+  #      ├───┼───┼───┤
+  #      │ 7 │ 8 │ 9 │
+  #      └───┴───┴───┘
+  #   ★ 九宫格**没列出来的槽位必须真的是空的**，否则匹配不上。
+  recipes:
+
+    # ======================================================================
+    # 基础构思（gs_basic）—— 全部在构思机里合成（2026-10-08 新方案）
+    # ======================================================================
+
+    # ---------- 记忆碎片：九宫格 **9 个想象力** ----------
+    memory_fragment:
+      input:
+        1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        2: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        8: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_MEMORY_FRAGMENT
+        amount: 1
+
+    # ---------- 臆想：**槽 2 灵感** + 其余 8 格想象力 ----------
+    #   ┌────┬────┬────┐
+    #   │想象│灵感│想象│   槽 1 / 2 / 3
+    #   ├────┼────┼────┤
+    #   │想象│想象│想象│   槽 4 / 5 / 6
+    #   ├────┼────┼────┤
+    #   │想象│想象│想象│   槽 7 / 8 / 9
+    #   └────┴────┴────┘
+    delusion:
+      input:
+        1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        2: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+        3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        8: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_DELUSION
+        amount: 1
+
+    # ---------- 念想：**槽 8 灵感** + 其余 8 格想象力 ----------
+    #   ┌────┬────┬────┐
+    #   │想象│想象│想象│   槽 1 / 2 / 3
+    #   ├────┼────┼────┤
+    #   │想象│想象│想象│   槽 4 / 5 / 6
+    #   ├────┼────┼────┤
+    #   │想象│灵感│想象│   槽 7 / 8 / 9
+    #   └────┴────┴────┘
+    thought:
+      input:
+        1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        2: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        8: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+        9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_THOUGHT
+        amount: 1
+
+    # ---------- 构想：**配方不变**（四角臆想 / 四边念想 / 中心想象力）----------
+    #   ┌────┬────┬────┐
+    #   │臆想│念想│臆想│   槽 1 / 2 / 3
+    #   ├────┼────┼────┤
+    #   │念想│想象│念想│   槽 4 / 5 / 6
+    #   ├────┼────┼────┤
+    #   │臆想│念想│臆想│   槽 7 / 8 / 9
+    #   └────┴────┴────┘
+    concept:
+      input:
+        1: {material_type: slimefun, material: GS_DELUSION,    amount: 1}
+        2: {material_type: slimefun, material: GS_THOUGHT,     amount: 1}
+        3: {material_type: slimefun, material: GS_DELUSION,    amount: 1}
+        4: {material_type: slimefun, material: GS_THOUGHT,     amount: 1}
+        5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+        6: {material_type: slimefun, material: GS_THOUGHT,     amount: 1}
+        7: {material_type: slimefun, material: GS_DELUSION,    amount: 1}
+        8: {material_type: slimefun, material: GS_THOUGHT,     amount: 1}
+        9: {material_type: slimefun, material: GS_DELUSION,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_CONCEPT
+        amount: 1
+
+    # ---------- 奇思妙想帽：**槽 5 原版金头盔** + **槽 1/2/3/4/6 萤石** ----------
+    #   ┌────┬────┬────┐
+    #   │萤石│萤石│萤石│   槽 1 / 2 / 3
+    #   ├────┼────┼────┤
+    #   │萤石│金盔│萤石│   槽 4 / 5 / 6
+    #   ├────┼────┼────┤
+    #   │    │    │    │   槽 7 / 8 / 9（留空！九宫格没列的必须真空着）
+    #   └────┴────┴────┘
+    #   ★ 戴在头上时**每秒从头顶掉 1 个「想象力」**（见 gs_listener.js 的 gsTickHeadDrop）
+    #   ★ 本物品**永不掉耐久**（已加进 gs_listener.js 的 GS_NODMG_IDS）
+    thinking_hat:
+      input:
+        1: {material: GLOWSTONE, amount: 1}
+        2: {material: GLOWSTONE, amount: 1}
+        3: {material: GLOWSTONE, amount: 1}
+        4: {material: GLOWSTONE, amount: 1}
+        5: {material: GOLDEN_HELMET, amount: 1}
+        6: {material: GLOWSTONE, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_THINKING_HAT
+        amount: 1
+
+    # ======================================================================
+    # 规则系列 —— 2026-10-08 全部改成「9 个构想/幻想」型布局
+    # ======================================================================
+
+    # ---------- 雏形：**槽 5 灵感** + 其余 8 格构想 ----------
+    prototype:
+      input:
+        1: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        2: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        3: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        5: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        8: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_PROTOTYPE
+        amount: 1
+
+    # ---------- 律象：**槽 5 臆想** + 其余 8 格构想 ----------
+    law_image:
+      input:
+        1: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        2: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        3: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        5: {material_type: slimefun, material: GS_DELUSION, amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        8: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_LAW_IMAGE
+        amount: 1
+
+    # ---------- 定式：**槽 5 念想** + 其余 8 格构想 ----------
+    fixed_form:
+      input:
+        1: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        2: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        3: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        5: {material_type: slimefun, material: GS_THOUGHT, amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        8: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_FIXED_FORM
+        amount: 1
+
+    # ---------- 梦：**槽 1/3/7/9 律象** + **槽 5 雏形** ----------
+    #   ┌──┬───┬──┐
+    #   │律│   │律│   槽 1 / 2 / 3
+    #   ├──┼───┼──┤
+    #   │  │雏形│ │   槽 4 / 5 / 6
+    #   ├──┼───┼──┤
+    #   │律│   │律│   槽 7 / 8 / 9
+    #   └──┴───┴──┘
+    dream:
+      input:
+        1: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+        3: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+        5: {material_type: slimefun, material: GS_PROTOTYPE, amount: 1}
+        7: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+        9: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_DREAM
+        amount: 1
+
+    # ---------- 模：**槽 1/3/7/9 定式** + **槽 5 雏形** ----------
+    mold:
+      input:
+        1: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+        3: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+        5: {material_type: slimefun, material: GS_PROTOTYPE,  amount: 1}
+        7: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+        9: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_MOLD
+        amount: 1
+
+    # ---------- 梦境规则：**槽 1/3/7/9 梦** + **槽 2/4/6/8 模**（中心留空）----------
+    #   ┌──┬──┬──┐
+    #   │梦│模│梦│   槽 1 / 2 / 3
+    #   ├──┼──┼──┤
+    #   │模│  │模│   槽 4 / 5 / 6
+    #   ├──┼──┼──┤
+    #   │梦│模│梦│   槽 7 / 8 / 9
+    #   └──┴──┴──┘
+    rule_fragment:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM, amount: 1}
+        2: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM, amount: 1}
+        4: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+        6: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+        7: {material_type: slimefun, material: GS_DREAM, amount: 1}
+        8: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+        9: {material_type: slimefun, material: GS_DREAM, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_DREAM_RULE
+        amount: 1
+
+    # ======================================================================
+    # 机器（构思机器分类）—— 布局未改动
+    # ======================================================================
+
+    # ---------- 灵感转化器 ----------
+    #   ★ 2026-10-08 换新配方：
+    #     槽 1/2/3 = 梦 ｜ 槽 4/6/7/9 = 模 ｜ 槽 5 = 记忆碎片 ｜ 槽 8 = 雏形
+    #   ┌────┬────┬────┐
+    #   │ 梦 │ 梦 │ 梦 │   槽 1 / 2 / 3
+    #   ├────┼────┼────┤
+    #   │ 模 │记忆│ 模 │   槽 4 / 5 / 6
+    #   ├────┼────┼────┤
+    #   │ 模 │雏形│ 模 │   槽 7 / 8 / 9
+    #   └────┴────┴────┘
+    #   （机器**产出**改成「消耗 12 灵感 → 1 臆想 + 1 念想」，见 recipe_machines.yml）
+    inspiration_converter:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM,           amount: 1}
+        2: {material_type: slimefun, material: GS_DREAM,           amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM,           amount: 1}
+        4: {material_type: slimefun, material: GS_MOLD,            amount: 1}
+        5: {material_type: slimefun, material: GS_MEMORY_FRAGMENT, amount: 1}
+        6: {material_type: slimefun, material: GS_MOLD,            amount: 1}
+        7: {material_type: slimefun, material: GS_MOLD,            amount: 1}
+        8: {material_type: slimefun, material: GS_PROTOTYPE,       amount: 1}
+        9: {material_type: slimefun, material: GS_MOLD,            amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_INSPIRATION_CONVERTER
+        amount: 1
+
+    # ---------- 拟人思维 ----------
+    #   ┌────┬──────┬────┐
+    #   │想象│记忆碎片│想象│   槽 1 / 2 / 3
+    #   ├────┼──────┼────┤
+    #   │构想│ 盔甲架 │构想│   槽 4 / 5 / 6
+    #   ├────┼──────┼────┤
+    #   │臆想│ 灵感  │念想│   槽 7 / 8 / 9
+    #   └────┴──────┴────┘
+    anthropic_mind:
+      input:
+        1:
+          material_type: slimefun
+          material: GS_IMAGINATION
+          amount: 1
+        2:
+          material_type: slimefun
+          material: GS_MEMORY_FRAGMENT
+          amount: 1
+        3:
+          material_type: slimefun
+          material: GS_IMAGINATION
+          amount: 1
+        4:
+          material_type: slimefun
+          material: GS_CONCEPT
+          amount: 1
+        5:
+          material: ARMOR_STAND          # 原版盔甲架
+          amount: 1
+        6:
+          material_type: slimefun
+          material: GS_CONCEPT
+          amount: 1
+        7:
+          material_type: slimefun
+          material: GS_DELUSION
+          amount: 1
+        8:
+          material_type: slimefun
+          material: GS_INSPIRATION
+          amount: 1
+        9:
+          material_type: slimefun
+          material: GS_THOUGHT
+          amount: 1
+      output:
+        material_type: slimefun
+        material: GS_ANTHROPOMORPHIC_MIND
+        amount: 1
+
+    # ---------- 梦境锭 ----------
+    #   ★ 2026-10-08 第三批换新配方（原「四角梦境规则 + 律象/模/梦/定式 + 雏形」作废）：
+    #     槽 1 / 3 / 7 / 9 = **梦境规则 ×4** ｜ 槽 5 = **BLISTERING_INGOT_3 ×1**
+    #   ┌────────┬──┬────────┐
+    #   │ 梦境规则 │  │ 梦境规则 │   槽 1 / 2 / 3
+    #   ├────────┼──┼────────┤
+    #   │        │B3│        │   槽 4 / 5 / 6   （B3 = BLISTERING_INGOT_3）
+    #   ├────────┼──┼────────┤
+    #   │ 梦境规则 │  │ 梦境规则 │   槽 7 / 8 / 9
+    #   └────────┴──┴────────┘
+    rule_ingot:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+        5: {material_type: slimefun, material: BLISTERING_INGOT_3, amount: 1}
+        7: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+        9: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_DREAM_INGOT
+        amount: 1
+
+    # ---------- 万象归序 · 心智构象熔炼炉 ----------
+    #   ★ 2026-10-08 第二批换新配方（与 recipe_machines.yml 的展示配方一致）：
+    #     槽 1/3/4/6/7/9 = 梦境规则 ｜ 槽 2 = 启象仪 ｜ 槽 5 = 拟人思维 ｜ 槽 8 = 灵感转化器
+    #   ┌──────┬──────┬──────┐
+    #   │梦境规则│启象仪│梦境规则│   槽 1 / 2 / 3
+    #   ├──────┼──────┼──────┤
+    #   │梦境规则│拟人思维│梦境规则│   槽 4 / 5 / 6
+    #   ├──────┼──────┼──────┤
+    #   │梦境规则│灵感转化器│梦境规则│   槽 7 / 8 / 9
+    #   └──────┴──────┴──────┘
+    mind_smelting_furnace:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+        2: {material_type: slimefun, material: GS_IMAGINATION_GENERATOR,   amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+        4: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+        5: {material_type: slimefun, material: GS_ANTHROPOMORPHIC_MIND,    amount: 1}
+        6: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+        7: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+        8: {material_type: slimefun, material: GS_INSPIRATION_CONVERTER,   amount: 1}
+        9: {material_type: slimefun, material: GS_DREAM_RULE,              amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_MIND_SMELTING_FURNACE
+        amount: 1
+
+    # ======================================================================
+    # ★ 2026-10-08 第二批新增 —— 成品装备 / 机器，全部在「构思机」合成
+    # ======================================================================
+
+    # ---------- ★★★ 第八十八批：用户「删除构念」----------
+    #   「构念」（GS_CONSTRUCT_ROD）整件删除 ⇒ 构思机里这条
+    #   `construct_rod` 配方**一并删除**（产物已经不存在了）。
+    #   ⚠ 构思机现在少一条配方，机器会顺次往后匹配，其余配方不受影响。
+
+    # ---------- 入梦（铁剑 · 构思武器第 1 格）----------
+    #   槽 2/5 = 梦境规则 ｜ 槽 8 = 构想
+    #   ┌──┬──────┬──┐
+    #   │  │梦境规则│  │   槽 1 / 2 / 3
+    #   ├──┼──────┼──┤
+    #   │  │梦境规则│  │   槽 4 / 5 / 6
+    #   ├──┼──────┼──┤
+    #   │  │ 构想  │  │   槽 7 / 8 / 9
+    #   └──┴──────┴──┘
+    enter_dream:
+      input:
+        2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        5: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        8: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_ENTER_DREAM
+        amount: 1
+
+    # ---------- 梦想头盔（铁头盔）----------
+    #   槽 1/2/3 = 梦境规则 ｜ 槽 4/6 = 构想
+    wish_helmet:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_WISH_HELMET
+        amount: 1
+
+    # ---------- 梦想盔甲（铁胸甲）----------
+    #   槽 1/3/5/8 = 梦境规则 ｜ 槽 4/6/7/9 = 构想
+    wish_armor:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        5: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        8: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_WISH_ARMOR
+        amount: 1
+
+    # ---------- 梦想护腿（铁护腿）----------
+    #   槽 1/3 = 梦境规则 ｜ 槽 2/4/6/7/9 = 构想
+    wish_leggings:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        2: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_WISH_LEGGINGS
+        amount: 1
+
+    # ---------- 梦想战靴（铁靴子）----------
+    #   槽 4/6 = 梦境规则 ｜ 槽 7/9 = 构想
+    wish_boots:
+      input:
+        4: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        6: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+        7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+        9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_WISH_BOOTS
+        amount: 1
+
+    # ---------- 启象仪（蜘蛛网 · 想象力的材料生成器）----------
+    #   槽 1/3/4/6 = 梦境规则 ｜ 槽 2 = 奇思妙想帽 ｜ 槽 5 = 梦
+    #   槽 7/9 = 灵感 ｜ 槽 8 = 模
+    #   ┌──────┬──────┬──────┐
+    #   │梦境规则│奇思帽│梦境规则│   槽 1 / 2 / 3
+    #   ├──────┼──────┼──────┤
+    #   │梦境规则│ 梦  │梦境规则│   槽 4 / 5 / 6
+    #   ├──────┼──────┼──────┤
+    #   │ 灵感 │  模  │ 灵感 │   槽 7 / 8 / 9
+    #   └──────┴──────┴──────┘
+    imagination_generator:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_RULE,     amount: 1}
+        2: {material_type: slimefun, material: GS_THINKING_HAT,   amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_RULE,     amount: 1}
+        4: {material_type: slimefun, material: GS_DREAM_RULE,     amount: 1}
+        5: {material_type: slimefun, material: GS_DREAM,          amount: 1}
+        6: {material_type: slimefun, material: GS_DREAM_RULE,     amount: 1}
+        7: {material_type: slimefun, material: GS_INSPIRATION,    amount: 1}
+        8: {material_type: slimefun, material: GS_MOLD,           amount: 1}
+        9: {material_type: slimefun, material: GS_INSPIRATION,    amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_IMAGINATION_GENERATOR
+        amount: 1
+
+    # ---------- 唤梦机（铁砧 · 构思机器第 7 格）----------
+    #   槽 1/3/7/9 = 梦境锭 ｜ 槽 2/4/6/8 = 梦境规则 ｜ 槽 5 = 万象归序·心智构象熔炼炉
+    #   ┌──────┬──────┬──────┐
+    #   │梦境锭│梦境规则│梦境锭│   槽 1 / 2 / 3
+    #   ├──────┼──────┼──────┤
+    #   │梦境规则│万象归序│梦境规则│   槽 4 / 5 / 6
+    #   ├──────┼──────┼──────┤
+    #   │梦境锭│梦境规则│梦境锭│   槽 7 / 8 / 9
+    #   └──────┴──────┴──────┘
+    dream_summoner:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_INGOT,          amount: 1}
+        2: {material_type: slimefun, material: GS_DREAM_RULE,           amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_INGOT,          amount: 1}
+        4: {material_type: slimefun, material: GS_DREAM_RULE,           amount: 1}
+        5: {material_type: slimefun, material: GS_MIND_SMELTING_FURNACE, amount: 1}
+        6: {material_type: slimefun, material: GS_DREAM_RULE,           amount: 1}
+        7: {material_type: slimefun, material: GS_DREAM_INGOT,          amount: 1}
+        8: {material_type: slimefun, material: GS_DREAM_RULE,           amount: 1}
+        9: {material_type: slimefun, material: GS_DREAM_INGOT,          amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_DREAM_SUMMONER
+        amount: 1
+
+    # ---------- 构想分析机（黄色带釉陶瓦 · 构思机器第 5 格）----------
+    #   ★ 2026-10-08 第三批新增。
+    #   槽 1/3/4/6/7/9 = 梦境锭 ×6 ｜ 槽 2/8 = 灵感转化器 ×2 ｜ 槽 5 = 拟人思维 ×1
+    #   ┌──────┬──────────┬──────┐
+    #   │梦境锭│灵感转化器│梦境锭│   槽 1 / 2 / 3
+    #   ├──────┼──────────┼──────┤
+    #   │梦境锭│ 拟人思维 │梦境锭│   槽 4 / 5 / 6
+    #   ├──────┼──────────┼──────┤
+    #   │梦境锭│灵感转化器│梦境锭│   槽 7 / 8 / 9
+    #   └──────┴──────────┴──────┘
+    concept_analyzer:
+      input:
+        1: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+        2: {material_type: slimefun, material: GS_INSPIRATION_CONVERTER, amount: 1}
+        3: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+        4: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+        5: {material_type: slimefun, material: GS_ANTHROPOMORPHIC_MIND,  amount: 1}
+        6: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+        7: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+        8: {material_type: slimefun, material: GS_INSPIRATION_CONVERTER, amount: 1}
+        9: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_CONCEPT_ANALYZER
+        amount: 1
+
+    # ======================================================================
+    # ★ 2026-10-09 第十三批：**幻翼 boss 召唤物**（`GS_PHANTOM`）
+    # ======================================================================
+    #   ┌──────────┬───────────┬───────────────┐
+    #   │ 三叉戟   │ 腐肉      │ 重锤          │
+    #   ├──────────┼───────────┼───────────────┤
+    #   │ 鞘翅     │ 幻翼膜    │ 火药          │
+    #   ├──────────┼───────────┼───────────────┤
+    #   │ 龙息     │ 回响碎片  │ 凋零骷髅头    │
+    #   └──────────┴───────────┴───────────────┘
+    #   ★ 格位必须与 items.yml 里 GS_PHANTOM 的 recipe **完全一致**（发射器逐格比对）。
+    phantom:
+      input:
+        1: {material_type: mc, material: TRIDENT,               amount: 1}
+        2: {material_type: mc, material: ROTTEN_FLESH,          amount: 1}
+        3: {material_type: mc, material: MACE,                  amount: 1}
+        4: {material_type: mc, material: ELYTRA,                amount: 1}
+        5: {material_type: mc, material: PHANTOM_MEMBRANE,      amount: 1}
+        6: {material_type: mc, material: GUNPOWDER,             amount: 1}
+        7: {material_type: mc, material: DRAGON_BREATH,         amount: 1}
+        8: {material_type: mc, material: ECHO_SHARD,            amount: 1}
+        9: {material_type: mc, material: WITHER_SKELETON_SKULL, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_PHANTOM
+        amount: 1
+
+    # ★★★ 第八十六批：**本条配方已删除** —— 用户「删除配方，改成击败二阶段暗影掉落」
+    #   改成纯掉落物，配方页左边改用 `GS_RT_SHADOW_S2`（击败二阶段暗影虫卵掉落） 显示获取提示。
+    #   （墓碑保留：方便回溯「为什么发射器里再也合不出来了」。）
+
+    # ★★★ 第八十六批：**本条配方已删除** —— 用户「一阶段固定掉落1把月镰（删除月镰原有配方）」
+    #   改成纯掉落物，配方页左边改用 `GS_RT_NIGHTWATCH_S1`（击败一阶段守夜人掉落） 显示获取提示。
+    #   （墓碑保留：方便回溯「为什么发射器里再也合不出来了」。）
+
+    # ★★★ 第八十六批：**本条配方已删除** —— 用户「删除残樱配方，改成击败二阶段妄念掉落」
+    #   改成纯掉落物，配方页左边改用 `GS_RT_WANGNIAN_S2`（击败二阶段妄念掉落） 显示获取提示。
+    #   （墓碑保留：方便回溯「为什么发射器里再也合不出来了」。）
+
+    # ======================================================================
+    # ★ 2026-10-12 第六十二批：**咒术回战**（`GS_CURSED` · 构思玩具）
+    # ======================================================================
+    #   ┌──────────┬──────────┬──────────┐
+    #   │ 红色染料  │ 音符盒    │ 白色染料  │   槽 1 / 2 / 3
+    #   ├──────────┼──────────┼──────────┤
+    #   │ 蜘蛛眼    │ 音符盒    │ 末影之眼  │   槽 4 / 5 / 6
+    #   ├──────────┼──────────┼──────────┤
+    #   │ 灰色染料  │ 音符盒    │ 黑色染料  │   槽 7 / 8 / 9
+    #   └──────────┴──────────┴──────────┘
+    #   ★★ 第六十二批：用户「咒术回战配方改成构思机内合成」——
+    #      九宫格**一格没动**（还是第六十一批那 9 格），只把**机器**从
+    #      魔法工作台改成 **构思机**（本文件这台多方块机器）。
+    #   ★ 格位必须与 items.yml 里 GS_CURSED 的 recipe **完全一致**（发射器逐格比对）。
+    #   ★ 2/5/8 是**原版**音符盒（material_type: mc + NOTE_BLOCK），
+    #     不是粘液科技里同名的那个东西。
+    cursed:
+      input:
+        1: {material_type: mc, material: RED_DYE,     amount: 1}
+        2: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+        3: {material_type: mc, material: WHITE_DYE,   amount: 1}
+        4: {material_type: mc, material: SPIDER_EYE,  amount: 1}
+        5: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+        6: {material_type: mc, material: ENDER_EYE,   amount: 1}
+        7: {material_type: mc, material: GRAY_DYE,    amount: 1}
+        8: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+        9: {material_type: mc, material: BLACK_DYE,   amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_CURSED
+        amount: 1
+
+    # ======================================================================
+    # ★ 2026-10-12 第七十九批：**祖宗发射器<?>**（`GS_ANCESTOR_LAUNCHER`）
+    # ======================================================================
+    #   ┌────────┬──────────────┬────────┐
+    #   │ 滚木   │ 凋零骷髅头   │ 滚木   │   槽 1 / 2 / 3
+    #   ├────────┼──────────────┼────────┤
+    #   │回响碎片│ 下界之星     │ 弩     │   槽 4 / 5 / 6
+    #   ├────────┼──────────────┼────────┤
+    #   │ 滚木   │ 盔甲架       │ 滚木   │   槽 7 / 8 / 9
+    #   └────────┴──────────────┴────────┘
+    #   ★ 用户原话：「构思机九宫格配方：1379滚木，2凋零骷髅头，4回响碎片，
+    #                5下届之星，6弩，8盔甲架」
+    #   ★ 用户写「下届之星」= 游戏里的**下界之星 NETHER_STAR**（错别字）。
+    #   ★ 滚木是**粘液科技物品**（GS_ROLLING_LOG_INGOT）⇒ material_type: slimefun；
+    #     其余 5 种是**原版材质** ⇒ material_type: mc。
+    #   ★ 格位必须与 items.yml 里 GS_ANCESTOR_LAUNCHER 的 recipe **完全一致**。
+    ancestor_launcher:
+      input:
+        1: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+        2: {material_type: mc,       material: WITHER_SKELETON_SKULL, amount: 1}
+        3: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+        4: {material_type: mc,       material: ECHO_SHARD,            amount: 1}
+        5: {material_type: mc,       material: NETHER_STAR,           amount: 1}
+        6: {material_type: mc,       material: CROSSBOW,              amount: 1}
+        7: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+        8: {material_type: mc,       material: ARMOR_STAND,           amount: 1}
+        9: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+      output:
+        material_type: slimefun
+        material: GS_ANCESTOR_LAUNCHER
+        amount: 1
+

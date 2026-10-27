@@ -1,0 +1,33 @@
+Compiled from "RSCItemGroupLegacy.java"
+public class org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.RSCItemGroupLegacy extends io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup implements org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.BaseRSCItemGroup {
+  private java.util.List<java.lang.Object> contents;
+  private final org.lins.mmmjjkx.rykenslimefuncustomizer.addon.ProjectAddon addon;
+  private final org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.GroupType type;
+  private final org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.Visible visible;
+  private final boolean forceHidden;
+  private final boolean hasParent;
+  private final int page;
+  private final org.lins.mmmjjkx.rykenslimefuncustomizer.script.ScriptEval eval;
+  public org.lins.mmmjjkx.rykenslimefuncustomizer.addon.ProjectAddon getProjectAddon();
+  public org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.RSCItemGroupLegacy(org.bukkit.NamespacedKey, org.bukkit.inventory.ItemStack, int, org.lins.mmmjjkx.rykenslimefuncustomizer.addon.ProjectAddon, org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.GroupType, org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.Visible, boolean, boolean, org.lins.mmmjjkx.rykenslimefuncustomizer.script.ScriptEval, int);
+  public void addContent(io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem);
+  public void addContent(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup);
+  public void addContent(java.lang.String);
+  public java.util.List<java.lang.Object> getContents();
+  public boolean isVisible(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public boolean isVisibleInNested(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public void open(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  private void openPage(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, int);
+  private me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu setup(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode);
+  public org.bukkit.inventory.ItemStack getItem(org.bukkit.entity.Player);
+  private boolean lambda$setup$9(int, org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$setup$8(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$setup$7(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, java.lang.Object);
+  private boolean lambda$setup$6(org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.RSCItemGroupLegacy, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private boolean lambda$setup$5(org.bukkit.entity.Player, io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, java.lang.Object);
+  private static boolean lambda$setup$4(io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile, io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory, io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode, io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide, org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+  private java.lang.String lambda$addContent$3(java.lang.String) throws java.lang.Exception;
+  private java.lang.String lambda$addContent$2(io.github.thebusybiscuit.slimefun4.api.items.ItemGroup) throws java.lang.Exception;
+  private java.lang.String lambda$addContent$1(io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem) throws java.lang.Exception;
+  private static java.lang.String lambda$new$0(org.bukkit.NamespacedKey, org.lins.mmmjjkx.rykenslimefuncustomizer.customs.groups.GroupType, int) throws java.lang.Exception;
+}

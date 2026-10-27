@@ -1,0 +1,269 @@
+=== ListenerF 子系统对账探针：篮球 / 篮球生成器 / 副手钥匙锁 / 孤儿球清扫（原脚本 10952~13569）===
+脚本: ..\QHCGS\GS\GS\scripts\gs_listener.js
+日志: docs\参考服日志_构思技艺.txt
+
+      OK   脚本存在且行数 > 13569（原脚本共 14337 行）
+      OK   第 10952 行是本子系统区间起点（gsBb* 常量段）
+      OK   第 12517 行是 function gsBbStart()
+      OK   第 13148 行是 function gsBgStart()
+      OK   第 13552 行是 function gsKlStart()
+      OK   第 11708 行是 function gsEntPurgeStart()
+      OK   第 13167 行是 gsBgStart();
+      OK   第 13563 行是 gsKlStart();
+      OK   ★★ 第 13569 行是 gsEntPurgeStart();（全脚本最后一个顶层调用）
+      OK   ★ 原脚本前 13569 行能在纯 JS 桥接桩下完整求值（真 JS）
+      OK   ★ 纯净上下文注释掉了 17 个顶层 xxxStart(); 调用（应 ≥ 10）
+      OK   ★ 纯净上下文（顶层调用全注释）也能求值成功
+[A] 常量对账：真 JS 绑定表 vs Java 字段（按名按值 + 双向完备性）
+      OK   JS 侧枚举到 93 个 GS_(BB|BG|KL|ENT)_* 顶层变量（应 > 60）
+      OK   Java 侧反射到 90 个同前缀字段
+      OK   ★★ 按名按值对账 84 个变量，全部一致（不一致 0 个）
+      · 已逐个比对 84 个（另有 3 个登记为 JS 独有、故意不移植）
+      OK   ★★ JS 独有集合 == 白名单（JS 独有实际 [GS_BB_FEC, GS_BB_MAT_C, GS_BB_ISC_C]）
+      · JS 独有（故意不移植） GS_BB_MAT_C —— 原脚本 11114：Java.type('org.bukkit.Material') 的懒加载缓存（初值 null）—— Java 直接引用类，不需要缓存
+      · JS 独有（故意不移植） GS_BB_ISC_C —— 原脚本 11114：Java.type('org.bukkit.inventory.ItemStack') 的懒加载缓存（初值 null）—— 同上
+      · JS 独有（故意不移植） GS_BB_FEC —— 原脚本 11103：Java.type('org.bukkit.Color') 的懒加载缓存（初值 null，只在 gsBbSpellSpark 兜底路径里用）—— Java 直接 Color.fromRGB，不需要缓存
+      OK   ★★ Java 侧没有凭空造出来的常量（多出来的是 []）
+      OK   容器 GS_BB_ST：JS 是对象 且 Java 是 Map
+      OK   容器 GS_BB_CLICK_AT：JS 是对象 且 Java 是 Map
+      OK   容器 GS_BB_BARS：JS 是对象 且 Java 是 Map
+      OK   容器 GS_BG_NODES：JS 是对象 且 Java 是 Map
+      OK   容器 GS_BG_CLICK_AT：JS 是对象 且 Java 是 Map
+      OK   容器 GS_KL_HINT_AT：JS 是对象 且 Java 是 Map
+      OK   GS_BB_K_GEN = gs:bb_gen
+      OK   GS_BB_K_BALL = gs:bb_ball
+      OK   GS_ENT_TAG = gs:ent_ball
+      OK   GS_BG_K_GEN = gs:bg_gen
+      OK   GS_BG_K_NODES = gs:bg_nodes
+      OK   GS_BG_K_BALL = gs:bg_ball
+      OK   GS_BB_K_GEN = gs:bb_gen
+      OK   GS_BB_K_BALL = gs:bb_ball
+      OK   GS_ENT_TAG = gs:ent_ball
+      OK   GS_BG_K_GEN = gs:bg_gen
+      OK   GS_BG_K_NODES = gs:bg_nodes
+      OK   GS_BG_K_BALL = gs:bg_ball
+      OK   ★★ 两套副手球材质不同（律师函 ACACIA_BUTTON ≠ 生成器 BIRCH_BUTTON）
+      OK   ★★ 两套副手球 PDC 键不同
+      OK   ★★ 生成器的心跳世代键不复用律师函的
+      OK   GS_BB_SOLID_KEYS = [PANE, BARS, CHAIN, FENCE, WALL, SLAB, STAIRS, DOOR, TRAPDOOR, GLASS]
+      OK   GS_BB_SOFT_EXCEPT = [SIGN, TORCH, BANNER, HANGING, CORAL, FAN]
+
+[B] 日志行逐字节：真 JS 打出来的 / Java 的 / 参考服日志的
+      OK   真 JS 一共打了 44 行日志
+      OK   真 JS 打出了「律师函监听器注册成功」那一行
+      OK   真 JS 打出了「你等着收我的律师函吧…已加载」那一行
+      OK   真 JS 打出了「篮球生成器（GS_BASKET_GEN）已加载」那一行
+      OK   真 JS 打出了「副手「篮球」钥匙锁已加载」那一行
+      OK   真 JS 打出了「展示实体「孤儿球」清扫已加载」那一行
+      OK   Java 注册行 == 真 JS 注册行
+      OK   Java 启动行 == 真 JS 启动行（篮球）
+      OK   Java 启动行 == 真 JS 启动行（生成器）
+      OK   Java 注册行 == 真 JS 注册行（钥匙锁）
+      OK   Java 启动行 == 真 JS 启动行（孤儿球清扫）
+      OK   ★★ Java 的 gsBbRegisterLine() 自身不含 [构思技艺] 前缀（前缀由 gsDaLog 统一加）
+      OK   参考服日志有「律师函监听器注册成功」
+      OK   参考服日志有「你等着收我的律师函吧…」
+      OK   参考服日志有「篮球生成器…已加载」
+      OK   参考服日志有「副手「篮球」钥匙锁已加载」
+      OK   参考服日志有「展示实体「孤儿球」清扫已加载」
+      OK   Java 注册行 == 参考服日志行（篮球）
+      OK   Java 启动行 == 参考服日志行（篮球）
+      OK   Java 启动行 == 参考服日志行（生成器）
+      OK   Java 注册行 == 参考服日志行（钥匙锁）
+      OK   Java 启动行 == 参考服日志行（孤儿球清扫）
+      OK   ★ 注册行含「空手挥手兜底 = 开」
+      OK   ★ 篮球启动行含「直径 0.48 格」（JS 数值语义：0.24*2 → toFixed(2)）
+      OK   ★ 篮球启动行含「绑定 10 秒」（10000/1000 → "10" 不是 "10.0"）
+      OK   ★ 篮球启动行含「弹起 0.3 逐次 ×0.6」（0.30 → "0.3"）
+      OK   ★ 篮球启动行含「上限 0.25」
+      OK   ★ 篮球启动行含「超时落点 2 格」（2.0 → "2" 不是 "2.0"）
+      OK   ★ 生成器启动行含「上方 1.5 格」与「超出 32 格」
+      OK   ★ 钥匙锁行含「（6/6 条事件）」与「+ 0.5 秒清残留」（500/1000 → "0.5"）
+      OK   ★ 孤儿球行含「启动清了 0 个残留」与「每 1 秒扫一次孤儿」（20/20.0 → "1"）
+      OK   ★ 孤儿球行含「关服清扫监听 = 已注册」
+      OK   ★ 孤儿球行以「别人的展示实体一律不碰」收尾
+      · JS 篮球注册行: [构思技艺] 律师函监听器注册成功（穿着胸甲 → 尘埃粒子篮球 / 触碰绑定 / ★ 绑定期间副手自动出现「篮球」（ACACIA_BUTTON）⇒ 右键直接投 / ★ 绑定期间挂「运球」倒计时血条（只有这两个字 / 10 秒）/ 空手挥手兜底 = 开）
+      · JS 篮球启动行: [构思技艺] 你等着收我的律师函吧（GS_LAWYER_LETTER）已加载 · 尘埃粒子篮球（非烟花 · 橙黑 26 点 · 直径 0.48 格 ≈ 头颅 · 粒子大小 0.8）/ 触碰 1.4 格 / 绑定 10 秒 / 超时落点 2 格 / ★ 投篮沿**准星三维方向** 速度 1.25（平视=传球 / 朝下=假动作 / 朝上=高抛） · 先直线 12 刻后重力 0.05 / 撞墙垂直坠落 / 头顶撞方块即开始下落 / ★★ 落地先弹 2 下再停（弹起 0.3 逐次 ×0.6 · 没撞墙按 ×0.35 保留前速（上限 0.25）往前弹 · 撞过墙原地弹） / 停下后等触碰 / ★ 绑定期副手出现「篮球」（ACACIA_BUTTON）⇒ 右键真发包 · 副手本来有东西就不动 · 离开绑定立刻收走 / ★ 运球血条「运球」10 秒倒计时（标题只有这两个字 · 满条 → 空条 → 投出/清零即消失 · 颜色 §6）· 运球位置前移 0.5 格（半个身位） / ★★ 渲染 = 展示实体 ItemDisplay（头颅皮肤 · 每 1 刻同步 1 次 · 插值 0 刻）
+      · JS 钥匙锁行  : [构思技艺] 副手「篮球」钥匙锁已加载（6/6 条事件） · 运球/持球期间那颗按钮**拿不下来**（点击副手槽 / F 键 / 拖拽 / 丢弃 一律拦回） · 被外力拿走 ⇒ 每刻补回 + 0.5 秒清残留 · 死亡时剔掉掉落物里的假球、球留在死亡点 / 退出时收走
+      · JS 孤儿球行  : [构思技艺] 展示实体「孤儿球」清扫已加载 · 启动清了 0 个残留 / 之后每 1 秒扫一次孤儿 / 关服前再全清一遍（关服清扫监听 = 已注册） / ★ 认球只认「我们的标记 + 专属头颅」⇒ 别人的展示实体一律不碰
+
+[C] 数值 / 几何 / 物理：真 JS 函数（mock 世界）vs Java 同一算式
+      OK   ★★ `| 0` vs `jsToInt32` 逐位一致（28 个样本，含真实毫秒时间戳）
+      OK   ★★ 反向：`(int) 1.76e12` 饱和成 Integer.MAX_VALUE（≠ JS 的 | 0）
+      OK   ★★ 反向：`(int) 1.0e18` 也饱和（所以探针必须用 jsToInt32）
+      OK   ★★ 生产代码的字段是 long ⇒ `(int)` 窄化等价于 ToInt32（不是饱和）
+      OK   ★★ 时间戳回绕使 GS_BB_SHOT_CD(350) 恒不生效（now-(int)now ≫ 350）
+      OK   ★★ 时间戳回绕使 GS_BB_REBIND_CD(300) 恒不生效
+      OK   ★★ 时间戳回绕使 GS_KL_HINT_MS(2500) 恒不生效
+      OK   ★★ 时间戳回绕使 GS_KL_SWEEP_MS(500) 恒不生效
+      OK   ★★ 时间戳回绕使 GS_BG 的 120ms 去抖恒不生效
+      OK   ★★ 时间戳回绕使 gsBbPulse 的 2000ms 兜底清扫周期恒不生效
+      OK   ★ gsBbClickOnce 的 80ms 去抖**没有** | 0（真 JS 里它确实生效）
+      OK   ★★ gsBbNameSolid 与 Java 一致（全枚举 2121 个真 Material）
+      OK   ★★ gsBbSolid 与 Java 一致（2121 × 2 种 isPassable）
+      OK   ★ 清单确实在起作用（isPassable=true 时仍有 339 个材质被判挡球，应 > 50）
+      OK   ★ 玻璃板（GLASS_PANE）算挡球（薄方块兜底生效，isPassable 说能过也拦）
+      OK   ★ 墙上的告示牌（OAK_WALL_SIGN）不算挡球（例外 SIGN 优先于关键词 WALL）
+      OK   ★ 挂墙的悬挂告示牌（同时含 WALL + HANGING + SIGN）也不算挡球
+      OK   ★ 石头（STONE）在 isPassable=true 时不算挡球（不命中清单）
+      OK   ★ 石头（STONE）在 isPassable=false 时算挡球
+      OK   ★ 空气（AIR）在 isPassable=true 时不算挡球
+      OK   ★★ gsBbFloor 与 Java 一致（3 种世界 × 坐标网格）
+      OK   ★★ gsBbFloorSweep 与 Java 一致（含「一步跨过整块地板」的隧穿场景）
+      OK   ★★ gsBbWallSweep 与 Java 一致（含「一步跨过一格薄墙」的隧穿场景）
+      OK   ★ 一步跨过薄墙时扫掠能抓到（x 0.5→3.5, y=64）
+      OK   ★★ gsBbLand 与 Java 逐值一致（1400 组：bnc × hitWall × vx × vz × floorY）
+      OK   ★ 第一次弹起 vy = GS_BB_BOUNCE_UP(0.3)，水平速度被压到上限 0.25
+      OK   ★ 弹跳后 life = GS_BB_STRAIGHT+1（必须越过直线段，否则球会直冲上天）
+      OK   ★ 撞过墙 ⇒ 原地弹（vx = vz = 0）
+      OK   ★ bnc 用完 ⇒ 直接 rest（mode=rest, y = floorY + R）
+      OK   ★★ gsBbShootState 与 Java 逐值一致（1134 组：yaw × pitch × 高度 × 是否律师函球 × 上次投篮时间）
+      OK   ★ 平视（pitch=0, yaw=0）方向 ≈ (0,0,1)
+      OK   ★ 出手点 = 玩家坐标 + 水平前移 GS_BB_SHOT_FWD(0.6)（yaw=0 朝 +Z ⇒ x 不动、z 前移 0.6）
+      OK   ★ 初速 = 方向 × GS_BB_SHOT_SPD(1.25)
+      OK   ★ 抬头看（pitch=-90）时水平位移为 0、vy 为正（高抛）
+      OK   ★ 低头看（pitch=+90）时水平位移为 0、vy 为负（假动作）
+      OK   ★★ 350ms 冷却恒不生效 ⇒ 立刻再投一次也成功（| 0 回绕的忠实复刻）
+      OK   ★★ gsBbTickShot 完整轨迹与 Java 逐刻一致（3 种世界 × 10 组初值 × 400 刻 = 12000 个采样点）
+      OK   ★ 直线段（前 12 刻）不受重力：y 不变（66.0 == 66.0）
+      OK   ★ 第 13 刻起受重力：y 开始下降（65.95 < 66.0）
+      OK   ★ 落地后确实弹起来了（vy 由负转正的次数 = 2 = GS_BB_BOUNCES）
+      OK   ★ 弹了两下之后停住（rest，第 38 刻）
+      OK   ★ 停住时 y = 地板顶面 + R（64.24）
+      OK   ★ 没撞墙 ⇒ 球往前滚了一段（z 从 0.5 前进到 28.29319436637663）
+      OK   ★ 停住时水平速度归零
+      OK   ★★ gsBbDropNear 与 Java 一致（落点半径恒 = GS_BB_DROP_R，vy = -0.12）
+      OK   ★ 超时落点：球至少从腰高（玩家 y + 0.8）往下掉（64.8）
+      OK   ★ 超时落点后 mode = shot、life = 0
+      OK   ★★ gsBbTouch 与 Java 一致（水平 1.4 / 竖直 ±1.6 的边界内外都测）
+      OK   ★ 水平恰好 1.4 ⇒ 仍算碰到（判定是 > 才拒绝）
+      OK   ★ 水平 2.0 ⇒ 不算碰到
+      OK   ★ 竖直 1.7 ⇒ 不算碰到
+      OK   ★ 竖直 1.5 ⇒ 算碰到
+      OK   ★ 竖直 -1.5 ⇒ 算碰到
+      OK   ★★ gsBgTouch 与 Java 一致（同样的边界网格）
+      OK   ★★ gsBgFar 与 Java 一致（32 格边界内外）
+      OK   ★ 竖直恰好 32 格 ⇒ 不算超出（判定是 > 才送回）
+      OK   ★ 竖直 32.001 格 ⇒ 算超出
+      OK   ★ 竖直 31.999 格 ⇒ 不算超出
+      OK   ★ 距离量的是「球心到方块中心 +0.5」而不是到方块角（x=32.0 时距 31.5 ⇒ 不送回）
+      OK   ★ 水平 32.501 ⇒ 距 32.001 ⇒ 送回
+      OK   ★★ gsBgKey 与 Java 一致（含负数 / 小数取整）
+      OK   ★ 生成器新球球心 = 方块 + (0.5, GS_BG_UP(1.5), 0.5)
+      OK   ★ 生成器新球初始 mode = idle、bnc = 0
+
+[D] 反向断言：不该存在 / 不该改变的东西
+      OK   ★★ 脚本里 GS_BB_ID = 'GS_LAWYER_LETTER' 原封不动
+      OK   ★★ Java 里 GS_BB_ID = "GS_LAWYER_LETTER" 原封不动
+      OK   ★★ 脚本里「你等着收我的律师函吧」原封不动
+      OK   ★★ Java 里「你等着收我的律师函吧」原封不动
+      OK   ★★ 脚本里「律师函监听器注册成功」原封不动
+      OK   ★★ Java 里「律师函监听器注册成功」原封不动
+      OK   ★★ Java 里没有「篮球监听器注册成功」这种「顺手修正」
+      OK   ★★ Java 里没有把 GS_BB_ID 改成 GS_BASKETBALL / GS_BB_BALL 之类
+      OK   ★★ KlSub.ListenerImpl 上恰好 6 个 @EventHandler（日志写「6/6 条事件」）
+      OK   ★★ Java 独有的 KL_EVENT_COUNT 名字**不带** GS_KL_ 前缀（否则会被当成漏拷的常量）
+      OK   ★ BbSub.ListenerImpl 上恰好 2 个 @EventHandler（右键 + 挥手）
+      OK   ★ BgSub.ListenerImpl 上恰好 4 个 @EventHandler（放置/破坏/右键/挥手）
+      OK   ★ EntPurgeSub.ListenerImpl 上恰好 1 个 @EventHandler（关服清扫）
+      OK   ★★ 钥匙锁日志里的条数就是 6（Java 侧写死 GS_KL_EVENT_COUNT）
+      OK   ★★ BbSub.java 里没有 ignoreCancelled = true（原脚本默认 false）
+      OK   ★★ BgSub.java 里没有 ignoreCancelled = true（原脚本默认 false）
+      OK   ★★ KlSub.java 里没有 ignoreCancelled = true（原脚本默认 false）
+      OK   ★★ EntPurgeSub.java 里没有 ignoreCancelled = true（原脚本默认 false）
+      OK   ★★ 脚本里 registerEvent 一律只传 4 个参数（⇒ ignoreCancelled 默认 false）
+      OK   ★★ 脚本里共 8 处 pm.registerEvent（4 个循环各 1 处 + 4 处 JavaAdapter 退路 = 8）
+      OK   ★★ 脚本里 registerEvent 的 5 参重载是 exec, plugin（不是 ..., plugin, true）
+      OK   ★★ 脚本里 registerEvent 后面没有第 5 个参数（没有 ', true)' / ', false)' 紧跟）
+      OK   ★★ BbSub.java 里没有 System.out.println / printStackTrace
+      OK   ★★ BgSub.java 里没有 System.out.println / printStackTrace
+      OK   ★★ KlSub.java 里没有 System.out.println / printStackTrace
+      OK   ★★ EntPurgeSub.java 里没有 System.out.println / printStackTrace
+      OK   ★ BbSub.java 里没有 String.format(（会写出与 JS 不同的数字）
+      OK   ★ BgSub.java 里没有 String.format(（会写出与 JS 不同的数字）
+      OK   ★ KlSub.java 里没有 String.format(（会写出与 JS 不同的数字）
+      OK   ★ EntPurgeSub.java 里没有 String.format(（会写出与 JS 不同的数字）
+      OK   ★ BbSub 的日志行确实用了 JsNum
+      OK   ★ BgSub 的日志行确实用了 JsNum
+      OK   ★ KlSub 的日志行确实用了 JsNum
+      OK   ★ EntPurgeSub 的日志行确实用了 JsNum
+      OK   ★★ 脚本里生成器用 BIRCH_BUTTON（不是律师函的 ACACIA_BUTTON）
+      OK   ★★ Java 里生成器用 BIRCH_BUTTON
+      OK   ★★ 脚本注释明说「绝不复用 gs:bb_gen」
+      OK   ★★ Java 里生成器的世代键是 gs:bg_gen
+      OK   ★★ Java 的 BgSub 里没有引用 gs:bb_gen 这个键字面量
+      OK   ★★ Java 的 BgSub 里没有引用 gs:bb_ball 这个键字面量
+      OK   ★★ Java 的 BbSub 里没有引用 gs:bg_* 这套键
+      OK   ★★ 脚本注释明说孤儿球清扫「必须放在**最后**」
+      OK   ★★ 脚本注释说明理由：律师函与生成器「都已经把自己的状态表建好了」
+      OK   ★★ 脚本里 gsEntPurgeStart() 是 13569 行（最后一个顶层调用）
+      OK   ★★ Java 的 EntPurgeSub 类注释也写明「必须最后调用」
+      OK   ★★ 认球只认「DISPLAY 类型 + 我们的标记 / 专属头颅」
+      OK   ★★ Java 的 gsEntIsOurs 先按类型名过滤 DISPLAY（别人的普通实体一律不碰）
+      OK   ★★ BbSub.java 的**代码**不引用其它子系统的符号（越界 0 处，首个 ）
+      OK   ★★ BgSub.java 的**代码**不引用其它子系统的符号（越界 0 处，首个 ）
+      OK   ★★ KlSub.java 的**代码**不引用其它子系统的符号（越界 0 处，首个 ）
+      OK   ★★ EntPurgeSub.java 的**代码**不引用其它子系统的符号（越界 0 处，首个 ）
+      OK   ★ BbSub / BgSub / KlSub / EntPurgeSub 都持有 ListenerCore core
+      OK   ★ BbSub.java 确实调用了共享层（ListenerCore. 或 core.）
+      OK   ★ BgSub.java 确实调用了共享层（ListenerCore. 或 core.）
+      OK   ★ KlSub.java 确实调用了共享层（ListenerCore. 或 core.）
+      OK   ★ EntPurgeSub.java 确实调用了共享层（ListenerCore. 或 core.）
+      OK   ★ BbSub.java 类注释写明「与原脚本的差异」（监听器注册）
+      OK   ★ BbSub.java 类注释写明原脚本「每次 reload 都会再注册一遍」
+      OK   ★ BgSub.java 类注释写明「与原脚本的差异」（监听器注册）
+      OK   ★ BgSub.java 类注释写明原脚本「每次 reload 都会再注册一遍」
+      OK   ★ KlSub.java 类注释写明「与原脚本的差异」（监听器注册）
+      OK   ★ KlSub.java 类注释写明原脚本「每次 reload 都会再注册一遍」
+      OK   ★ EntPurgeSub.java 类注释写明「与原脚本的差异」（监听器注册）
+      OK   ★ EntPurgeSub.java 类注释写明原脚本「每次 reload 都会再注册一遍」
+      OK   ★ 四个类都写了死代码清单
+      OK   ★★ 四个 Java 文件里都没有 ListenerCore / Modules / build.ps1 的写入痕迹
+      OK   ★★ 脚本里 gsBbShootState 的冷却带 | 0
+      OK   ★★ Java 里对应处是 (int) st.shotAt
+      OK   ★★ 脚本里 gsBbTickRest 的静默带 | 0
+      OK   ★★ Java 里对应处是 (int) st.touched
+      OK   ★★ 脚本里 gsBbPulse 的清扫周期带 | 0
+      OK   ★★ Java 里对应处是 (int) GS_BB_SWEEP_AT
+      OK   ★★ 脚本里 gsKlHint 的去抖带 | 0
+      OK   ★★ Java 里对应处是 (int) (long) lastObj
+      OK   ★★ 脚本里 gsKlPulse 的清扫周期带 | 0
+      OK   ★★ Java 里对应处是 (int) GS_KL_SWEEP_AT
+      OK   ★★ 脚本里 gsBgTryShoot 的去抖带 | 0
+      OK   ★★ Java 里对应处是 (int) (long) lastObj
+      OK   ★★ 脚本里 gsBgTickBound 的相位带 | 0
+      OK   ★★ Java 里对应处是 (int) b.tBoundAt
+      OK   ★★ gsBbPulse 是 (1,1) 每刻
+      OK   ★★ gsBgPulse 是 (1,1) 每刻
+      OK   ★★ gsKlPulse 是 (1,1) 每刻
+      OK   ★★★ gsEntPulse 是 (GS_ENT_PURGE_EVERY, GS_ENT_PURGE_EVERY) 双参同值（不是 1 刻！）
+      OK   ★★ Java 的 EntPurgeSub 用的是 GS_ENT_PURGE_EVERY 双参同值
+      OK   ★ Java 的 BbSub / BgSub / KlSub 用 (1,1)
+      OK   ★★ GS_BG_MAX = 1（一台生成器同时只有一颗球）
+      OK   ★★ 脚本注释写明「一台生成器只养一颗球」
+      OK   ★★ Java 里补球条件是 node.balls.size() < GS_BG_MAX
+      OK   ★★ 脚本里是 (GS_KL_SWEEP_MS / 1000)（JS 浮点除法 ⇒ "0.5"）
+      OK   ★★ Java 里是 (double) GS_KL_SWEEP_MS / 1000.0
+      OK   ★★ 脚本里是 (GS_ENT_PURGE_EVERY / 20.0)
+      OK   ★★ Java 里是 (double) GS_ENT_PURGE_EVERY / 20.0
+      OK   ★★ 脚本注释说明只用 slot 不用 raw
+      OK   ★★ Java 里用 e.getSlot()
+      OK   ★★ Java 的代码里没有 e.getRawSlot() 调用
+      OK   ★★ 脚本里关服清扫用 Priority.MONITOR（不是 HIGHEST）
+      OK   ★★ Java 里关服清扫是 EventPriority.MONITOR
+      OK   ★★ Java 的 EntPurgeSub 里没有 EventPriority.HIGHEST
+      OK   ★★ 脚本里 gsBgDropSelf 关掉原版掉落
+      OK   ★★ Java 里同样 setDropItems(false)
+      OK   ★★ Java 里用 gsNewItem(GS_BG_ID) 造回物品
+      OK   ★★ 脚本里 GS_BB_SOLID_KEYS 的 10 个关键词顺序不变
+      OK   ★★ 脚本里 GS_BB_SOFT_EXCEPT 的 6 个例外顺序不变
+      OK   ★★ 脚本注释写明「副手是玩家自己的东西 ⇒ 不碰它」
+      OK   ★★ Java 的 gsBbHandOn / gsBgHandOn 都先判 gsBbIsEmpty
+      OK   ★★ GS_BB_USE_ENT = true（用展示实体渲染）
+      OK   ★★ GS_BB_ENT_EVERY = 1（每刻同步）
+      OK   ★★ GS_BB_ENT_TPDUR = 0 / GS_BB_ENT_INTDUR = 0（插值 0 刻）
+      OK   ★★ Java 用 ItemDisplay.ItemDisplayTransform.HEAD
+      OK   ★★ Java 里给实体打了 GS_ENT_TAG 标记
+
+
+通过 247 ｜ 失败 0

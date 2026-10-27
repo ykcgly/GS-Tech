@@ -1,0 +1,25 @@
+name: GS
+version: '1.0.0'
+main: com.qinghuacisj.gs.GSPlugin
+api-version: '1.21'
+authors: [QingHuaCiSJ]
+description: "构思技艺 —— 万物初生，始于想象"
+website: https://github.com/
+depend:
+  - Slimefun
+softdepend:
+  - GuizhanLibPlugin
+  - JustEnoughGuide
+  - PlaceholderAPI
+  - SkinsRestorer
+  - LogiTech
+commands:
+  gs:
+    description: 构思技艺主命令
+    usage: /gs <reload|info>
+    permission: gs.command
+    permission-message: "&c你没有权限。"
+permissions:
+  gs.command:
+    description: 允许使用 /gs
+    default: op

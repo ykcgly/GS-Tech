@@ -1,0 +1,8 @@
+item:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4671
+  id: minecraft:netherite_helmet
+  count: 1
+  components:
+    minecraft:trim: '{material:"minecraft:amethyst",pattern:"minecraft:flow"}'
+  schema_version: 1

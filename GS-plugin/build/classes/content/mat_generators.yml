@@ -1,0 +1,204 @@
+# ==========================================================================
+# 构思技艺 (GS) —— 材料生成器（无条件生产物品的机器）
+# 「万物初生，始于想象」
+# ==========================================================================
+# 材料生成器 = 不需要任何输入，间隔一定粘液刻自动产出物品的机器。
+#
+#   ★ 2026-10-08 第二批：
+#     · 启象仪仍是「想象力」生成器，合成配方改成**构思机**里做。
+#     · **拟人思维**从「配方机器」改成**材料生成器**（用户需求：
+#       「拟人思维的 gui 改成和启象仪一样的生产方式，进度材质为末地烛」）
+#       ⇒ 不再需要「记忆碎片（不消耗）+ 想象力 → 灵感」那套输入，
+#         现在直接无条件产出「灵感」，进度/状态材质 = 末地烛 END_ROD。
+#
+# ★★ 关于「生产速度」（已核对 RSC / 粘液科技源码）：
+#   · 粘液科技默认每 10 MC 刻 tick 一次 → 1 粘液刻 = 0.5 秒
+#   · tickRate 就是配方的 ticks（不乘 2、不除 speed）
+#   · 一次完整周期 = tickRate + 2 粘液刻（建操作占 1 刻、出货占 1 刻）
+#     ⇒ tickRate: 1 → 实际每 3 粘液刻（1.5 秒）产出 1 个
+# ==========================================================================
+
+GS_IMAGINATION_GENERATOR:
+  item_group: gs_machines
+  display_tier: 2              # ★ 2026-10-08 第二批：构思机器顺序 2
+  item:
+    name: "&b启象仪"
+    material: COBWEB              # 蜘蛛网
+    lore:
+      - "&7萃取"
+      - "&7生成"
+      - "&7想象力"
+      - ""
+      - "&8放下来就会自己产出「想象力」"
+
+  # ---------- 机器自身的合成配方 ----------
+  #   ★ 2026-10-08 第二批改成**构思机**合成：
+  #     槽 1/3/4/6 = 梦境规则 ｜ 槽 2 = 奇思妙想帽 ｜ 槽 5 = 梦
+  #     槽 7/9 = 灵感 ｜ 槽 8 = 模
+  #   ┌──────┬──────┬──────┐
+  #   │梦境规则│奇思帽│梦境规则│   槽 1 / 2 / 3
+  #   ├──────┼──────┼──────┤
+  #   │梦境规则│ 梦  │梦境规则│   槽 4 / 5 / 6
+  #   ├──────┼──────┼──────┤
+  #   │ 灵感 │  模  │ 灵感 │   槽 7 / 8 / 9
+  #   └──────┴──────┴──────┘
+  #   真正生效的配方在 mb_machines.yml 的 imagination_generator 里。
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_RULE,   amount: 1}
+    2: {material_type: slimefun, material: GS_THINKING_HAT, amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_RULE,   amount: 1}
+    4: {material_type: slimefun, material: GS_DREAM_RULE,   amount: 1}
+    5: {material_type: slimefun, material: GS_DREAM,        amount: 1}
+    6: {material_type: slimefun, material: GS_DREAM_RULE,   amount: 1}
+    7: {material_type: slimefun, material: GS_INSPIRATION,  amount: 1}
+    8: {material_type: slimefun, material: GS_MOLD,         amount: 1}
+    9: {material_type: slimefun, material: GS_INSPIRATION,  amount: 1}
+
+  capacity: 1000           # ★ 必须 > 0（Slimefun 的 isChargeable 判定）：0 会让 takeCharge 恒失败、机器点不出产物；不耗电靠下面的消耗值填 0
+  add_power_buffer_lore: false   # ★ 不显示「可储存 N J」那行自动 lore（本来就不耗电）
+  per: 0                          # 每生成一次消耗的能量（0 = 免费）
+
+  # 输出槽：第 2~6 行（槽 9~53）全部是输出槽
+  output: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+           39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+
+  # 产出物：想象力 ×1
+  outputItem:
+    material_type: slimefun
+    material: GS_IMAGINATION
+    amount: 1
+
+  tickRate: 1                     # 实际周期 = tickRate + 2 = 3 粘液刻（1.5 秒）
+  status: 4                       # 第 5 格（槽 4）= 进度/状态显示位（材质「线」）
+
+# ==========================================================================
+# 拟人思维 · GS_ANTHROPOMORPHIC_MIND
+# ==========================================================================
+#   ★ 2026-10-08 第二批：由「配方机器」改成**材料生成器**。
+#     · 不需要任何输入，自动产出 **灵感 ×1**
+#     · GUI = 大箱子 54 格（见 menus.yml）：最上面一排玻璃板，
+#       第 5 格（槽 4）= 进度/状态位，材质 **末地烛 END_ROD**
+#     · 槽 9~53 = 输出槽，菜单里**不要放物品**
+#
+# 机器本体的合成配方（构思机 3×3，布局未改动）：
+#   ┌──────┬────────┬──────┐
+#   │想象力│记忆碎片│想象力│   槽 1 / 2 / 3
+#   ├──────┼────────┼──────┤
+#   │ 构想 │ 盔甲架 │ 构想 │   槽 4 / 5 / 6
+#   ├──────┼────────┼──────┤
+#   │ 臆想 │  灵感  │ 念想 │   槽 7 / 8 / 9
+#   └──────┴────────┴──────┘
+# ==========================================================================
+GS_ANTHROPOMORPHIC_MIND:
+  item_group: gs_machines
+  display_tier: 3              # ★ 构思机器顺序 3
+  item:
+    name: "&b拟人思维"
+    material: SOUL_SOIL             # 灵魂土
+    lore:
+      - "&7让构思拥有人的形状"
+      - ""
+      - "&8想象力驱动，记忆不灭"
+      - "&8放下来就会自己产出「灵感」"
+
+  # ★ 由「构思机」合成；这里写的只是展示用配方
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_IMAGINATION,     amount: 1}
+    2: {material_type: slimefun, material: GS_MEMORY_FRAGMENT, amount: 1}
+    3: {material_type: slimefun, material: GS_IMAGINATION,     amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,         amount: 1}
+    5: {material: ARMOR_STAND,                                 amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,         amount: 1}
+    7: {material_type: slimefun, material: GS_DELUSION,        amount: 1}
+    8: {material_type: slimefun, material: GS_INSPIRATION,     amount: 1}
+    9: {material_type: slimefun, material: GS_THOUGHT,         amount: 1}
+
+  capacity: 1000           # ★ 必须 > 0（Slimefun 的 isChargeable 判定）
+  add_power_buffer_lore: false   # ★ 不显示「可储存 N J」那行自动 lore
+  per: 0                          # 不耗电
+
+  # 输出槽：第 2~6 行（槽 9~53）全部是输出槽
+  output: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+           39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+
+  # 产出物：灵感 ×1
+  outputItem:
+    material_type: slimefun
+    material: GS_INSPIRATION
+    amount: 1
+
+  tickRate: 1                     # 实际周期 = tickRate + 2 = 3 粘液刻（1.5 秒）
+  status: 4                       # 第 5 格（槽 4）= 进度/状态位（材质「末地烛」）
+
+# ==========================================================================
+# 构想分析机 · GS_CONCEPT_ANALYZER
+# ==========================================================================
+#   ★ 2026-10-08 第三批新增（用户需求）：
+#     · 黄色带釉陶瓦 YELLOW_GLAZED_TERRACOTTA
+#     · **每 3 秒自动产出 1 个「构想」**（不需要任何输入）
+#     · GUI 与启象仪同款（54 格）：最上面一排玻璃板，第 5 格（槽 4）
+#       = 进度/状态位，材质 **向日葵 SUNFLOWER**
+#     · 机器本体在「构思机」里合成：
+#       2 个灵感转化器 + 1 个拟人思维 + 6 个梦境锭
+#       （真正生效的配方在 mb_machines.yml 的 concept_analyzer）
+#
+#   ⚠ 生产速度换算（与启象仪同一套公式）：
+#       · 1 粘液刻 = 10 MC 刻 = 0.5 秒
+#       · 一次完整周期 = tickRate + 2 粘液刻（建操作 1 刻、出货 1 刻）
+#       ⇒ tickRate: 4 → 6 粘液刻 = **3.0 秒**
+# ==========================================================================
+GS_CONCEPT_ANALYZER:
+  item_group: gs_machines
+  display_tier: 5              # ★ 2026-10-08 第四批：构思机器顺序 5（紧接灵感转化器之后）
+  item:
+    name: "&6构想分析机"
+    material: YELLOW_GLAZED_TERRACOTTA     # 黄色带釉陶瓦
+    lore:
+      - "&7分析"
+      - "&7生成"
+      - "&7构想"
+      - ""
+      - "&8放下来就会自己产出「构想」（每 3 秒 1 个）"
+
+  # ---------- 机器自身的合成配方（展示用）----------
+  #   ★ 由「构思机」合成；这里写的只是粘液书配方页的展示图。
+  #   ┌──────┬──────────┬──────┐
+  #   │梦境锭│灵感转化器│梦境锭│   槽 1 / 2 / 3
+  #   ├──────┼──────────┼──────┤
+  #   │梦境锭│ 拟人思维 │梦境锭│   槽 4 / 5 / 6
+  #   ├──────┼──────────┼──────┤
+  #   │梦境锭│灵感转化器│梦境锭│   槽 7 / 8 / 9
+  #   └──────┴──────────┴──────┘
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+    2: {material_type: slimefun, material: GS_INSPIRATION_CONVERTER, amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+    4: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+    5: {material_type: slimefun, material: GS_ANTHROPOMORPHIC_MIND,  amount: 1}
+    6: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+    7: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+    8: {material_type: slimefun, material: GS_INSPIRATION_CONVERTER, amount: 1}
+    9: {material_type: slimefun, material: GS_DREAM_INGOT,           amount: 1}
+
+  capacity: 1000           # ★ 必须 > 0（Slimefun 的 isChargeable 判定）
+  add_power_buffer_lore: false   # ★ 不显示「可储存 N J」那行自动 lore
+  per: 0                          # 每生成一次消耗的能量（0 = 免费）
+
+  # 输出槽：第 2~6 行（槽 9~53）全部是输出槽
+  output: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+           39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+
+  # 产出物：构想 ×1
+  outputItem:
+    material_type: slimefun
+    material: GS_CONCEPT
+    amount: 1
+
+  tickRate: 4                     # 实际周期 = tickRate + 2 = 6 粘液刻（3.0 秒）
+  status: 4                       # 第 5 格（槽 4）= 进度/状态显示位（材质「向日葵」）

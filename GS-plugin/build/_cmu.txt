@@ -1,0 +1,667 @@
+Compiled from "ChestMenuUtils.java"
+public final class io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils {
+  private static final org.bukkit.inventory.ItemStack UI_BACKGROUND;
+
+  private static final org.bukkit.inventory.ItemStack INPUT_SLOT;
+
+  private static final org.bukkit.inventory.ItemStack OUTPUT_SLOT;
+
+  private static final org.bukkit.inventory.ItemStack NO_PERMISSION;
+
+  private static final org.bukkit.inventory.ItemStack NOT_RESEARCHED;
+
+  private static final org.bukkit.inventory.ItemStack BACK_BUTTON;
+
+  private static final org.bukkit.inventory.ItemStack MENU_BUTTON;
+
+  private static final org.bukkit.inventory.ItemStack SEARCH_BUTTON;
+
+  private static final org.bukkit.inventory.ItemStack WIKI_BUTTON;
+
+  private static final org.bukkit.inventory.ItemStack PREV_BUTTON_ACTIVE;
+
+  private static final org.bukkit.inventory.ItemStack NEXT_BUTTON_ACTIVE;
+
+  private static final org.bukkit.inventory.ItemStack PREV_BUTTON_INACTIVE;
+
+  private static final org.bukkit.inventory.ItemStack NEXT_BUTTON_INACTIVE;
+
+  private static final me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu$MenuClickHandler CLICK_HANDLER;
+
+  private io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils();
+    Code:
+       0: aload_0
+       1: invokespecial #35                 // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static org.bukkit.inventory.ItemStack getBackground();
+    Code:
+       0: getstatic     #42                 // Field UI_BACKGROUND:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getNoPermissionItem();
+    Code:
+       0: getstatic     #45                 // Field NO_PERMISSION:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getNotResearchedItem();
+    Code:
+       0: getstatic     #48                 // Field NOT_RESEARCHED:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getInputSlotTexture();
+    Code:
+       0: getstatic     #51                 // Field INPUT_SLOT:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getOutputSlotTexture();
+    Code:
+       0: getstatic     #54                 // Field OUTPUT_SLOT:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu$MenuClickHandler getEmptyClickHandler();
+    Code:
+       0: getstatic     #58                 // Field CLICK_HANDLER:Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu$MenuClickHandler;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getBackButton(org.bukkit.entity.Player, java.lang.String...);
+    Code:
+       0: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+       3: dup
+       4: getstatic     #64                 // Field BACK_BUTTON:Lorg/bukkit/inventory/ItemStack;
+       7: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      10: aload_0
+      11: ldc           #72                 // String guide.back.title
+      13: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      16: invokedynamic #90,  0             // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+      21: aload_1
+      22: invokespecial #93                 // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;[Ljava/lang/String;)V
+      25: areturn
+
+  public static org.bukkit.inventory.ItemStack getMenuButton(org.bukkit.entity.Player);
+    Code:
+       0: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+       3: dup
+       4: getstatic     #101                // Field MENU_BUTTON:Lorg/bukkit/inventory/ItemStack;
+       7: getstatic     #107                // Field org/bukkit/ChatColor.YELLOW:Lorg/bukkit/ChatColor;
+      10: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      13: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      16: aload_0
+      17: ldc           #115                // String guide.title.settings
+      19: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      22: invokedynamic #120,  0            // InvokeDynamic #1:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      27: iconst_2
+      28: anewarray     #109                // class java/lang/String
+      31: dup
+      32: iconst_0
+      33: ldc           #122                // String
+      35: aastore
+      36: dup
+      37: iconst_1
+      38: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      41: aload_0
+      42: ldc           #124                // String guide.tooltips.open-itemgroup
+      44: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      47: invokedynamic #127,  0            // InvokeDynamic #2:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+      52: aastore
+      53: invokespecial #93                 // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;[Ljava/lang/String;)V
+      56: areturn
+
+  public static org.bukkit.inventory.ItemStack getSearchButton(org.bukkit.entity.Player);
+    Code:
+       0: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+       3: dup
+       4: getstatic     #130                // Field SEARCH_BUTTON:Lorg/bukkit/inventory/ItemStack;
+       7: aload_0
+       8: invokedynamic #150,  0            // InvokeDynamic #3:accept:(Lorg/bukkit/entity/Player;)Ljava/util/function/Consumer;
+      13: invokespecial #153                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/util/function/Consumer;)V
+      16: areturn
+
+  public static org.bukkit.inventory.ItemStack getWikiButton();
+    Code:
+       0: getstatic     #156                // Field WIKI_BUTTON:Lorg/bukkit/inventory/ItemStack;
+       3: areturn
+
+  public static org.bukkit.inventory.ItemStack getPreviousButton(org.bukkit.entity.Player, int, int);
+    Code:
+       0: iload_2
+       1: iconst_1
+       2: if_icmpeq     10
+       5: iload_1
+       6: iconst_1
+       7: if_icmpne     29
+      10: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+      13: dup
+      14: getstatic     #160                // Field PREV_BUTTON_INACTIVE:Lorg/bukkit/inventory/ItemStack;
+      17: aload_0
+      18: iload_1
+      19: iload_2
+      20: invokedynamic #168,  0            // InvokeDynamic #4:accept:(Lorg/bukkit/entity/Player;II)Ljava/util/function/Consumer;
+      25: invokespecial #153                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/util/function/Consumer;)V
+      28: areturn
+      29: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+      32: dup
+      33: getstatic     #170                // Field PREV_BUTTON_ACTIVE:Lorg/bukkit/inventory/ItemStack;
+      36: aload_0
+      37: iload_1
+      38: iload_2
+      39: invokedynamic #175,  0            // InvokeDynamic #5:accept:(Lorg/bukkit/entity/Player;II)Ljava/util/function/Consumer;
+      44: invokespecial #153                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/util/function/Consumer;)V
+      47: areturn
+
+  public static org.bukkit.inventory.ItemStack getNextButton(org.bukkit.entity.Player, int, int);
+    Code:
+       0: iload_2
+       1: iconst_1
+       2: if_icmpeq     10
+       5: iload_1
+       6: iload_2
+       7: if_icmpne     29
+      10: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+      13: dup
+      14: getstatic     #181                // Field NEXT_BUTTON_INACTIVE:Lorg/bukkit/inventory/ItemStack;
+      17: aload_0
+      18: iload_1
+      19: iload_2
+      20: invokedynamic #186,  0            // InvokeDynamic #6:accept:(Lorg/bukkit/entity/Player;II)Ljava/util/function/Consumer;
+      25: invokespecial #153                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/util/function/Consumer;)V
+      28: areturn
+      29: new           #62                 // class io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack
+      32: dup
+      33: getstatic     #188                // Field NEXT_BUTTON_ACTIVE:Lorg/bukkit/inventory/ItemStack;
+      36: aload_0
+      37: iload_1
+      38: iload_2
+      39: invokedynamic #193,  0            // InvokeDynamic #7:accept:(Lorg/bukkit/entity/Player;II)Ljava/util/function/Consumer;
+      44: invokespecial #153                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/items/CustomItemStack."<init>":(Lorg/bukkit/inventory/ItemStack;Ljava/util/function/Consumer;)V
+      47: areturn
+
+  public static void drawBackground(me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu, int...);
+    Code:
+       0: aload_1
+       1: astore_2
+       2: aload_2
+       3: arraylength
+       4: istore_3
+       5: iconst_0
+       6: istore        4
+       8: iload         4
+      10: iload_3
+      11: if_icmpge     39
+      14: aload_2
+      15: iload         4
+      17: iaload
+      18: istore        5
+      20: aload_0
+      21: iload         5
+      23: invokestatic  #199                // Method getBackground:()Lorg/bukkit/inventory/ItemStack;
+      26: invokestatic  #201                // Method getEmptyClickHandler:()Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu$MenuClickHandler;
+      29: invokevirtual #205                // Method me/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu.addItem:(ILorg/bukkit/inventory/ItemStack;Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu$MenuClickHandler;)Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu;
+      32: pop
+      33: iinc          4, 1
+      36: goto          8
+      39: return
+
+  public static void updateProgressbar(me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu, int, int, int, org.bukkit.inventory.ItemStack);
+    Code:
+       0: aload_0
+       1: invokevirtual #215                // Method me/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu.toInventory:()Lorg/bukkit/inventory/Inventory;
+       4: astore        5
+       6: aload         5
+       8: ifnull        26
+      11: aload         5
+      13: invokeinterface #221,  1          // InterfaceMethod org/bukkit/inventory/Inventory.getViewers:()Ljava/util/List;
+      18: invokeinterface #227,  1          // InterfaceMethod java/util/List.isEmpty:()Z
+      23: ifeq          27
+      26: return
+      27: aload         4
+      29: invokevirtual #232                // Method org/bukkit/inventory/ItemStack.clone:()Lorg/bukkit/inventory/ItemStack;
+      32: astore        6
+      34: aload         6
+      36: invokevirtual #236                // Method org/bukkit/inventory/ItemStack.getItemMeta:()Lorg/bukkit/inventory/meta/ItemMeta;
+      39: astore        7
+      41: aload         7
+      43: iconst_1
+      44: anewarray     #238                // class org/bukkit/inventory/ItemFlag
+      47: dup
+      48: iconst_0
+      49: getstatic     #242                // Field org/bukkit/inventory/ItemFlag.HIDE_ATTRIBUTES:Lorg/bukkit/inventory/ItemFlag;
+      52: aastore
+      53: invokeinterface #248,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.addItemFlags:([Lorg/bukkit/inventory/ItemFlag;)V
+      58: aload         7
+      60: instanceof    #250                // class org/bukkit/inventory/meta/Damageable
+      63: ifeq          87
+      66: aload         7
+      68: checkcast     #250                // class org/bukkit/inventory/meta/Damageable
+      71: astore        8
+      73: aload         8
+      75: aload         6
+      77: iload_2
+      78: iload_3
+      79: invokestatic  #254                // Method getDurability:(Lorg/bukkit/inventory/ItemStack;II)S
+      82: invokeinterface #258,  2          // InterfaceMethod org/bukkit/inventory/meta/Damageable.setDamage:(I)V
+      87: aload         7
+      89: ldc_w         #260                // String
+      92: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      97: aload         7
+      99: iconst_3
+     100: anewarray     #109                // class java/lang/String
+     103: dup
+     104: iconst_0
+     105: iload_2
+     106: iload_3
+     107: invokestatic  #268                // Method getProgressBar:(II)Ljava/lang/String;
+     110: aastore
+     111: dup
+     112: iconst_1
+     113: ldc           #122                // String
+     115: aastore
+     116: dup
+     117: iconst_2
+     118: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+     121: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+     124: iload_2
+     125: iconst_2
+     126: idiv
+     127: invokestatic  #277                // Method io/github/thebusybiscuit/slimefun4/utils/NumberUtils.getTimeLeft:(I)Ljava/lang/String;
+     130: invokedynamic #120,  0            // InvokeDynamic #1:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+     135: aastore
+     136: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+     139: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+     144: aload         6
+     146: aload         7
+     148: invokevirtual #291                // Method org/bukkit/inventory/ItemStack.setItemMeta:(Lorg/bukkit/inventory/meta/ItemMeta;)Z
+     151: pop
+     152: aload_0
+     153: iload_1
+     154: aload         6
+     156: invokevirtual #295                // Method me/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu.replaceExistingItem:(ILorg/bukkit/inventory/ItemStack;)V
+     159: return
+
+  public static java.lang.String getProgressBar(int, int);
+    Code:
+       0: new           #307                // class java/lang/StringBuilder
+       3: dup
+       4: invokespecial #308                // Method java/lang/StringBuilder."<init>":()V
+       7: astore_2
+       8: iload_1
+       9: iload_0
+      10: isub
+      11: i2f
+      12: ldc_w         #309                // float 100.0f
+      15: fmul
+      16: iload_1
+      17: i2f
+      18: fdiv
+      19: ldc_w         #309                // float 100.0f
+      22: fmul
+      23: ldc_w         #309                // float 100.0f
+      26: fdiv
+      27: invokestatic  #315                // Method java/lang/Math.round:(F)I
+      30: i2f
+      31: fstore_3
+      32: aload_2
+      33: fload_3
+      34: invokestatic  #319                // Method io/github/thebusybiscuit/slimefun4/utils/NumberUtils.getColorFromPercentage:(F)Lorg/bukkit/ChatColor;
+      37: invokevirtual #323                // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+      40: pop
+      41: bipush        20
+      43: istore        4
+      45: fload_3
+      46: f2i
+      47: istore        5
+      49: iload         5
+      51: iconst_5
+      52: if_icmplt     74
+      55: aload_2
+      56: bipush        58
+      58: invokevirtual #326                // Method java/lang/StringBuilder.append:(C)Ljava/lang/StringBuilder;
+      61: pop
+      62: iinc          4, -1
+      65: iload         5
+      67: iconst_5
+      68: isub
+      69: istore        5
+      71: goto          49
+      74: aload_2
+      75: ldc_w         #328                // String &7
+      78: invokevirtual #331                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      81: pop
+      82: iconst_0
+      83: istore        5
+      85: iload         5
+      87: iload         4
+      89: if_icmpge     105
+      92: aload_2
+      93: bipush        58
+      95: invokevirtual #326                // Method java/lang/StringBuilder.append:(C)Ljava/lang/StringBuilder;
+      98: pop
+      99: iinc          5, 1
+     102: goto          85
+     105: aload_2
+     106: ldc_w         #333                // String  -
+     109: invokevirtual #331                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+     112: fload_3
+     113: invokevirtual #336                // Method java/lang/StringBuilder.append:(F)Ljava/lang/StringBuilder;
+     116: bipush        37
+     118: invokevirtual #326                // Method java/lang/StringBuilder.append:(C)Ljava/lang/StringBuilder;
+     121: pop
+     122: aload_2
+     123: invokevirtual #340                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+     126: invokestatic  #345                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/common/ChatColors.color:(Ljava/lang/String;)Ljava/lang/String;
+     129: areturn
+
+  private static short getDurability(org.bukkit.inventory.ItemStack, int, int);
+    Code:
+       0: aload_0
+       1: invokevirtual #356                // Method org/bukkit/inventory/ItemStack.getType:()Lorg/bukkit/Material;
+       4: invokevirtual #362                // Method org/bukkit/Material.getMaxDurability:()S
+       7: iload_2
+       8: idiv
+       9: iload_1
+      10: imul
+      11: i2s
+      12: ireturn
+
+  private static void lambda$getNextButton$6(org.bukkit.entity.Player, int, int, org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_3
+       1: getstatic     #366                // Field org/bukkit/ChatColor.WHITE:Lorg/bukkit/ChatColor;
+       4: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+       7: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      10: aload_0
+      11: ldc_w         #368                // String guide.pages.next
+      14: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      17: invokedynamic #371,  0            // InvokeDynamic #8:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      22: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      27: aload_3
+      28: iconst_2
+      29: anewarray     #109                // class java/lang/String
+      32: dup
+      33: iconst_0
+      34: ldc           #122                // String
+      36: aastore
+      37: dup
+      38: iconst_1
+      39: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+      42: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      45: iload_1
+      46: iload_2
+      47: invokedynamic #376,  0            // InvokeDynamic #9:makeConcatWithConstants:(Ljava/lang/String;II)Ljava/lang/String;
+      52: aastore
+      53: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      56: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+      61: return
+
+  private static void lambda$getNextButton$5(org.bukkit.entity.Player, int, int, org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_3
+       1: getstatic     #380                // Field org/bukkit/ChatColor.DARK_GRAY:Lorg/bukkit/ChatColor;
+       4: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+       7: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      10: aload_0
+      11: ldc_w         #368                // String guide.pages.next
+      14: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      17: invokedynamic #371,  0            // InvokeDynamic #8:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      22: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      27: aload_3
+      28: iconst_2
+      29: anewarray     #109                // class java/lang/String
+      32: dup
+      33: iconst_0
+      34: ldc           #122                // String
+      36: aastore
+      37: dup
+      38: iconst_1
+      39: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+      42: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      45: iload_1
+      46: iload_2
+      47: invokedynamic #376,  0            // InvokeDynamic #9:makeConcatWithConstants:(Ljava/lang/String;II)Ljava/lang/String;
+      52: aastore
+      53: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      56: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+      61: return
+
+  private static void lambda$getPreviousButton$4(org.bukkit.entity.Player, int, int, org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_3
+       1: getstatic     #366                // Field org/bukkit/ChatColor.WHITE:Lorg/bukkit/ChatColor;
+       4: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+       7: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      10: aload_0
+      11: ldc_w         #382                // String guide.pages.previous
+      14: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      17: invokedynamic #385,  0            // InvokeDynamic #10:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      22: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      27: aload_3
+      28: iconst_2
+      29: anewarray     #109                // class java/lang/String
+      32: dup
+      33: iconst_0
+      34: ldc           #122                // String
+      36: aastore
+      37: dup
+      38: iconst_1
+      39: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+      42: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      45: iload_1
+      46: iload_2
+      47: invokedynamic #376,  0            // InvokeDynamic #9:makeConcatWithConstants:(Ljava/lang/String;II)Ljava/lang/String;
+      52: aastore
+      53: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      56: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+      61: return
+
+  private static void lambda$getPreviousButton$3(org.bukkit.entity.Player, int, int, org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_3
+       1: getstatic     #380                // Field org/bukkit/ChatColor.DARK_GRAY:Lorg/bukkit/ChatColor;
+       4: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+       7: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      10: aload_0
+      11: ldc_w         #382                // String guide.pages.previous
+      14: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      17: invokedynamic #385,  0            // InvokeDynamic #10:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      22: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      27: aload_3
+      28: iconst_2
+      29: anewarray     #109                // class java/lang/String
+      32: dup
+      33: iconst_0
+      34: ldc           #122                // String
+      36: aastore
+      37: dup
+      38: iconst_1
+      39: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+      42: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      45: iload_1
+      46: iload_2
+      47: invokedynamic #376,  0            // InvokeDynamic #9:makeConcatWithConstants:(Ljava/lang/String;II)Ljava/lang/String;
+      52: aastore
+      53: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      56: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+      61: return
+
+  private static void lambda$getSearchButton$2(org.bukkit.entity.Player, org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_1
+       1: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+       4: aload_0
+       5: ldc_w         #387                // String guide.search.name
+       8: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      11: invokestatic  #345                // Method io/github/thebusybiscuit/slimefun4/libraries/dough/common/ChatColors.color:(Ljava/lang/String;)Ljava/lang/String;
+      14: invokeinterface #264,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setDisplayName:(Ljava/lang/String;)V
+      19: iconst_2
+      20: anewarray     #109                // class java/lang/String
+      23: dup
+      24: iconst_0
+      25: ldc           #122                // String
+      27: aastore
+      28: dup
+      29: iconst_1
+      30: getstatic     #271                // Field org/bukkit/ChatColor.GRAY:Lorg/bukkit/ChatColor;
+      33: invokestatic  #113                // Method java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+      36: invokestatic  #70                 // Method io/github/thebusybiscuit/slimefun4/implementation/Slimefun.getLocalization:()Lio/github/thebusybiscuit/slimefun4/core/services/LocalizationService;
+      39: aload_0
+      40: ldc_w         #389                // String guide.search.tooltip
+      43: invokevirtual #78                 // Method io/github/thebusybiscuit/slimefun4/core/services/LocalizationService.getMessage:(Lorg/bukkit/entity/Player;Ljava/lang/String;)Ljava/lang/String;
+      46: invokedynamic #392,  0            // InvokeDynamic #11:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      51: aastore
+      52: invokestatic  #283                // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      55: astore_2
+      56: aload_2
+      57: invokedynamic #400,  0            // InvokeDynamic #12:apply:()Ljava/util/function/UnaryOperator;
+      62: invokeinterface #404,  2          // InterfaceMethod java/util/List.replaceAll:(Ljava/util/function/UnaryOperator;)V
+      67: aload_1
+      68: aload_2
+      69: invokeinterface #287,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.setLore:(Ljava/util/List;)V
+      74: return
+
+  private static boolean lambda$static$1(org.bukkit.entity.Player, int, org.bukkit.inventory.ItemStack, me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction);
+    Code:
+       0: iconst_0
+       1: ireturn
+
+  private static void lambda$static$0(org.bukkit.inventory.meta.ItemMeta);
+    Code:
+       0: aload_0
+       1: iconst_1
+       2: anewarray     #238                // class org/bukkit/inventory/ItemFlag
+       5: dup
+       6: iconst_0
+       7: getstatic     #415                // Field org/bukkit/inventory/ItemFlag.HIDE_ENCHANTS:Lorg/bukkit/inventory/ItemFlag;
+      10: aastore
+      11: invokeinterface #248,  2          // InterfaceMethod org/bukkit/inventory/meta/ItemMeta.addItemFlags:([Lorg/bukkit/inventory/ItemFlag;)V
+      16: return
+
+  static {};
+    Code:
+       0: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+       3: dup
+       4: ldc_w         #420                // String _UI_BACKGROUND
+       7: getstatic     #424                // Field org/bukkit/Material.GRAY_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+      10: ldc_w         #260                // String
+      13: iconst_0
+      14: anewarray     #109                // class java/lang/String
+      17: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+      20: putstatic     #42                 // Field UI_BACKGROUND:Lorg/bukkit/inventory/ItemStack;
+      23: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+      26: dup
+      27: ldc_w         #429                // String _UI_INPUT_SLOT
+      30: getstatic     #432                // Field org/bukkit/Material.CYAN_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+      33: ldc_w         #260                // String
+      36: iconst_0
+      37: anewarray     #109                // class java/lang/String
+      40: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+      43: putstatic     #51                 // Field INPUT_SLOT:Lorg/bukkit/inventory/ItemStack;
+      46: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+      49: dup
+      50: ldc_w         #434                // String _UI_OUTPUT_SLOT
+      53: getstatic     #437                // Field org/bukkit/Material.ORANGE_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+      56: ldc_w         #260                // String
+      59: iconst_0
+      60: anewarray     #109                // class java/lang/String
+      63: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+      66: putstatic     #54                 // Field OUTPUT_SLOT:Lorg/bukkit/inventory/ItemStack;
+      69: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+      72: dup
+      73: ldc_w         #439                // String _UI_NO_PERMISSION
+      76: getstatic     #442                // Field org/bukkit/Material.BARRIER:Lorg/bukkit/Material;
+      79: ldc_w         #444                // String No Permission
+      82: iconst_0
+      83: anewarray     #109                // class java/lang/String
+      86: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+      89: putstatic     #45                 // Field NO_PERMISSION:Lorg/bukkit/inventory/ItemStack;
+      92: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+      95: dup
+      96: ldc_w         #446                // String _UI_NOT_RESEARCHED
+      99: getstatic     #442                // Field org/bukkit/Material.BARRIER:Lorg/bukkit/Material;
+     102: ldc_w         #448                // String Not researched
+     105: iconst_0
+     106: anewarray     #109                // class java/lang/String
+     109: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     112: putstatic     #48                 // Field NOT_RESEARCHED:Lorg/bukkit/inventory/ItemStack;
+     115: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     118: dup
+     119: ldc_w         #450                // String _UI_BACK
+     122: getstatic     #453                // Field org/bukkit/Material.ENCHANTED_BOOK:Lorg/bukkit/Material;
+     125: ldc_w         #455                // String &7? Back
+     128: invokedynamic #461,  0            // InvokeDynamic #13:accept:()Ljava/util/function/Consumer;
+     133: invokespecial #464                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;Ljava/util/function/Consumer;)V
+     136: putstatic     #64                 // Field BACK_BUTTON:Lorg/bukkit/inventory/ItemStack;
+     139: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     142: dup
+     143: ldc_w         #466                // String _UI_MENU
+     146: getstatic     #469                // Field org/bukkit/Material.COMPARATOR:Lorg/bukkit/Material;
+     149: ldc_w         #471                // String &eSettings / Info
+     152: iconst_2
+     153: anewarray     #109                // class java/lang/String
+     156: dup
+     157: iconst_0
+     158: ldc           #122                // String
+     160: aastore
+     161: dup
+     162: iconst_1
+     163: ldc_w         #473                // String &7? Click to see more
+     166: aastore
+     167: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     170: putstatic     #101                // Field MENU_BUTTON:Lorg/bukkit/inventory/ItemStack;
+     173: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     176: dup
+     177: ldc_w         #475                // String _UI_SEARCH
+     180: getstatic     #478                // Field org/bukkit/Material.NAME_TAG:Lorg/bukkit/Material;
+     183: ldc_w         #480                // String &bSearch
+     186: iconst_0
+     187: anewarray     #109                // class java/lang/String
+     190: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     193: putstatic     #130                // Field SEARCH_BUTTON:Lorg/bukkit/inventory/ItemStack;
+     196: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     199: dup
+     200: ldc_w         #482                // String _UI_WIKI
+     203: getstatic     #485                // Field org/bukkit/Material.KNOWLEDGE_BOOK:Lorg/bukkit/Material;
+     206: ldc_w         #487                // String &3Slimefun Wiki
+     209: iconst_0
+     210: anewarray     #109                // class java/lang/String
+     213: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     216: putstatic     #156                // Field WIKI_BUTTON:Lorg/bukkit/inventory/ItemStack;
+     219: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     222: dup
+     223: ldc_w         #489                // String _UI_PREVIOUS_ACTIVE
+     226: getstatic     #492                // Field org/bukkit/Material.LIME_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+     229: ldc_w         #494                // String &r? Previous Page
+     232: iconst_0
+     233: anewarray     #109                // class java/lang/String
+     236: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     239: putstatic     #170                // Field PREV_BUTTON_ACTIVE:Lorg/bukkit/inventory/ItemStack;
+     242: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     245: dup
+     246: ldc_w         #496                // String _UI_NEXT_ACTIVE
+     249: getstatic     #492                // Field org/bukkit/Material.LIME_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+     252: ldc_w         #498                // String &rNext Page ?
+     255: iconst_0
+     256: anewarray     #109                // class java/lang/String
+     259: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     262: putstatic     #188                // Field NEXT_BUTTON_ACTIVE:Lorg/bukkit/inventory/ItemStack;
+     265: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     268: dup
+     269: ldc_w         #500                // String _UI_PREVIOUS_INACTIVE
+     272: getstatic     #503                // Field org/bukkit/Material.BLACK_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+     275: ldc_w         #505                // String &8? Previous Page
+     278: iconst_0
+     279: anewarray     #109                // class java/lang/String
+     282: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     285: putstatic     #160                // Field PREV_BUTTON_INACTIVE:Lorg/bukkit/inventory/ItemStack;
+     288: new           #418                // class io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack
+     291: dup
+     292: ldc_w         #507                // String _UI_NEXT_INACTIVE
+     295: getstatic     #503                // Field org/bukkit/Material.BLACK_STAINED_GLASS_PANE:Lorg/bukkit/Material;
+     298: ldc_w         #509                // String &8Next Page ?
+     301: iconst_0
+     302: anewarray     #109                // class java/lang/String
+     305: invokespecial #427                // Method io/github/thebusybiscuit/slimefun4/api/items/SlimefunItemStack."<init>":(Ljava/lang/String;Lorg/bukkit/Material;Ljava/lang/String;[Ljava/lang/String;)V
+     308: putstatic     #181                // Field NEXT_BUTTON_INACTIVE:Lorg/bukkit/inventory/ItemStack;
+     311: invokedynamic #516,  0            // InvokeDynamic #14:onClick:()Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu$MenuClickHandler;
+     316: putstatic     #58                 // Field CLICK_HANDLER:Lme/mrCookieSlime/CSCoreLibPlugin/general/Inventory/ChestMenu$MenuClickHandler;
+     319: return
+}

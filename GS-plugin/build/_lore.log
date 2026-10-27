@@ -1,0 +1,12 @@
+tools\GroupLoreProbe.java:271: 警告: Unsafe是内部专用 API, 可能会在未来发行版中删除
+        Field uf = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                           ^
+tools\GroupLoreProbe.java:273: 警告: Unsafe是内部专用 API, 可能会在未来发行版中删除
+        sun.misc.Unsafe u = (sun.misc.Unsafe) uf.get(null);
+                ^
+tools\GroupLoreProbe.java:273: 警告: Unsafe是内部专用 API, 可能会在未来发行版中删除
+        sun.misc.Unsafe u = (sun.misc.Unsafe) uf.get(null);
+                                     ^
+注: tools\GroupLoreProbe.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+3 个警告

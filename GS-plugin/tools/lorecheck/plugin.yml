@@ -1,0 +1,5 @@
+name: LoreCheck
+version: '1.0'
+main: com.qinghuacisj.lorecheck.LoreCheckPlugin
+api-version: '1.21'
+depend: [Slimefun, GS]

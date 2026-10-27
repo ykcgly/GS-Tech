@@ -1,0 +1,8 @@
+item:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4671
+  id: minecraft:rabbit_hide
+  count: 1
+  components:
+    minecraft:item_model: '"minecraft:enchanted_golden_apple"'
+  schema_version: 1

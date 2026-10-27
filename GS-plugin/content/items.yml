@@ -1,0 +1,2769 @@
+# ==========================================
+# 构思技艺 (GS) —— 物品定义
+# 「万物初生，始于想象」
+# 全部使用原版材质
+# ==========================================
+# ★★ 2026-10-08 大改：基础构思的获取途径整体重做
+#   想象力   → GS_RT_HAT（金头盔 · 佩戴「奇思妙想帽」，每秒从头顶掉 1 个）
+#   记忆碎片 → 构思机合成（9 个想象力）
+#   灵感     → GS_RT_ANTHROPOMORPHIC（拟人思维 · 材料生成器自动产出）
+#   臆想     → 构思机合成（槽 2 灵感 + 其余 8 格想象力）
+#   念想     → 构思机合成（槽 8 灵感 + 其余 8 格想象力）
+#   构想     → 构思机合成（配方不变：四角臆想 / 四边念想 / 中心想象力）
+#   奇思妙想帽（新增）→ 构思机合成（槽 5 金头盔 + 槽 1/2/3/4/6 萤石）
+#
+# ★★ 2026-10-08 第二批（本文件的大改动）：
+#   · **新增「入梦」**（铁剑）→ 构思武器第 1 格（释梦的左边）
+#   · **新增「梦想套」**（铁头盔/铁胸甲/铁护腿/铁靴子，名字 = 梦境套把「境」改成「想」）
+#       → 构思防具第 2~5 格，全部在**构思机**里制作
+#       → 在**唤梦机**里升级成「梦境套」（左梦想件 + 右 N 个梦境锭）
+#       ⇒ 原「梦境套」顺移到构思防具第 6~9 格
+#   · 构思武器顺序（★ 2026-10-09 第十五批重排）：
+#       1 入梦 / 2 月镰 / 3 释梦 / 4 蚀月·死神梦镰 / 5 五骊矟 / 6 精神力
+#     （月镰插到「入梦」后面、蚀月插到「释梦」后面 ⇒ 原 2/3/4 顺延为 3/5/6）
+#   · 梦境 / 本构 / 妄想碎片 → 移到「基础构思」最后三格
+#   · 枯骸骑将 / 妄念 → 改到「万象归序·心智构象熔炼炉」合成（原织梦机已删除）
+#   · 真实梦境 / 思创本构 / 释梦 / 精神力 → 改到「唤梦机」升级产出
+#
+# ★★ 2026-10-08 第六批：
+#   · 五骊矟材质 → **金剑 GOLDEN_SWORD**（金矛换回来）
+#     ★ 2026-10-12 第八十一批：本体仍是金剑，**外观**改用 `minecraft:item_model`
+#       渲染成金矛（走 `saveditems/wls.yml`）⇒ 详见下方 GS_WULI_SPEAR 的注释块
+#   · **删除「构想维度」分类** ⇒ 真实梦境 / 思创本构 移入「基础构思」（本构之后）
+#   · 真实梦境 / 思创本构的**右键效果整段删除**（gs_forge_items.js 已删）⇒ 变纯材料
+#   · **基础构思里所有物品取消左右键交互**（唯一例外：滚木保留右键隐身）
+#     实现在 scripts/gs_listener.js 的 gsPlainStart()
+#
+#   ★ 所有「构思机」配方都是**多方块机器**（`mb_machines.yml` 的 GS_RULE_CONCEPTOR），
+#     items.yml 里写的 recipe **只是粘液书配方页的展示图**（GS_RT_RULE_CONCEPTOR
+#     这个 CustomRecipeType 不绑定任何机器）；真正生效的配方在 mb_machines.yml 里，
+#     **两边的格位必须完全一致**（发射器是逐格比对的）。
+#
+# 3×3 格位编号（从左上到右下）：
+#   ┌───┬───┬───┐
+#   │ 1 │ 2 │ 3 │
+#   ├───┼───┼───┤
+#   │ 4 │ 5 │ 6 │
+#   ├───┼───┼───┤
+#   │ 7 │ 8 │ 9 │
+#   └───┴───┴───┘
+# ==========================================
+
+# ============ 基础构思 ============
+
+# ---------- 第 1 格：想象力（线，无法放置） ----------
+#   获取途径写在「机器位置」的 金头盔 · 佩戴 上（GS_RT_HAT）
+#   ★ 2026-10-08：获取方式改成「头上戴「奇思妙想帽」时，每秒从头顶掉落 1 个」。
+#     原来「构思」分类里点击获取的那个按钮**已删除**（gs_imagination.js 一并删除）。
+#     实现：scripts/gs_listener.js 的 gsTickHeadDrop（每玩家一条自调度链）。
+GS_IMAGINATION:
+  item_group: gs_basic
+  display_tier: 1
+  placeable: false
+  recipe_type: GS_RT_HAT
+  item:
+    name: "&b想象力"
+    material: STRING
+    lore:
+      - "&7一切创造最初的空白雏形"
+
+# ---------- 奇思妙想帽（原版金头盔 · 2026-10-08 新增）----------
+#   分类：基础构思 (gs_basic)
+#   获取：**构思机**合成
+#     槽 5 = 原版金头盔 ×1 ｜ 槽 1 / 2 / 3 / 4 / 6 = 萤石 ×5 ｜ 槽 7 / 8 / 9 留空
+#     ┌────┬────┬────┐
+#     │萤石│萤石│萤石│   槽 1 / 2 / 3
+#     ├────┼────┼────┤
+#     │萤石│金盔│萤石│   槽 4 / 5 / 6
+#     ├────┼────┼────┤
+#     │    │    │    │   槽 7 / 8 / 9（必须真的空着）
+#     └────┴────┴────┘
+#   效果：**戴在头上**时，**每秒从头顶掉落 1 个「想象力」**
+#         （实现在 scripts/gs_listener.js 的 gsTickHeadDrop；只算头盔位）
+#   ★ **永不掉耐久** —— 已加进 gs_listener.js 的 GS_NODMG_IDS
+#     （RSC 的 items.yml 没有 unbreakable 字段，只能用"取消耐久损失事件"实现）
+#   ★ placeable: false —— 金头盔本来也不能当方块放，写 false 保险
+GS_THINKING_HAT:
+  item_group: gs_armor
+  display_tier: 1
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material: GLOWSTONE, amount: 1}
+    2: {material: GLOWSTONE, amount: 1}
+    3: {material: GLOWSTONE, amount: 1}
+    4: {material: GLOWSTONE, amount: 1}
+    5: {material: GOLDEN_HELMET, amount: 1}
+    6: {material: GLOWSTONE, amount: 1}
+  item:
+    # ★★ 2026-10-12 第七十一批：名字改成**红橙黄绿紫**（逐字一色），lore 全部改成黄色
+    name: "&c奇&6思&e妙&a想&d帽"
+    material: GOLDEN_HELMET
+    lore:
+      - "&e想象力从脑子里溢出来"
+      - ""
+      - "&e戴在头上时"
+      - "&e每秒从头顶掉落 1 个想象力"
+
+# ---------- 妄想碎片（唱片碎片 · boss 掉落物 · 基础构思第 19 格） ----------
+#   来源：三阶段 boss「妄念」**第三阶段**死掉才掉（**固定 6 个**）
+#     ★★★ 第八十五批：原来是「每一阶段死掉都掉 1 / 3 / 8 个（一轮共 12 个）」，
+#       用户改成「**妄想碎片也改成第三阶段，固定掉落6个**」
+#       ⇒ 现在只有**第三阶段（妄念魔）**掉，且**固定 6 个**（一阶段 / 二阶段不掉）。
+#   用途：唤梦机 **60 个妄想碎片 + 1 个残樱 → 1 个余念绝响**
+#     ★★★ 第八十五批：原来是「36 个 + 1 个入梦」，用户改成
+#       「**余念绝响配方改成60个妄想碎片+残樱**」（入梦早就已经换成残樱了，只动数量）。
+#   ★ 材质用原版**唱片碎片**（DISC_FRAGMENT_5）
+#   ★ 2026-10-08 第二批：从「构思boss」移回**基础构思**，排在最后 1 格。
+#   ★ 2026-10-08 第六批：真实梦境(17) / 思创本构(18) 插到「本构」之后
+#     ⇒ 妄想碎片顺移到**第 19 格**。
+#   ★★ 2026-10-13 第八十五批：**第 20 格给了新掉落物「暗影宝珠」** ⇒
+#     妄想碎片**仍是第 19 格**（不再自称"基础构思最后 1 格"）。
+#   ★★★ 2026-10-13 第八十六批：**第 21 格再给新掉落物「血夜粒」**；
+#     本件配方类型由 `"NULL"` 改成**仅作显示**的 `GS_RT_WANGNIAN_S3` ——
+#     用户「在妄想碎片的**配方界面左边**写上**击败三阶段妄念掉落**」。
+#     ★ 机制：`recipe_types.yml` 里定义的 `CustomRecipeType` **不绑定任何机器**，
+#       它显示在配方页**左边那一格**（槽 10 = 「机器位置」）；写
+#       `recipe_type: <它>` 且**不写 `recipe:`** ⇒ 左边显示提示 +
+#       九宫格全空 + 无法合成。（同 GS_RT_HAT / GS_RT_MIND_SMELTING 那套。）
+GS_WANGXIANG_FRAGMENT:
+  item_group: gs_basic
+  display_tier: 19
+  placeable: false
+  recipe_type: GS_RT_WANGNIAN_S3   # ★ 第八十六批：配方页左边写「击败三阶段妄念掉落」
+  item:
+    name: "&5妄想碎片"
+    material: DISC_FRAGMENT_5
+    lore:
+      - "&7凝聚起来"
+      - ""
+      - "&8获取方式：击杀妄念掉落"
+
+# ---------- 暗影宝珠（燧石 · boss 掉落物 · 基础构思最后一格）----------
+#   ★★★ 第八十五批新增（用户原话：「新物品，暗影宝珠，材质燧石，
+#       放在基础构思最后一格，lore：暗影女王的私藏，上面还刻着些符文呢 附魔无限」）。
+#   来源：三阶段 boss「暗影虫卵」**第三阶段（暗影女皇）**死掉才掉
+#         —— **固定 6 个**（用户：「暗影虫卵第三阶段掉落物，固定掉落6个」）
+#         ★ 实现在 scripts/gs_boss_shadow.js 的 sbPhaseEnd()（stage >= 3 那一支）
+#   用途：唤梦机 **60 个暗影宝珠 + 1 个致万千无言者 → 1 个此刻·万籁俱寂**
+#         （用户：「此刻万籁俱寂配方改成60个暗影宝珠+致万千无言者」）
+#   ★ 材质 **燧石 FLINT**（用户指定）
+#   ★ **附魔「无限」**（infinity 1）—— 无限本是弓的附魔，
+#     RSC 走 addUnsafeEnchantment ⇒ 燧石上也挂得住（和月镰那把锄头同一个套路）。
+#     ★ 它**没有任何实际效果**，纯粹是那层附魔光效（用户要的就是这个观感）。
+#   ★ 名字颜色 `&5`（和「暗影虫卵」「妄想碎片」同色，一眼能看出是一个系列的）。
+#   ★ **没有配方** —— 只能靠打 boss 掉。
+#     ★★★ 第八十六批补：用户「暗影宝珠，血夜粒的配方界面没写谁掉的」
+#       ⇒ `recipe_type` 由 `"NULL"` 改成**仅作显示**的 `GS_RT_SHADOW_S3`，
+#         配方页左边写「击败三阶段暗影虫卵掉落」，九宫格仍然全空。
+GS_SHADOW_ORB:
+  item_group: gs_basic
+  display_tier: 20
+  placeable: false
+  recipe_type: GS_RT_SHADOW_S3   # ★ 第八十六批补：配方页左边写「击败三阶段暗影虫卵掉落」
+  item:
+    name: "&5暗影宝珠"
+    material: FLINT
+    # ★ 按需求打上「无限」（infinity 1）
+    enchantments:
+      - "infinity 1"
+    # ★★ 两行 lore **全是用户原话，一字未改**（只加了 &7 颜色码）
+    lore:
+      - "&7暗影女王的私藏"
+      - "&7上面还刻着些符文呢"
+
+# ---------- 血夜粒（恶魂之泪 · boss 掉落物 · 基础构思第 21 格）----------
+#   ★★★ 第八十六批新增（用户原话：「新增物品，名字血夜粒，材质原版恶魂之泪，
+#       lore：有股铁锈味，但忍不住想尝一口」）。
+#   ★ 材质 **恶魂之泪 GHAST_TEAR**（用户指定「原版恶魂之泪」）—— 原版材质，
+#     **不需要 saveditem**。
+#   ★ 名字颜色 `&5`：和「暗影虫卵」「暗影宝珠」「妄想碎片」同色，
+#     一眼能看出是同一个 boss 掉落系列。
+#   ★ lore **一行用户原话，一字未改**（只加了 `&7` 颜色码）。
+#   ★ 来源：两阶段 boss「守夜人的提灯」**第二阶段（守夜人 · 坚守者）**死掉才掉
+#         —— **固定 6 个**（用户：「二阶段掉落6个血夜粒」）
+#         ★ 实现在 scripts/gs_boss_nightwatch.js 的 nwPhaseEnd()（stage >= 2 那一支）
+#   ★ 用途：唤梦机 **60 个血夜粒 + 1 把月镰 → 1 把蚀月·死神梦镰**
+#         （用户：「蚀月配方改成月镰+60血夜粒」）
+#   ★ **没有配方** —— 只能靠打 boss 掉。
+#     ★★★ 第八十六批补：用户「暗影宝珠，血夜粒的配方界面没写谁掉的」
+#       ⇒ `recipe_type` 由 `"NULL"` 改成**仅作显示**的 `GS_RT_NIGHTWATCH_S2`，
+#         配方页左边写「击败二阶段守夜人掉落」，九宫格仍然全空。
+#       ★ 连同原有的 月镰 / 残樱 / 致万千无言者 / 妄想碎片 / 海水过滤器，
+#         这批「配方界面左边写文字」一共 **7 条**。
+GS_BLOOD_NIGHT_GRAIN:
+  item_group: gs_basic
+  display_tier: 21
+  placeable: false
+  recipe_type: GS_RT_NIGHTWATCH_S2   # ★ 第八十六批补：配方页左边写「击败二阶段守夜人掉落」
+  item:
+    name: "&5血夜粒"
+    material: GHAST_TEAR
+    lore:
+      - "&7有股铁锈味，但忍不住想尝一口"
+
+# ---------- 第 2 格：记忆碎片（骷髅头颅，无法放置，可穿戴） ----------
+#   ★ 2026-10-08：获取方式由「携带想象力死亡掉落」改成**构思机合成**（9 个想象力）
+#     —— 旧的死亡掉落逻辑已从 gs_listener.js 的 onPlayerDeath 里**整段删除**。
+#   槽位：九宫格全部 9 格各 1 个想象力
+GS_MEMORY_FRAGMENT:
+  item_group: gs_basic
+  display_tier: 2
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    2: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    8: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+  item:
+    name: "&f记忆碎片"
+    material: SKELETON_SKULL
+    lore:
+      - "&7沉淀过往认知的思维基石"
+
+# ---------- 第 3 格：灵感（末地烛，无法放置） ----------
+# ★ 2026-10-08 第二批：获取途径改成**拟人思维**（材料生成器）自动产出，
+#   配方页「机器位置」显示 GS_RT_ANTHROPOMORPHIC；
+#   旧的「佩戴记忆碎片每秒涌现」已废弃（GS_RT_WEAR 一并删除）。
+GS_INSPIRATION:
+  item_group: gs_basic
+  display_tier: 3
+  placeable: false
+  recipe_type: GS_RT_ANTHROPOMORPHIC
+  item:
+    name: "&e灵感"
+    material: END_ROD
+    lore:
+      - "&7转瞬即逝的创造火花"
+
+# ---------- 第 4 格：臆想（末影之眼） ----------
+#   ★ 2026-10-08：获取方式由「挖掘紫水晶块 50% 掉落」改成**构思机合成**
+#     （旧的 drop_from / drop_chance 已移除，不然改不掉那个挖掘掉落）
+#   槽位：槽 2 = 灵感，其余 8 格 = 想象力
+GS_DELUSION:
+  item_group: gs_basic
+  display_tier: 4
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    2: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+    3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    8: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+  item:
+    name: "&d臆想"
+    material: ENDER_EYE
+    lore:
+      - "&7突破现实规则的自由思绪"
+
+# ---------- 第 5 格：念想（紫水晶） ----------
+#   ★ 2026-10-08：获取方式由「破坏枯萎灌木必掉」改成**构思机合成**
+#   槽位：槽 8 = 灵感，其余 8 格 = 想象力
+GS_THOUGHT:
+  item_group: gs_basic
+  display_tier: 5
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    2: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    3: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    4: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    5: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    6: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    7: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+    8: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+    9: {material_type: slimefun, material: GS_IMAGINATION, amount: 1}
+  item:
+    name: "&5念想"
+    material: AMETHYST_SHARD
+    lore:
+      - "&7持续萦绕、不散的心神牵挂"
+
+# ---------- 第 6 格：构想（向日葵，无法放置，无法栽入花盆） ----------
+# 唯一真配方：魔法工作台 3×3
+#   四角 = 臆想 ×4    四边 = 念想 ×4    中心 = 想象力 ×1
+#   ┌─────┬─────┬─────┐
+#   │ 臆想 │ 念想 │ 臆想 │   1 / 2 / 3
+#   ├─────┼─────┼─────┤
+#   │ 念想 │想象力│ 念想 │   4 / 5 / 6
+#   ├─────┼─────┼─────┤
+#   │ 臆想 │ 念想 │ 臆想 │   7 / 8 / 9
+#   └─────┴─────┴─────┘
+# ==========================================================================
+# 规则系列（全部在「构思机」多方块机器里合成）
+# --------------------------------------------------------------------------
+# ★ 2026-10-08：格位布局全部按需求重排
+#   ·「槽 5 = Y，其余 8 格 = X」      → Y 在正中，X 铺满外围（雏形 / 律象 / 定式）
+#   ·「四角 X + 中心 Y」              → 1/3/7/9 = X，槽 5 = Y（其余留空）（梦 / 模）
+#   ·「四角梦 + 四边模」              → 1/3/7/9 = 梦，2/4/6/8 = 模，槽 5 留空（梦境规则）
+#   ★ 这里写的 recipe 只是**粘液书配方页的展示图**；
+#     真正生效的配方在 mb_machines.yml 的 GS_RULE_CONCEPTOR 里，格位必须一致。
+# ==========================================================================
+
+# ---------- 雏形（灵魂火把）----------
+#   槽 5 = 灵感 ｜ 其余 8 格 = 构想
+#   ┌────┬────┬────┐
+#   │构想│构想│构想│   槽 1 / 2 / 3
+#   ├────┼────┼────┤
+#   │构想│灵感│构想│   槽 4 / 5 / 6
+#   ├────┼────┼────┤
+#   │构想│构想│构想│   槽 7 / 8 / 9
+#   └────┴────┴────┘
+GS_PROTOTYPE:
+  item_group: gs_basic
+  display_tier: 7
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    2: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    3: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    5: {material_type: slimefun, material: GS_INSPIRATION, amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    8: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT,     amount: 1}
+  item:
+    name: "&6雏形"
+    material: SOUL_TORCH
+    lore:
+      - "&7造物的初生"
+
+# ---------- 律象（碗）----------
+#   槽 5 = 臆想 ｜ 其余 8 格 = 构想
+#   ┌────┬────┬────┐
+#   │构想│构想│构想│   槽 1 / 2 / 3
+#   ├────┼────┼────┤
+#   │构想│臆想│构想│   槽 4 / 5 / 6
+#   ├────┼────┼────┤
+#   │构想│构想│构想│   槽 7 / 8 / 9
+#   └────┴────┴────┘
+GS_LAW_IMAGE:
+  item_group: gs_basic
+  display_tier: 8
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    2: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    3: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    5: {material_type: slimefun, material: GS_DELUSION, amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    8: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT,  amount: 1}
+  item:
+    name: "&d律象"
+    material: BOWL
+    lore:
+      - "&7异想天开"
+
+# ---------- 定式（蜜脾）----------
+#   槽 5 = 念想 ｜ 其余 8 格 = 构想
+#   ┌────┬────┬────┐
+#   │构想│构想│构想│   槽 1 / 2 / 3
+#   ├────┼────┼────┤
+#   │构想│念想│构想│   槽 4 / 5 / 6
+#   ├────┼────┼────┤
+#   │构想│构想│构想│   槽 7 / 8 / 9
+#   └────┴────┴────┘
+GS_FIXED_FORM:
+  item_group: gs_basic
+  display_tier: 9
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    2: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    3: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    5: {material_type: slimefun, material: GS_THOUGHT, amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    8: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT, amount: 1}
+  item:
+    name: "&6定式"
+    material: HONEYCOMB
+    lore:
+      - "&7老旧思想"
+
+# ---------- 梦（回响碎片）----------
+#   槽 1/3/7/9 = 律象 ｜ 槽 5 = 雏形（2/4/6/8 留空）
+#   ┌──┬───┬──┐
+#   │律│   │律│   槽 1 / 2 / 3
+#   ├──┼───┼──┤
+#   │  │雏形│ │   槽 4 / 5 / 6
+#   ├──┼───┼──┤
+#   │律│   │律│   槽 7 / 8 / 9
+#   └──┴───┴──┘
+GS_DREAM:
+  item_group: gs_basic
+  display_tier: 10
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+    3: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+    5: {material_type: slimefun, material: GS_PROTOTYPE, amount: 1}
+    7: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+    9: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 1}
+  item:
+    name: "&9梦"
+    material: ECHO_SHARD
+    lore:
+      - "&7我分不清"
+
+# ---------- 模（书）----------
+#   槽 1/3/7/9 = 定式 ｜ 槽 5 = 雏形（2/4/6/8 留空）
+#   ┌──┬───┬──┐
+#   │定│   │定│   槽 1 / 2 / 3
+#   ├──┼───┼──┤
+#   │  │雏形│ │   槽 4 / 5 / 6
+#   ├──┼───┼──┤
+#   │定│   │定│   槽 7 / 8 / 9
+#   └──┴───┴──┘
+GS_MOLD:
+  item_group: gs_basic
+  display_tier: 11
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+    3: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+    5: {material_type: slimefun, material: GS_PROTOTYPE,  amount: 1}
+    7: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+    9: {material_type: slimefun, material: GS_FIXED_FORM, amount: 1}
+  item:
+    name: "&a模"
+    material: BOOK
+    lore:
+      - "&7定向思维"
+
+# ---------- 梦境规则（下界合金碎片）----------
+#   槽 1/3/7/9 = 梦 ｜ 槽 2/4/6/8 = 模（中心留空）
+#   ┌──┬──┬──┐
+#   │梦│模│梦│   槽 1 / 2 / 3
+#   ├──┼──┼──┤
+#   │模│  │模│   槽 4 / 5 / 6
+#   ├──┼──┼──┤
+#   │梦│模│梦│   槽 7 / 8 / 9
+#   └──┴──┴──┘
+GS_DREAM_RULE:
+  item_group: gs_basic
+  display_tier: 12
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM, amount: 1}
+    2: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM, amount: 1}
+    4: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+    6: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+    7: {material_type: slimefun, material: GS_DREAM, amount: 1}
+    8: {material_type: slimefun, material: GS_MOLD,  amount: 1}
+    9: {material_type: slimefun, material: GS_DREAM, amount: 1}
+  item:
+    name: "&c梦境规则"
+    material: NETHERITE_SCRAP      # 下界合金碎片
+    lore:
+      - "&7好像参透了一丝"
+
+# ---------- 梦境锭（下界合金锭）----------
+#   ★ 2026-10-08 第三批换新配方：
+#     槽 1/3/7/9 = **梦境规则 ×4** ｜ 槽 5 = **BLISTERING_INGOT_3 ×1**
+#   ┌────────┬──┬────────┐
+#   │ 梦境规则 │  │ 梦境规则 │   槽 1 / 2 / 3
+#   ├────────┼──┼────────┤
+#   │        │B3│        │   槽 4 / 5 / 6   （B3 = BLISTERING_INGOT_3）
+#   ├────────┼──┼────────┤
+#   │ 梦境规则 │  │ 梦境规则 │   槽 7 / 8 / 9
+#   └────────┴──┴────────┘
+#   ★ 这也是「构思机」里真正生效的那条（mb_machines.yml 的 rule_ingot），两边格位必须一致。
+#   另外「唤梦机」也有一条梦境锭配方：BLISTERING_INGOT_3 + 3 梦境规则（见 recipe_machines.yml）。
+GS_DREAM_INGOT:
+  item_group: gs_basic
+  display_tier: 13
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+    5: {material_type: slimefun, material: BLISTERING_INGOT_3, amount: 1}
+    7: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+    9: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 1}
+  item:
+    name: "&5梦境锭"
+    material: NETHERITE_INGOT
+    lore:
+      - "&7这就是规则？"
+
+# ==========================================================================
+# 万象归序 / 唤梦机 产出：梦境 · 本构 · 真实梦境 · 思创本构
+# --------------------------------------------------------------------------
+# ★ 2026-10-08 第六批：**「构想维度」分类已整类删除** ——
+#   这四件现在**全部在「基础构思」**，顺序：
+#       15 梦境 ｜ 16 本构 ｜ 17 真实梦境 ｜ 18 思创本构 ｜（19 妄想碎片）
+# 注意：items.yml 里的 recipe 只是**粘液书的展示图**，
+#       真正生效的配方在 recipe_machines.yml 里。
+# ⚠ amount 上限 100（见 CommonUtils#readItem）：写超过 100 会被整条忽略、数量退回 1。
+# ==========================================================================
+
+# ---------- 梦境（幽匿感测体 · 基础构思第 15 格）----------
+#   37 个梦 + 37 个律象 → 1 个梦境，2 粘液刻
+#   ★ 2026-10-08 第二批：从「构想维度」移入**基础构思**，排在滚木之后。
+GS_DREAM_REALM:
+  item_group: gs_basic
+  display_tier: 15
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM,     amount: 37}
+    5: {material_type: slimefun, material: GS_LAW_IMAGE, amount: 37}
+  item:
+    name: "&3梦境"
+    material: SCULK_SENSOR
+    lore:
+      - "&7无序的幻想"
+      - "&7勾勒出心灵幻境。"
+
+# ---------- 本构（幽匿尖啸体 · 基础构思第 16 格）----------
+#   37 个模 + 37 个定式 → 1 个本构，2 粘液刻
+#   ★ 2026-10-08 第二批：从「构想维度」移入**基础构思**，排在梦境之后。
+GS_CONSTRUCT:
+  item_group: gs_basic
+  display_tier: 16
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING
+  recipe:
+    1: {material_type: slimefun, material: GS_MOLD,       amount: 37}
+    5: {material_type: slimefun, material: GS_FIXED_FORM, amount: 37}
+  item:
+    name: "&3本构"
+    material: SCULK_SHRIEKER
+    lore:
+      - "&7创造的框架"
+      - "&7诞生出万物本象。"
+
+# ---------- 真实梦境（附魔耐久 III 的幽匿感测体 · 基础构思第 17 格）----------
+#   获取：**唤梦机**升级 —— 左「梦境」+ 右 7 个「梦境锭」
+#   放置：无法放置（不影响合成）
+#   ★ 2026-10-08 第六批：
+#     · **右键效果整段删除**（原来会给自己上失明/反胃/饥饿/中毒并定时刷物品，
+#       实现在 scripts/gs_forge_items.js —— 该脚本文件已一并删除）⇒ 现在是纯材料
+#     · 从「构想维度」移入**基础构思**，排在「本构」后面（第 17 格）
+GS_TRUE_DREAM:
+  item_group: gs_basic
+  display_tier: 17
+  placeable: false
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_REALM, amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 7}
+  item:
+    name: "&3真实梦境"
+    material: SCULK_SENSOR          # 幽匿感测体
+    enchantments:
+      - "unbreaking 3"              # 耐久 III
+    lore:
+      - "&7噩梦"
+
+# ---------- 思创本构（附魔耐久 III 的幽匿尖啸体 · 基础构思第 18 格）----------
+#   获取：**唤梦机**升级 —— 左「本构」+ 右 7 个「梦境锭」
+#   ★ 2026-10-08 第六批：
+#     · **右键效果整段删除**（原来会给自己上缓慢/夜视/饱腹/生命恢复并定时刷物品，
+#       实现在 scripts/gs_forge_items.js —— 该脚本文件已一并删除）⇒ 现在是纯材料
+#     · 从「构想维度」移入**基础构思**，排在「真实梦境」后面（第 18 格）
+GS_THOUGHT_CONSTRUCT:
+  item_group: gs_basic
+  display_tier: 18
+  placeable: false
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_CONSTRUCT,   amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 7}
+  item:
+    name: "&3思创本构"
+    material: SCULK_SHRIEKER        # 幽匿尖啸体
+    enchantments:
+      - "unbreaking 3"              # 耐久 III
+    lore:
+      - "&7诞生"
+
+# ---------- 滚木（淡灰色玻璃板 · 名字与 lore 都是黑色）----------
+#   ★ 2026-10-08 第二批换新配方：
+#     1 思创本构 + 1 真实梦境 + 37 梦境锭 → 1 个滚木，8 粘液刻
+#   放在「基础构思」(gs_basic) 分类
+#   玻璃板 → placeable: false 禁止放置方块（不影响塞进机器），右键触发脚本
+#
+#   ==========================================================================
+#   ★★★ 2026-10-12 第八十批：**试过「隐藏提示框」，又撤掉了** + 滚木 lore 只留一行。
+#   --------------------------------------------------------------------------
+#   用户原话（第一次）：「可不可以给滚木打上 minecraft:hide_tooltip={} 的标签」
+#   用户原话（撤销）  ：「取消这个标签，这会导致某些配方玩家看不见提示误以为配方
+#                        出错无法制作，滚木的 lore 只保留一行你居然看得见其他删除，
+#                        效果不删除」
+#
+#   ★★ 结论：**标签撤了，滚木的材质回到最普通的淡灰色玻璃板。**
+#      撤销理由（用户给的）：藏掉提示框之后，玩家在配方界面里**看不见这个材料**
+#      ⇒ 会误以为配方坏了、做不出来。**这是对的** —— 存档物品的 tooltip_display
+#      是「所有显示这个 ItemStack 的地方都不弹提示框」，
+#      包括粘液科技书 / 构思机配方页 / 物品栏悬停，覆盖面比想象中大。
+#
+#   ★ 本批**最终**留下的唯一改动：**lore 从 6 行砍到 1 行**。
+#       保留：&0你居然能看见？
+#       删除：空行 / 右键说明 / 隐身说明 / 空行 / 冷却说明（共 5 行）
+#     ⚠ **右键隐身的脚本效果一点没动**（用户：「效果不删除」）——
+#       冷却 9 秒 / 宽3 × 长5 / 隐身 10 秒 / 物品不消耗，全都照旧，
+#       只是不再写进 lore 里给玩家看。
+#
+#   --------------------------------------------------------------------------
+#   ★ 下面是这一批**试错过程**的记录（结论已作废，留档备查）：
+#
+#   ★★ 版本坑：`minecraft:hide_tooltip` 这个组件在 **1.21.11 里已经没有了**。
+#      它是 **1.20.5（24w12a）**加进来的**无值组件**，
+#      **1.21.5 起被并入 `minecraft:tooltip_display`**（一个复合组件）。
+#      证据（都在本机 paper-1.21.11.jar 里核过）：
+#        · `net.minecraft.core.component.DataComponents` 里**只有**
+#          `TOOLTIP_DISPLAY` / `TOOLTIP_STYLE`，**没有** `HIDE_TOOLTIP`；
+#        · `net.minecraft.util.datafix.fixes.TooltipDisplayComponentFix`
+#          干的就是把 `minecraft:hide_tooltip` 迁移成 `minecraft:tooltip_display`
+#          （在 DataFixers 里挂在 schema **4307 → 4309**，正是 1.21.5 的开发期）；
+#        · `TooltipDisplay` 的 CODEC 字段名是 `hide_tooltip` 和 `hidden_components`，
+#          两个都是 `optionalFieldOf`（缺省 false / 空集）。
+#      ⇒ 等价写法是 `{hide_tooltip:true}`（`true` 和 `1b` 都能解析）。
+#
+#   ★★ 为什么当时必须走 saveditem：RSC 的 items.yml 写不出**任意数据组件**。
+#      把 RSC Build 63 的 `CommonUtils` 字节码翻了一遍（并对着源码复核过），
+#      `item:` 段**真正读的键**只有 9 个：
+#        material_type / material / name / lore / glow / enchantments / modelId /
+#        amount / color
+#      其中 `material_type` 的**取值**有：
+#        mc（默认）/ minecraft / vanilla / slimefun / sf / saveditem /
+#        skull / skull_hash / skull_base64 / skull_url / uniitem / built_in / none
+#      （`noConsume` / `slot` 是**配方输入**那边的键，不是 item: 段的。）
+#      **没有** components / nbt / item_flags / hide_tooltip / unbreakable 之类
+#      —— 从 Build 63 一直到最新 HEAD 都是这样（已核对上游 diff：
+#         9bfb437→HEAD 只动了 gradle/libs.versions.toml，**零 Java 改动**）。
+#      ⇒ 当时和第五十五批的「紫水晶 flow 纹饰」一样，改用了**存档物品**
+#        `saveditems/gm.yml`（底材仍是淡灰色玻璃板 + 一条 tooltip_display）。
+#      ⚠ **那个文件已经删掉了** —— 撤销之后滚木不再依赖任何存档物品。
+#
+#   ★ 留档：那个组件的效果是「**整个提示框都不显示**」——
+#     连名字「滚木」和 lore 一起隐藏，鼠标移上去什么都不弹。
+#     如果**以后**还想藏（只藏 lore、保留名字），写法是：
+#         minecraft:tooltip_display: '{hidden_components:["minecraft:lore"]}'
+#     ★★ 但先想清楚用户这次的教训：**配方界面里看不见材料 = 玩家以为配方坏了**。
+#   ==========================================================================
+GS_ROLLING_LOG_INGOT:
+  item_group: gs_basic
+  display_tier: 14
+  placeable: false                   # 禁止放置方块（玻璃板也不给放）
+  script: gs_rolling_log_ingot       # → scripts/gs_rolling_log_ingot.js
+  recipe_type: GS_RT_MIND_SMELTING
+  recipe:
+    1: {material_type: slimefun, material: GS_THOUGHT_CONSTRUCT, amount: 1}
+    2: {material_type: slimefun, material: GS_TRUE_DREAM,        amount: 1}
+    5: {material_type: slimefun, material: GS_DREAM_INGOT,       amount: 37}
+  item:
+    name: "&0滚木"
+    material: LIGHT_GRAY_STAINED_GLASS_PANE     # 淡灰色玻璃板
+    lore:
+      - "&0你居然能看见？"
+
+# ---------- 构想（向日葵，无法放置，无法栽入花盆） ----------
+#   ★ 2026-10-08：获取方式由「魔法工作台」改成**构思机合成**（★ 配方布局不变）
+#   四角 = 臆想 ×4    四边 = 念想 ×4    中心 = 想象力 ×1
+#   ┌────┬────┬────┐
+#   │臆想│念想│臆想│   槽 1 / 2 / 3
+#   ├────┼────┼────┤
+#   │念想│想象│念想│   槽 4 / 5 / 6
+#   ├────┼────┼────┤
+#   │臆想│念想│臆想│   槽 7 / 8 / 9
+#   └────┴────┴────┘
+GS_CONCEPT:
+  item_group: gs_basic
+  display_tier: 6
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1:
+      material_type: slimefun
+      material: GS_DELUSION
+      amount: 1
+    2:
+      material_type: slimefun
+      material: GS_THOUGHT
+      amount: 1
+    3:
+      material_type: slimefun
+      material: GS_DELUSION
+      amount: 1
+    4:
+      material_type: slimefun
+      material: GS_THOUGHT
+      amount: 1
+    5:
+      material_type: slimefun
+      material: GS_IMAGINATION
+      amount: 1
+    6:
+      material_type: slimefun
+      material: GS_THOUGHT
+      amount: 1
+    7:
+      material_type: slimefun
+      material: GS_DELUSION
+      amount: 1
+    8:
+      material_type: slimefun
+      material: GS_THOUGHT
+      amount: 1
+    9:
+      material_type: slimefun
+      material: GS_DELUSION
+      amount: 1
+  item:
+    name: "&6构想"
+    material: SUNFLOWER
+    lore:
+      - "&7尚未落地的设计草稿"
+
+# ---------- 作者想说的一些话 ★ 2026-10-12 第七十一批 **已删除** ----------
+#   用户：「把构思中的图鉴移动到信息栏，删除作者想说的话」
+#   ⇒ 按钮（groups.yml 的 gs_author_note）+ 脚本（scripts/gs_author_note.js）
+#     **一并删除**；连带空掉的「构思」(gs_idea) 分类也一起删了。
+#   ★ 历史：更早的版本把书注册成带 recipe_type 的物品，点开会被 RSC 当成配方条目
+#     跳去配方页（表现就是"点了出现合成"）；后来改成由 gs_author_note.js
+#     直接 new ItemStack(WRITTEN_BOOK) + BookMeta 发到背包。**现在整个功能没有了。**
+
+# ---------- ★★★ 第八十八批：用户「删除构念」----------
+#   「构念」（GS_CONSTRUCT_ROD）整件**已删除**，连带：
+#     · 构思玩具第 1 格空出来 ⇒ **玩具整体前移一格**（见下方各件 display_tier）
+#     · 脚本 scripts/gs_construct_idea.js 已删除
+#     · gs_listener.js 里的「虚拟玻璃」兜底（onBlockBreak / onPlayerInteract）已删除
+#     · mb_machines.yml 里构思机的 construct_rod 配方已删除
+#   ⚠ 老存档里还留着「构念」的玩家：那件物品会变成**未知物品**，直接丢掉即可。
+
+# ==========================================================================
+# ★ 2026-10-08 第二批新增：**梦想套**（铁头盔 / 铁胸甲 / 铁护腿 / 铁靴子）
+# --------------------------------------------------------------------------
+#   命名规则：和「梦境套」一样，只把「境」改成「想」。
+#   获取：全部在**构思机**里合成（见 mb_machines.yml）。
+#   之后可在**唤梦机**里升级成对应的「梦境套」（左梦想件 + 右 N 个梦境锭）。
+#   ★ 四件都**永不掉耐久**（已加进 gs_listener.js 的 GS_NODMG_IDS）。
+# ==========================================================================
+
+# ---------- 梦想头盔（铁头盔 · 构思防具第 2 格）----------
+#   槽 1/2/3 = 梦境规则 ｜ 槽 4/6 = 构想
+GS_WISH_HELMET:
+  item_group: gs_armor
+  display_tier: 2
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+  item:
+    name: "&5梦想头盔"
+    material: IRON_HELMET
+    enchantments:
+      - "protection 4"          # ★ 2026-10-08 第三批：梦想套全部附魔保护 4
+    lore:
+      - "&7还没成真的那顶头盔"
+
+# ---------- 梦想盔甲（铁胸甲 · 构思防具第 3 格）----------
+#   槽 1/3/5/8 = 梦境规则 ｜ 槽 4/6/7/9 = 构想
+GS_WISH_ARMOR:
+  item_group: gs_armor
+  display_tier: 3
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    5: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    8: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+  item:
+    name: "&5梦想盔甲"
+    material: IRON_CHESTPLATE
+    enchantments:
+      - "protection 4"          # ★ 2026-10-08 第三批：梦想套全部附魔保护 4
+    lore:
+      - "&7还没成真的那副盔甲"
+
+# ---------- 梦想护腿（铁护腿 · 构思防具第 4 格）----------
+#   槽 1/3 = 梦境规则 ｜ 槽 2/4/6/7/9 = 构想
+GS_WISH_LEGGINGS:
+  item_group: gs_armor
+  display_tier: 4
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    2: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    3: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    4: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    6: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+  item:
+    name: "&5梦想护腿"
+    material: IRON_LEGGINGS
+    enchantments:
+      - "protection 4"          # ★ 2026-10-08 第三批：梦想套全部附魔保护 4
+    lore:
+      - "&7还没成真的那条护腿"
+
+# ---------- 梦想战靴（铁靴子 · 构思防具第 5 格）----------
+#   槽 4/6 = 梦境规则 ｜ 槽 7/9 = 构想
+GS_WISH_BOOTS:
+  item_group: gs_armor
+  display_tier: 5
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    4: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    6: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    7: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+    9: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+  item:
+    name: "&5梦想战靴"
+    material: IRON_BOOTS
+    enchantments:
+      - "protection 4"          # ★ 2026-10-08 第三批：梦想套全部附魔保护 4
+    lore:
+      - "&7还没成真的那双靴子"
+
+# ==========================================================================
+# 梦境套（下界合金四件 · 构思防具第 6~9 格）—— 由**唤梦机**升级梦想套而来
+# --------------------------------------------------------------------------
+# ★ 2026-10-11 第五十五批（第四轮追加）：**四件的材质全部换成「存档物品」**。
+#   用户原话：「梦境套的其他属性不变，只改变这些材质」，给了 4 个存档物品：
+#       saveditems/t.yml  → 下界合金头盔   → GS_DREAM_HELMET
+#       saveditems/j.yml  → 下界合金胸甲   → GS_DREAM_ARMOR
+#       saveditems/h.yml  → 下界合金护腿   → GS_DREAM_LEGGINGS
+#       saveditems/x.yml  → 下界合金靴     → GS_DREAM_BOOTS
+#   四个文件的底材和原来一模一样，**唯一多的是一条盔甲纹饰**：
+#       minecraft:trim = { material: "minecraft:amethyst", pattern: "minecraft:flow" }
+#   ⇒ 也就是「紫水晶 + flow（涡流）纹饰」的下界合金套。
+#   ★ 名字 / 附魔 / lore / 配方 / 分类 / tier / 全部脚本效果**一个字没动**。
+#   ★ 为什么要走 saveditem：RSC 的 items.yml 里写不出 `minecraft:trim` 这个组件
+#     （`material: NETHERITE_CHESTPLATE` 只能得到一件**没有纹饰**的素甲），
+#     所以和「妄念」「幻翼boss」一样改用存档物品 —— **文件名即引用名**。
+#   ★ 工作原理（已核对 RSC Build 61 字节码）：
+#       material_type: saveditem → CommonUtils.getBaseItemStack() 读
+#       addons/GS/saveditems/<material>.yml 的 `item:` 段（Bukkit 的 ItemStack
+#       YAML 序列化）⇒ 纹饰作为组件原样带过来；
+#       之后 readItem() 再往上盖 name → lore → enchantments（顺序已核对）。
+#   ★ Slimefun 的物品 ID 是 RSC 自己用**配置里的键名**写进去的
+#     （`new SlimefunItemStack(<GS_XXX>, stack)`）⇒ 存档文件里**不需要**带
+#     `slimefun:slimefun_item`，四个新文件本来也没有。
+#   ⚠ **saveditems/ 是这四件物品的一部分** —— 重装附属时必须一起放
+#     （h/j/t/x.yml 已打进 GS.zip，包内路径 `GS/saveditems/*.yml`）。
+# ==========================================================================
+GS_DREAM_ARMOR:
+  item_group: gs_armor
+  display_tier: 7
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_WISH_ARMOR,  amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 16}
+  item:
+    name: "&5梦境盔甲"
+    material_type: saveditem     # ★ 第五十五批：改用存档物品（纹饰烘焙在物品里）
+    material: j                  #   → saveditems/j.yml（下界合金胸甲 + 紫水晶 flow 纹饰）
+    amount: 1
+    enchantments:
+      - "unbreaking 9"
+      - "protection 9"
+      - "blast_protection 9"
+      - "projectile_protection 9"
+      - "fire_protection 9"
+    lore:
+      # ★★ 2026-10-12 第七十一批：lore **全改**（原来的整行删除，只留这一行）
+      - "&6&l<全套>&r&f 汇聚了大量梦境能力"
+
+# ---------- 梦境头盔（下界合金头盔 · 自动发射坚守者冲击波）----------
+#   分类：构思防具 (gs_armor)   获取：**唤梦机**升级（梦想头盔 + 10 梦境锭）
+#   附魔与「梦境盔甲」完全一致（超限等级，RSC 用 addUnsafeEnchantment 不裁剪）
+#   效果（实现见 scripts/gs_listener.js 的 gsFireSonicBoom / gsHelmetFire）：
+#     · **空手时按一下潜行键（下蹲）** → 朝**准星方向**发射一道冲击波
+#       （主手拿着东西时不触发，避免走路 / 搭方块时误触）
+#     · 内置 **30 秒冷却**（存在玩家数据里，/rsc reload 不丢）；冷却结束提示「噩梦再临」
+#     · 音效 entity.warden.sonic_boom，视觉 SONIC_BOOM 粒子铺一条光柱
+#     · 对路径上的生物造成 **100 点伤害**，撞到方块就停，**不造成击退**
+#     · **不会伤害自己**、**不消耗耐久**（纯脚本效果，不碰 ItemMeta）
+#     · 触发用 RSC 的 scriptListener 事件 → 函数名 onPlayerToggleSneak（源码里已注册该事件）
+#   ★ 和「梦境盔甲」一样，这里**不写 `script:` 字段** ——
+#     RSC 给带 script 的物品注册 onUse 时会紧跟 e.cancel()，
+#     会把"右键戴上头盔"一起取消掉，导致永远戴不上。
+#     效果统一放在 scriptListener（gs_listener.js）里。
+GS_DREAM_HELMET:
+  item_group: gs_armor
+  display_tier: 6
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_WISH_HELMET, amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 10}
+  item:
+    name: "&5梦境头盔"
+    material_type: saveditem     # ★ 第五十五批：改用存档物品（纹饰烘焙在物品里）
+    material: t                  #   → saveditems/t.yml（下界合金头盔 + 紫水晶 flow 纹饰）
+    amount: 1
+    enchantments:
+      - "unbreaking 9"
+      - "protection 9"
+      - "blast_protection 9"
+      - "projectile_protection 9"
+      - "fire_protection 9"
+    lore:
+      # ★★ 2026-10-12 第七十一批：lore **全改**（原来的整行删除，只留这一行）
+      - "&6&l<全套>&r&f 汇聚了大量梦境能力"
+
+# ==========================================================================
+# ★ 2026-10-08 第二批新增：**入梦**（铁剑 · 构思武器第 1 格 · 释梦的左边）
+# --------------------------------------------------------------------------
+#   获取：**构思机**合成 —— 槽 2 / 5 = 梦境规则 ｜ 槽 8 = 构想
+#     ┌──┬──────┬──┐
+#     │  │梦境规则│  │   槽 1 / 2 / 3
+#     ├──┼──────┼──┤
+#     │  │梦境规则│  │   槽 4 / 5 / 6
+#     ├──┼──────┼──┤
+#     │  │ 构想  │  │   槽 7 / 8 / 9
+#     └──┴──────┴──┘
+#   附魔：**锋利 7 / 抢夺 5**（RSC 走 addUnsafeEnchantment ⇒ 能超原版上限）
+#   ★ **永不掉耐久**（已加进 gs_listener.js 的 GS_NODMG_IDS）
+#   ★ 在**唤梦机**里升级成「释梦」（入梦 + **49** 梦境锭）
+#     ★★★ 第八十七批：用户「构思武器的释梦梦境锭需求改成49个」（20 → 49）
+# ==========================================================================
+GS_ENTER_DREAM:
+  item_group: gs_weapon
+  display_tier: 1
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    5: {material_type: slimefun, material: GS_DREAM_RULE, amount: 1}
+    8: {material_type: slimefun, material: GS_CONCEPT,    amount: 1}
+  item:
+    name: "&9入梦"
+    material: IRON_SWORD
+    enchantments:
+      - "sharpness 7"            # 锋利 7
+      - "looting 5"              # 抢夺 5（战利品）
+    lore:
+      - "&7闭上眼，才算真正开始"
+
+# ---------- 释梦（下界合金剑 · 右键发射灵魂沙弹）----------
+#   分类：构思武器 (gs_weapon)   **第 6 格**
+#     获取：**唤梦机**升级（入梦 + **49** 梦境锭，114 秒）
+#     ★★★ 第八十七批：梦境锭 **20 → 49**（用户「释梦梦境锭需求改成49个」）；
+#       格位由第 5 格挪到**第 6 格**（用户「6释梦」）。
+#   附魔：无限（infinity 1）—— 原版是弓的附魔，RSC 用 addUnsafeEnchantment 写值，剑上也能挂
+#   ★★ 「无法破坏」怎么做的（RSC 不支持这个字段）：
+#     查过源码，items.yml 的 item 段**没有** unbreakable 之类的字段，
+#     CommonUtils 里也没有任何 setUnbreakable 调用。所以改用脚本兜住：
+#       · 每次右键（onUse）时把手里这把剑设成 unbreakable
+#       · gs_listener.js 的常驻任务每 0.5 秒扫一次，发现玩家手上是释梦且还没锁
+#         就立刻 setUnbreakable(true)
+#     效果：拿到手半秒内就变成"无法破坏"，之后耐久永不再掉。
+#   效果（实现见 scripts/gs_release_dream.js）：
+#     · 右键朝视线方向打出一道**灵魂沙粒子**（SOUL）弹道：射程 15 格
+#     · **碰到实体方块就停下（不穿墙）**；没命中生物 → 什么都不发生
+#     · 命中生物 → 从它**正上方 6 格**开始播放下坠动画，
+#       粒子**砸到身上那一刻**结算一次 **40 点**伤害（2026-10-06：10 → 25 → 40）；
+#       **只有 1 次下坠 = 1 次伤害**（2026-10-06：3 次 → 1 次）
+#     · 右键冷却 **0.3 秒**（2026-10-06：1.2 → 0.8 → 0.3）；冷却结束提示「可以重新割开梦境」
+#     · 发射音效 = **只有一个**：音符盒放在**羊毛**上、左键调音 **6 次**后的那一声
+#       （`block.note_block.guitar`，音高 = note 6 ≈ 0.7071；铁砧/锻造台/心跳声都撤了）
+#     · 伤害**不带任何击退**（结算前存 velocity、打完立刻还原 ⇒ 只掉血、不被推开）
+#     · **没有内爆/炸开**，也**没有任何会持续残留的粒子云**
+#   ★ **附魔（2026-10-06）**：锋利 / 亡灵杀手 / 节肢杀手 / 横扫之刃 / 破甲 /
+#     穿刺 / 抢夺 / 忠诚，**全部 9 级**（RSC 走 addUnsafeEnchantment ⇒ 能超原版上限）。
+#     （原计划的「突进 lunge」按需求已去掉。）
+#   ★★ 脚本里全部用 runLater 链、不用 runRepeating + cancel()：
+#     RSC 的 runRepeating 虽然签名返回 BukkitTask，但实现是
+#       AtomicReference task; runTaskTimer(... ta -> { r.apply(...); task.set(ta); }); return task.get();
+#     同步返回时回调还没跑过 ⇒ **delay > 0 时返回值基本是 null**，cancel() 永远失败
+#     → 任务停不下来（之前"粒子一直冒"就是这个原因）。
+#   ★ 永不掉耐久（等效 unbreakable）：由 gs_listener.js 的 gsNoDurabilityRegisterSync 拦截耐久损失；
+#     不改物品数据，所以仍可正常作为合成材料（RSC 配置层不支持 unbreakable 字段）。
+GS_RELEASE_DREAM:
+  item_group: gs_weapon
+  display_tier: 6            # ★ 第八十七批重排：5 → 6（用户「6释梦」）
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_ENTER_DREAM, amount: 1}
+    # ★★★ 第八十七批：右槽 **20 → 49**（用户「释梦梦境锭需求改成49个」）
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 49}
+  script: gs_release_dream
+  item:
+    name: "&5释梦"
+    material: NETHERITE_SWORD
+    enchantments:
+      # ★ 2026-10-06 新增 8 条（等级 9，RSC 走 addUnsafeEnchantment ⇒ 可以超过原版上限）
+      #   名称用**现代命名空间键名**（`minecraft:<小写>`），和下面那条 infinity 同一套写法
+      - "sharpness 9"            # 锋利
+      - "smite 9"                # 亡灵杀手
+      - "bane_of_arthropods 9"   # 节肢杀手
+      - "sweeping_edge 9"        # 横扫之刃
+      - "breach 9"               # 破甲（1.21 重锤系）
+      - "impaling 9"             # 穿刺
+      - "looting 9"              # 抢夺
+      - "loyalty 9"              # 忠诚
+      - "infinity 1"             # （原有的那条，保留）
+    lore:
+      # ★★ 2026-10-12 第七十一批：
+      #    · 第一句**不变**
+      #    · 原来第 3 行「命中生物造成大量伤害」**整行删除**
+      #    · 原来最后三句（梦外有光 / 越界则醒 / 魂沙为引）**移到右键前面**并改**紫色 &5**
+      #    · 右键改**橙色加粗**，后面「射出灵魂射线」改**白色不加粗**
+      #    · 结尾那句「击穿它，或从梦中醒来」用户未提 ⇒ 原样留在最后
+      - "&8&o梦的边界 · 魂的射线"
+      - "&5梦外有光，光外有墙"
+      - "&5越界则醒，叩墙则伤"
+      - "&5魂沙为引，将梦塑造"
+      - "&6&l右键&r&f 射出灵魂射线"
+      - "&8&o“击穿它，或从梦中醒来”"
+
+# ---------- 梦境战靴（下界合金靴 · 每 5 秒直接回血 + 速度 II）----------
+#   分类：构思防具 (gs_armor)   获取：**唤梦机**升级（梦想战靴 + 8 梦境锭）
+#   附魔与「梦境头盔」完全一致（耐久9 / 保护9 / 爆炸保护9 / 弹射物保护9 / 火焰保护9）
+#   效果（实现见 scripts/gs_listener.js 的 gsBootsPulse / gsBootsRegen）：
+#     · 穿在**靴子位**时，**每 5 秒直接恢复 12 点生命值**（满血则不回）
+#     · ★ **没有爱心粒子**（原来的"头顶掉爱心、砸中才回血"已删除 —— 爱心挡视线、还会砸空）
+#     · 自带 **速度 II**（movement_speed 属性 +40%；属性拿不到时退回速度 II 药水效果）
+#     · **无冷却**、**不消耗耐久**（纯脚本效果，不碰 ItemMeta）
+GS_DREAM_BOOTS:
+  item_group: gs_armor
+  display_tier: 9
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_WISH_BOOTS,  amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT, amount: 8}
+  item:
+    name: "&5梦境战靴"
+    material_type: saveditem     # ★ 第五十五批：改用存档物品（纹饰烘焙在物品里）
+    material: x                  #   → saveditems/x.yml（下界合金靴 + 紫水晶 flow 纹饰）
+    amount: 1
+    enchantments:
+      - "unbreaking 9"
+      - "protection 9"
+      - "blast_protection 9"
+      - "projectile_protection 9"
+      - "fire_protection 9"
+    lore:
+      # ★★ 2026-10-12 第七十一批：lore **全改**（原来的整行删除，只留这一行）
+      - "&6&l<全套>&r&f 汇聚了大量梦境能力"
+
+# ---------- 梦境护腿（下界合金护腿 · 夜视 + 近身压制）----------
+#   分类：构思防具 (gs_armor)   获取：**唤梦机**升级（梦想护腿 + 14 梦境锭）
+#   附魔与「梦境头盔」完全一致（耐久9 / 保护9 / 爆炸保护9 / 弹射物保护9 / 火焰保护9）
+#   效果（实现见 scripts/gs_listener.js 的 gsLeggingsPulse / gsLeggingsAura）：
+#     · （原「头顶球形粒子球」因太晃眼已删除）
+#     · **近身压制**：以佩戴者为圆心、半径 1.5 格内除佩戴者之外的任何生物，
+#       每游戏刻受 1 点伤害、**不击退**（掉落物不会被打/弹飞）
+#     · 附带**夜视**：每次给 22 秒，剩余低于 12.5 秒会自动续期（避免临近结束时画面闪烁）；
+#       穿上给、脱下摘（只摘自己给的那份）
+#     · 不消耗耐久（纯脚本效果，不碰 ItemMeta）
+GS_DREAM_LEGGINGS:
+  item_group: gs_armor
+  display_tier: 8
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_WISH_LEGGINGS, amount: 1}
+    2: {material_type: slimefun, material: GS_DREAM_INGOT,   amount: 14}
+  item:
+    name: "&5梦境护腿"
+    material_type: saveditem     # ★ 第五十五批：改用存档物品（纹饰烘焙在物品里）
+    material: h                  #   → saveditems/h.yml（下界合金护腿 + 紫水晶 flow 纹饰）
+    amount: 1
+    enchantments:
+      - "unbreaking 9"
+      - "protection 9"
+      - "blast_protection 9"
+      - "projectile_protection 9"
+      - "fire_protection 9"
+    lore:
+      # ★★ 2026-10-12 第七十一批：lore **全改**（原来的整行删除，只留这一行）
+      - "&6&l<全套>&r&f 汇聚了大量梦境能力"
+
+# ---------- 余念绝响（音乐唱片5 · 单手持冲锋枪）----------
+#   分类：构思武器 (gs_weapon)   获取：**唤梦机**升级（残樱 + 36 妄想碎片）
+#   ★★ 第六十二批：**「精神力」正式改名为「余念绝响」**（用户：「精神力改名叫余念绝响」）
+#      ⇒ 物品名 / 脚本里动态显示的名字 / 图鉴第 5 页 / 图鉴里提到它的其它页，
+#        全部跟着改；第六十二批**只改名字、功能一个都没动**
+#        （当时是 弹夹 37 · 右键开火 · 左键换弹 · F 开镜）。
+#   ★★ 第六十四批：按键整体重排 —— 用户「残樱，余念绝响的换弹改成q，监听q拦截，
+#      原版是丢弃，拦截下来当换弹，然后左键开火，右键开镜」
+#      ⇒ **左键开火 · 右键开镜 · Q 换弹 · F 原版换手**。
+#   ★★★ 第六十五批：**换弹从 Q 改到 F**（用户「把残樱和余念绝响的换弹改成f键」）
+#      ⇒ **左键开火 · 右键开镜 · F 换弹 · Q 原版丢弃**。
+#      ★ 为什么从 Q 挪到 F：Q 的原版行为是**丢弃主手物品**，而原版
+#        LocalPlayer.drop() 发完 DROP_ITEM 之后**还会补一次 swing(MAIN_HAND)**
+#        ⇒ 多一个挥手包 ⇒ 会被「左键=开火」误判（第六十四批为此专门加了
+#        gsPsychicJustQ 闸门）。F（swap-offhand）**不调 swing**（已反编译核实）
+#        ⇒ 那个闸门连同丢弃拦截一起整个删除。
+#   ★★ 第六十二批：左槽材料由「入梦」改成 **残樱**（用户：「余念绝响的配方改成
+#      残樱+36妄想碎片在唤梦机合成，时间不变」）⇒ 右槽仍是 36 妄想碎片，
+#      **合成时间 1919 秒不变**（recipe_machines.yml 的 psychic_power 那条）。
+#   ★ 2026-10-06 最终方案：**36 个妄想碎片 + 1 个入梦 → 1 个精神力**
+#     （妄想碎片由三阶段 boss「妄念」掉落，1+3+9=13 / 轮 ⇒ 约 3 轮凑一件）
+#     ⇒ 它**不再是 boss 掉落物**，只能合出来。
+#   材质：音乐唱片 5 MUSIC_DISC_5（就是"用唱片残片合成的那张"，作曲 Samuel Åberg）
+#         ★ 唱片是非工具物品（不会像铲子那样被原版置 DENY 抢事件）；
+#           右键唱片机那类原版行为会被我们的监听器统一 cancel，不会真的放歌。
+#   效果（实现见 scripts/gs_listener.js 的同步监听器 + 常驻任务）：
+#     · 名字动态显示「余念绝响<弹药>」（37 发，无限备弹、无需携带弹药）
+#     · ★★ 第六十四批：**左键**开火 → 消耗弹药（原来在右键）
+#     · ★★★ 第六十五批：**按 F 键换弹**（回满 37）——
+#       F 的原版行为是「主副手交换」，被同步监听器拦下来当换弹（换手不会发生）；
+#       换弹期间无法再触发换弹（连按不会打断进度），弹夹已满时不换
+#       ★ Q 已恢复**原版丢弃**（不再拦 PlayerDropItemEvent）。
+#     · 换弹时名字显示「余念绝响<R>」；切换手持物会中断换弹、重新计时
+#     · 弹道：从**胸口**射出（不再从眼睛发，免得挡视线），方向跟随准星；
+#       视觉是一条 END_ROD 细粒子线，射程 25 格，撞墙 / 撞生物就停
+#     · 伤害 37 点/发（无受击间隔），命中即结算
+#     · ★ 开着瞄准镜时：**伤害 77 / 射程 77**
+#     · ★★ 第六十四批：手持时按 **右键**：眼前浮现粒子准星圆环；再按一次收起
+#       ★★★ 第六十四批修正 5（用户「可以做到不需要副手吗，就是右键一下出现效果，
+#            再右键消失，然后做一个0.8秒的防抖延迟，切换手持也会消失」）：
+#         · 开镜**不再需要副手** —— 状态存在玩家 PDC（钥匙 gs:psy_scoped，**STRING**；
+#           ★ 修正 6：原来写 BYTE 会**静默失败**，见脚本里那段注释），
+#           **副手一个格子都不碰**：不再被塞「念力感知」按钮，
+#           玩家原来的副手物品也不会被挪进背包
+#         · 右键一下出现效果、再右键一下全部消失
+#         · **0.8 秒防抖**（GS_SCOPE_DEBOUNCE_MS）—— 一次按键只切一次
+#         · **切换手持物 ⇒ 立刻消失**（心跳里清标记 + 解除专注）
+#         · 顺带删掉：gsScopeMakeButton（按钮工厂）、F 键换手拦截、
+#           丢弃 / 背包点击 / 背包拖动三处「按钮保护」
+#         · 遗留清理：修正 5 之前造的「念力感知」按钮（PDC 标记 gs:psy_scope）
+#           由 gsScopePurge 从背包里清掉，每人只扫一次
+#       ★ 键位（★★★ 第六十五批）：**左键=开火 · 右键=开镜 · F=换弹 · Q=原版丢弃**
+#       ★★★ 第六十五批：**F 键改成换弹** —— 拦 PlayerSwapHandItemsEvent
+#         （F 的原版行为就是主副手交换）；**Q 恢复原版丢弃**（拦截整个删除）。
+#     · 音效：开火 = 石按钮 block.stone_button.click_on（音量 0.9 · pitch 0.8，闷）
+#             换弹 = 弩装填 item.crossbow.loading_start（音量 3.0）
+#             开镜 = 望远镜 item.spyglass.use（音量 2.0）
+#             收镜 = 望远镜 item.spyglass.stop_using（音量 2.0）
+#     · 手持药水效果：抗性 X / 生命恢复 V / 速度 II / **饱腹 I**
+#       （不含夜视 —— 夜视归梦境护腿，避免两个来源互相清掉导致闪断）
+#       （均 30 秒、剩余 20 秒续期）
+#       ★ **切走本武器（换格子）时立刻全部清掉** —— 见 gsPsychicEffectsClear
+#     · 开镜（右键开 / 关）时附带「专注」：缓慢 X + 夜视
+#       （一次给 30 秒、剩余低于 27 秒续期 —— 与本武器本体药水同一套节奏）
+#       ★ **关镜 / 切走本武器 ⇒ 立刻解除**，不等它自然过期
+#       ★ 修正 5：以前是"念力感知一离开副手"，现在没有副手按钮了，改成看 PDC 标记
+#   ★ 弹药/换弹状态存在玩家 PDC（钥匙 gs:psy_*），跨 /rsc reload 不丢
+#   ★ 不写 script 字段：全部逻辑走 gs_listener 的同步监听器，避免 onUse 的 e.cancel 干扰
+GS_PSYCHIC_POWER:
+  item_group: gs_weapon
+  display_tier: 7            # ★ 第八十七批重排：9 → 7（用户「7余念绝响」）
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    # ★★ 第六十二批：左槽「入梦」→ **残樱**（右槽 36 妄想碎片、时间 1919 秒都不动）
+    # ★★★ 第八十五批：右槽 **36 → 60** 妄想碎片（用户「余念绝响配方改成
+    #      60个妄想碎片+残樱」）⇒ 左槽仍是残樱、**合成时间 1919 秒不动**。
+    1: {material_type: slimefun, material: GS_CHERRY,             amount: 1}
+    2: {material_type: slimefun, material: GS_WANGXIANG_FRAGMENT, amount: 60}
+  item:
+    name: "&d余念绝响<37>"
+    material: MUSIC_DISC_5
+    lore:
+      - "&8&o精神聚焦 · 弹道即意志"
+      # ★★ 第六十二批：用户要求在「左键换弹」**前面**新增这两行（逐字照抄）
+      # ★★ 2026-10-12 第七十一批：上面那两行改**粉色 &d**；
+      #    左键 / 右键 / F键 改成**月镰那样的橙色加粗**，后面**白色不加粗**
+      - "&d像是某段记忆被剪断"
+      - "&d像是执念还在追着你"
+      - "&6&l左键&r&f 开火"
+      - "&6&l右键&r&f 开镜"
+      - "&6&lF键&r&f 换弹"
+      - "&8&o“弹有尽，精神不灭”"
+
+# ---------- “假为思”（烈焰棒 · 铠甲合体）----------
+#   分类：构思武器 (gs_weapon)
+#   获取：增强型工作台 —— 四角摆「梦境套」（盔甲/头盔/护腿/战靴），
+#                         中心摆「GPS 应急发射器」（粘液科技 · 基于 GPS 的机器）
+#   效果（实现在 scripts/gs_fake_weisi.js 的 onUse 里）：
+#     · 消耗品：右键使用一次消耗 1 个
+#     · 获得 9 秒漂浮；四个**隐形盔甲架**从「前 / 下 / 后 / 上」3.5 格外飞来：
+#         前 → 胸甲    下 → 战靴    后 → 护腿    上 → 头盔
+#       出现于 1.1 / 3.1 / 5.1 / 7.1 秒，抵达于 3 / 5 / 7 / 9 秒（每段飞行 1.9 秒 < 2 秒）；
+#       撞上的一瞬间 → 换上那件梦境套 + 消灭盔甲架
+#     · 盔甲架：隐形（只看得见身上那件装备）、打不坏、无重力、静音、不碰撞；
+#       消失前先清空装备再移除 ⇒ **盔甲架的装备一个都不会掉落**
+#     · 撞到玩家时播放音效：末影龙飞行 entity.ender_dragon.flap
+#       （原来的「铁砧落地 + 使用铁砧」太震耳朵，已移除）
+#     · 该槽位原来的装备（如果有）会先脱进背包，背包放不下则掉在脚边
+#     · 梦境套不收回（是消耗装备合成的），演出结束后永久留在身上
+#     · 漂浮 9 秒一结束就立刻给 2 秒「缓降」
+#     · 安全落地：漂浮结束起持续清零摔落距离，直到玩家真正落地，绝不摔伤
+#   ★ 入梦：四件梦境装备（头盔+盔甲+护腿+战靴）同时穿在身上 → 允许飞行并提示「入梦」；
+#     摘下任意一件 → 关闭飞行（无提示）。检测在 gs_listener.js 的 gsEquipPulse（每 10 刻）。
+#     · 演出期间（前 9 秒）周围不断随机冒出「羊驼口水」粒子（Particle.SPIT），
+#       不造成任何伤害，随机飘散，像烟雾一样
+GS_FAKE_WEISI:
+  item_group: gs_toy
+  display_tier: 1
+  placeable: false
+  recipe_type: ENHANCED_CRAFTING_TABLE
+  recipe:
+    1:
+      material_type: slimefun
+      material: GS_DREAM_ARMOR
+      amount: 1
+    3:
+      material_type: slimefun
+      material: GS_DREAM_HELMET
+      amount: 1
+    5:
+      material_type: slimefun
+      material: GPS_EMERGENCY_TRANSMITTER
+      amount: 1
+    7:
+      material_type: slimefun
+      material: GS_DREAM_LEGGINGS
+      amount: 1
+    9:
+      material_type: slimefun
+      material: GS_DREAM_BOOTS
+      amount: 1
+  script: gs_fake_weisi
+  item:
+    name: "&6“假为思”"
+    material: BLAZE_ROD
+    lore:
+      - "&7铠甲合体"
+
+# ---------- 麦友的酒（桶装河豚 · 召唤一只转圈变大变小的河豚）----------
+#   分类：构思玩具 (gs_toy)
+#   ★ 获取：**魔法工作台**（MAGIC_WORKBENCH）九宫格
+#     ┌────┬────┬────┐
+#     │    │命名│    │   第 1 行  槽 1 / 2 / 3   命名 = 原版命名牌（NAME_TAG）
+#     ├────┼────┼────┤
+#     │    │    │    │   第 2 行  槽 4 / 5 / 6
+#     ├────┼────┼────┤
+#     │    │海豚│    │   第 3 行  槽 7 / 8 / 9   海豚 = 原版海豚（DOLPHIN）
+#     └────┴────┴────┘
+#   材质：**桶装河豚** PUFFERFISH_BUCKET
+#     （原来用「河豚」PUFFERFISH，但它属于食物、右键会被吃掉；
+#       换成桶装河豚后不会被吃，并且**原版「倒出河豚」的交互已被拦下**，
+#       右键只走本脚本的召唤逻辑，不会真的把桶倒出去、也不会消耗物品）
+#   右键（见 scripts/gs_maiyou_wine.js）：
+#     · 在**被右键方块的「被点面」那一格**召唤一只**河豚**，名字叫「麦友的酒」
+#     · 8 秒后**直接移除**（remove，不走死亡流程 → 无死亡表现）
+#     · **绝无掉落物**（三重保障）：
+#         ① 战利品表被换成空表 LootTables.EMPTY → 死了也不掉
+#         ② EntityDeathEvent 里再清一次 drops + 经验
+#         ③ 8 秒到点用 remove（本来就不掉落）
+#     · **不会移动、不会掉下去**：关 AI + 关重力，并且每刻被"钉"回出生点（只换朝向）
+#     · **原地 360° 转圈**：8 秒转 8 圈（每刻 18°）
+#     · **不断变大变小**（缩放属性做平滑脉动，周期 0.5 秒；
+#       缩放范围 0.60 倍 ~ 2.20 倍 —— 最大时约一个方块大；拿不到属性就退回膨胀状态）
+#     · **对任何生物都不造成伤害**：关 AI + 不可碰撞 + 压回小状态 + 伤害事件兜底取消
+#     · 穿**梦境护腿**靠近它不会被"杀戮光环"误伤（光环会跳过带标记的这只河豚）
+#     · 行为与「附近有没有玩家」无关（大小/旋转全靠自己的计时器驱动）
+#     · 右键时分 4 句发歌词（前 4 秒发完）
+#     · **使用冷却 8 秒**（与河豚寿命一致 → 同时最多一只）：
+#       冷却中右键只提示剩余秒数，不再召唤、也不再发歌词
+#   ★ 物品**不消耗**，可以反复玩（要改成消耗说一声）
+GS_MAIYOU_WINE:
+  item_group: gs_toy
+  display_tier: 2
+  placeable: false
+  recipe_type: MAGIC_WORKBENCH
+  recipe:
+    2: {material_type: mc, material: NAME_TAG, amount: 1}
+    8: {material_type: mc, material: DOLPHIN,  amount: 1}
+  script: gs_maiyou_wine
+  item:
+    name: "&d麦友的酒"
+    material: PUFFERFISH_BUCKET
+    lore:
+      - "&7哦耶耶~桃花谢了有玫瑰"
+
+GS_SONG:
+  item_group: gs_toy
+  display_tier: 3
+  placeable: false
+  recipe_type: SMELTERY
+  recipe:
+    1: {material_type: mc, material: DRIED_GHAST, amount: 1}
+  script: gs_song
+  item:
+    name: "&f如听仙乐耳暂明"
+    material: WHITE_WOOL
+    lore:
+      - "&7啊~"
+
+# ---------- 咒术回战（幽匿脉络 SCULK_VEIN · 红石音乐《雨爱》高潮部分 · 构思玩具第 6 格）----------
+#   分类：构思玩具 (gs_toy) —— 第 6 格（原「律师函」删除后空出来的位置）
+#     ★★★ 第八十八批：构念删除后玩具整体前移 ⇒ 7 → **6**。
+#   获取：★★ 第六十二批：用户「咒术回战配方改成构思机内合成」
+#           ⇒ 九宫格**一格没动**（还是第六十一批那 9 格），只把**机器**从
+#             魔法工作台改成 **构思机**（多方块机器 GS_RULE_CONCEPTOR）。
+#              1 红色染料 · 4 蜘蛛眼 · 7 灰色染料
+#              3 白色染料 · 6 末影之眼 · 9 黑色染料
+#              2/5/8 原版音符盒
+#           ★ 真正生效的那条在 `mb_machines.yml` 的 `GS_RULE_CONCEPTOR.recipes.cursed`，
+#             两边格位必须一致（发射器逐格比对）。
+#         （第五十五批曾按用户「配方删除留空」写成 recipe_type: "NULL"；
+#           第六十一批按用户给的九宫格改成魔法工作台；本批再改成构思机。）
+#   效果（见 scripts/gs_cursed.js）：
+#     · 右键：播放整首《雨爱》高潮部分（红石音乐，**1202 个音符 / 43.5 秒**）
+#       ★ 曲谱来自 `Minecraft Note Block Studio\Songs\雨爱高潮部分.nbs`，
+#         已**离线转成脚本里的 SG_TL 表**并写死 ⇒ **运行时不用读 .nbs、无额外依赖**
+#         （转换工具：`_check/nbs_to_js.py`，换曲子只改它顶上的 CFG）
+#       ★ 音符盒只有 **0~24 共 25 档（2 个八度）**，本曲跨度 **55 个半音** ⇒
+#         取**全局平移 +2**（落进范围的音最多 = 81.5%），超出的音按八度折回。
+#         25 档是硬上限，换任何写法都躲不掉；折回会让那 18.5% 的音程有偏差。
+#     · ★★ **右键时在身边召唤两只生物，存在时间 = 这首歌的时长**：
+#         · 村民「**宿瘫**」  —— 生成在**玩家脚下**
+#         · 卫道士「**五条舞**」—— 生成在**玩家右边一格**，**手里不拿东西**
+#           ★ 第五十六批：原名「五条无」，用户要求改成「五条舞」
+#         · 两只都**删掉 AI**（原地不动）、只会**原地转圈**
+#           （一个往左转、一个往右转，**1 秒 3 圈** = 54°/刻）
+#         · ★ **会被玩家砍伤**（第五十五批第四轮推翻了「本体无敌」），但砍不死
+#         · 音乐一结束就**一起消失**；退服 / 被新的一次顶掉也一起收掉
+#         · ★★ 第六十一批：**第 16 秒飞起来**（用户「让咒术回战第16秒的时候，
+#           宿瘫和五条舞飞起来，飞到8格高停止，飞起来要有过程，
+#           大概就是16秒到22秒期间」）⇒ 16~22 秒这 6 秒里平滑升空 8 格，
+#           到顶后停在空中继续转圈，直到音乐结束
+#     · **不消耗**物品（可以反复按）
+#     · **冷却 = 本曲时长**（43.5 秒；脚本里写的是 `SG_CD_MS = SG_LEN_MS`，
+#       换曲子/改速度都不用再手改冷却）⇒ 曲子放完的那一刻冷却正好走完
+#       ★ 第五十五批：**取消了「再按一次就停」**（用户「再按停止的效果删除」）
+#         ⇒ 播放中再按 = 冷却没走完 ⇒ **静默忽略**（整首歌期间都按不动）
+#       ★ 冷却中**静默忽略**（不提示、不出声、不消耗）
+#     · **无法与任何方块交互**：手持本物品右键方块时，方块功能一律不触发
+#       （不开箱子 / 不耕田 / 不放方块 / 不点按钮…），只走本脚本的音效
+#     · 默认只有**按的人自己**听得到（`SG_OWNER_ONLY = true`）
+GS_CURSED:
+  item_group: gs_toy
+  display_tier: 6
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    # ★ 构思机九宫格（第六十二批：机器从魔法工作台改成构思机，格位不变）：
+    #   1 红色染料 · 4 蜘蛛眼 · 7 灰色染料
+    #   3 白色染料 · 6 末影之眼 · 9 黑色染料
+    #   2/5/8 原版音符盒
+    1: {material_type: mc, material: RED_DYE,     amount: 1}
+    2: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+    3: {material_type: mc, material: WHITE_DYE,   amount: 1}
+    4: {material_type: mc, material: SPIDER_EYE,  amount: 1}
+    5: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+    6: {material_type: mc, material: ENDER_EYE,   amount: 1}
+    7: {material_type: mc, material: GRAY_DYE,    amount: 1}
+    8: {material_type: mc, material: NOTE_BLOCK,  amount: 1}
+    9: {material_type: mc, material: BLACK_DYE,   amount: 1}
+  script: gs_cursed
+  item:
+    name: "&5咒术回战"
+    material: SCULK_VEIN
+    lore:
+      - "&7新宿对决"
+
+# ---------- 这你叮我（金粒 · 三声经验球叮 + 返还空瓶 + 升 1 级）----------
+#   分类：构思玩具 (gs_toy)
+#   获取：粘液科技「冶炼炉（Smeltery）」—— 九宫格第 1 格放 1 个「填充的学识之瓶」
+#         ★「填充的学识之瓶」= Slimefun 的 **FILLED_FLASK_OF_KNOWLEDGE**
+#           （与「空的学识之瓶」FLASK_OF_KNOWLEDGE 成对：装/取 1 级经验的两种状态）
+#   效果（见 scripts/gs_ding_me.js）：
+#     · 右键：在玩家身上连响 **3 声经验球「叮」**（entity.experience_orb.pickup），
+#       间隔 4 刻 → t=0 / 4 / 8 刻（**0.4 秒内发完**），三次固定同一个音效
+#     · **消耗品**：每次右键消耗 1 个
+#     · **冷却 1 秒**：冷却中**静默忽略**（不提示、不发声、不消耗）
+#     · 使用后**返还 1 个「空的学识之瓶」**（Slimefun `FLASK_OF_KNOWLEDGE`），
+#       背包塞不下会掉在脚边
+#     · 使用后**直接 +1 级经验**（giveExpLevels(1)：加的是等级，不是经验值）
+GS_DING_ME:
+  item_group: gs_toy
+  display_tier: 4
+  placeable: false
+  recipe_type: SMELTERY
+  recipe:
+    1: {material_type: slimefun, material: FILLED_FLASK_OF_KNOWLEDGE, amount: 1}
+  script: gs_ding_me
+  item:
+    name: "&e这你叮我"
+    material: GOLD_NUGGET
+    lore:
+      - "&7叮叮叮"
+
+# ---------- 五骊矟（金剑 GOLDEN_SWORD · 五骊鞚骑阵 · 构思武器第 3 格）----------
+#   材质沿革：金剑 → 烈焰棒(BLAZE_ROD + item_model 渲染成金矛外观)
+#             → 原版金矛(GOLDEN_SPEAR) → 2026-10-08 第六批金剑 GOLDEN_SWORD
+#             → ★★ 2026-10-12 第八十一批**定稿：金剑 + `minecraft:item_model` 渲染成金矛外观**
+#   ==========================================================================
+#   ★★★ 2026-10-12 第八十一批：外观改成「金矛」，但**本体仍是金剑**。
+#   --------------------------------------------------------------------------
+#   用户原话：「五骊矟的材质改成 <saveditems/wls.yml>，
+#              这是一个材质为金矛的金剑，而不是让五骊矟变成长矛」
+#
+#   ★★ 这两件事**必须分清楚**（用户特意强调了）：
+#     · **本体（id）= 金剑 `minecraft:golden_sword`** —— 决定**行为**：
+#         耐久 32、左键挥砍、右键举剑、F 换副手，以及 Slimefun 侧的物品类型。
+#         监听器 / 耐久保护 / 左键剑气 / 右键冲锋**全都按这个走，一个字没动**。
+#     · **外观（`minecraft:item_model`）= 金矛 `minecraft:golden_spear`** ——
+#         只决定**客户端怎么画**（1.21.4+ 的物品模型组件），**不改变任何行为**。
+#     ⇒ 所以**不是**「把五骊矟变成长矛」：它长得像矛，但挥起来还是剑。
+#       ★ 反面教训：2026-10-07 那次直接把 `material` 改成 `GOLDEN_SPEAR`，
+#         那是**换本体**（换成了真长矛）⇒ 1.21.11 的长矛有自己的一套
+#         左键/右键动作，和本附属的同步监听器打架。**这次不碰本体。**
+#
+#   ★★ 为什么必须走 saveditem：RSC 的 items.yml **写不出任意数据组件**。
+#      （详见第八十批留档：`item:` 段真正只读 9 个键 ——
+#        material_type / material / name / lore / glow / enchantments /
+#        modelId / amount / color，**没有** components / nbt / item_model 之类。）
+#      ⚠ 注意别和 `modelId` 搞混：那个写的是**自定义模型数据 CustomModelData**，
+#        不是 1.21.4+ 的 `minecraft:item_model` 组件，两者不是一回事。
+#      ⇒ 和紫水晶纹饰 / 滚木（第八十批，已撤销）一样，走**存档物品**。
+#
+#   ★ `saveditems/wls.yml`（逐字节从服务器 addons/GS/saveditems/ 复制过来）：
+#       item:
+#         ==: org.bukkit.inventory.ItemStack
+#         DataVersion: 4671
+#         id: minecraft:golden_sword
+#         count: 1
+#         components:
+#           minecraft:item_model: '"minecraft:golden_spear"'
+#         schema_version: 1
+#     ★★ 值 `'"minecraft:golden_spear"'` 里的**内层双引号是必须的** ——
+#        `minecraft:item_model` 的 codec 是 `ResourceLocation.CODEC`
+#        （= `Codec.STRING`）⇒ Paper 用 NbtOps 序列化时得到的是
+#        **一个 StringTag**，`StringTag.toString()` 会**带引号**。
+#        这正是 Paper 自己 `/rsc saveitem` 存出来的原样，别手贱把引号删了。
+#     ★ 外层单引号是 YAML 的字面量引号 ⇒ 整个值被当成一段普通字符串，
+#       RSC 再交给 `SNBT_REGISTRY_UNAWARE_PARSER.parseFully(...)` 解析。
+#
+#   ★ 名字 / 9 行 lore / 分类 / tier / placeable / recipe_type / **技能与特效**
+#     **一个字没动**（监听器按 Slimefun ID `GS_WULI_SPEAR` 判定，与材质无关）。
+#   ★ 金剑只有 **32 点耐久**，`GS_NODMG_IDS` 的耐久保护照常生效，永不掉耐久。
+#   ⚠ **`saveditems/wls.yml` 是这件物品的一部分** —— 重装附属时必须一起放
+#     （已打进 GS.zip，包内路径 `GS/saveditems/wls.yml`）。
+#   ⚠ 换外观**不会同步到世界里已有的旧五骊矟** ⇒ 想看效果要重新
+#     `/sf give GS_WULI_SPEAR`（枯骸骑将掉落的也是新件）。
+#   ==========================================================================
+#   分类：构思武器 (gs_weapon) —— **第 5 格**
+#     ★★★ 第八十七批重排（用户逐格给了顺序）：
+#       1 入梦 / 2 残樱 / 3 致万千无言者 / 4 月镰 / **5 五骊矟** /
+#       6 释梦 / 7 余念绝响 / 8 此刻·万籁俱寂 / 9 蚀月·死神梦镰 /
+#       10 阎魔刀·改（**共 10 件**）
+#     ★★★ 第八十七批·补 2：用户「祖宗发射器放到构思玩具最后一格」
+#       ⇒ 祖宗发射器**已搬去构思玩具**，武器从 11 件变 **10 件**。
+#     ★★★ 第八十八批：用户「删除构念，构思玩具全部往前移一格」
+#       ⇒ 祖宗发射器现在是构思玩具**第 11 格**（构念删除后整体前移）。
+#   获取：**没有合成配方**，只能打「枯骸骑将」掉（boss 死亡必掉 1 把）；
+#     ★★★ 第八十七批：用户「五骊矟配方界面写上枯骸骑将掉落」
+#       ⇒ `recipe_type` 由 `"NULL"` 改成**仅作显示**的 `GS_RT_BONE_RIDER`，
+#         配方页左边写「枯骸骑将掉落」，九宫格仍然全空（合不出来）。
+#   效果（**全部**实现在 scripts/gs_listener.js 的「五骊矟」段）：
+#     · 按 **F**（换手键）：★ 玩家**正前方 7 格冲出一匹骷髅马**，**1.5 秒内撞到玩家身上**
+#       （`WL_RIDE_DIST` 7 / `WL_RIDE_TICKS` 30 刻 / `WL_RIDE_HIT_R` 0.9 格 /
+#         `WL_RIDE_EASE` 1.7 越冲越快 / `WL_RIDE_REAR_R` 3.2 格内抬前蹄）
+#       ★★ **这匹冲过来的引路马全程无敌**（三层保险）：① `setInvulnerable` 生成时设 +
+#         **每刻重设**；② 血量每刻顶回上限；③ 记分板标签 `gs_ridein` ⇒
+#         `gsOnEntityDamageSync` 伤害拦截器见到就 `setCancelled`（玩家/怪物/凋零/虚空全挡）
+#       ★★ **撞到后**（`wlRideFinish`）：炸一圈尘 + 闷响 → **冲过来那匹马直接删除**
+#         （原地冒 3 缕烟，它是"引路马"不是"要骑的马"，`WL_RIDE_SPAWN_FX`）→
+#         等 **3 刻**（`WL_RIDE_SWAP_TICKS`）在**玩家当前位置另生成一匹全新骷髅马**
+#         （朝向 = 玩家当前 yaw），**副手出现一根拴绳「五骊鞚」**
+#         （lore 4 行：五骊之缰 · 战魂所系 / 唯主手执 五骊矟 时 / 才可驭使五骊马阵 /
+#           “鞚在手，骊在侧”；★ 2026-10-09 第九批改写），玩家骑上它
+#       ★★ 这样**根治了"上马被掰视角"**：新马天生生成在玩家朝向上，
+#         客户端"上马时把镜头对齐坐骑 yaw"对齐到的正是玩家本来的朝向
+#       ★★ **骑乘状态下绝对不 `p.teleport()`**（会把玩家锁死：动不了、画面发顿）——
+#         补马 / 重新扶上马时只用 `wlAlignMount(horse, p)` 钉坐骑朝向
+#       · 马蹄声全程"哒哒哒"，身后一路扬尘，撞到时炸开一圈尘 + 一声闷响
+#       ★ 演出期间再按 F 会被忽略（`GS_WULI_SUMMONING` 标记）⇒ 不会连按刷出两批马；
+#         演出途中下线 / 死亡会把半路那匹马收掉，绝不在世界里留野马
+#       上马后：
+#       玩家骑上一匹**已驯服的骷髅马**；马后跟 **4 匹**骷髅马，**左右各 2 匹**，
+#       成 **^ 队形**时刻跟随玩家骑着的那匹马
+#       （队形：中间两只退 1.5 格 / 最外侧两只退 3.0 格，左右各 ±1.6 / ±3.2）
+#       ★ 马移速下限 0.28（1 点属性 ≈ 43 格/秒 ⇒ 约 12 格/秒）。
+#         骷髅马默认只有 0.2（≈ 8.6 格/秒），比"喝速度 IV + 冲刺"的玩家（≈ 10 格/秒）还慢，
+#         所以要抬；0.28 仍在原版随机马上限 0.3375 内，不会飞出去。
+#         只升不降 —— 本来就比这快的马不会变慢。要更快/更慢改 WL_HORSE_SPEED 一个数。
+#       ★ 蓄力时五匹马用 setRearing(true) 抬前蹄（客户端渲染成"人立"），
+#         并同时把 pitch 仰到 -42° 辅助（骑乘时服务端会覆盖 pitch，所以两者一起上）
+#     · 之后所有效果都要「副手 = 五骊鞚」+「主手 = 五骊矟」；
+#       **主手一换掉（切格子 / 丢掉）→ 骷髅马与副手拴绳立刻散场**（再按 F 也能收阵）
+#       ★★ **下马动画**（收阵时）：4 匹护航马**当场化成烟雾**（每刻冒一缕往上飘，8 刻化完）；
+#         玩家骑的那匹**朝玩家前方 5 格奔出去**（10 刻 = 0.5 秒，蹄下扬尘），
+#         **跑到头再化成烟消失**（`WL_FLEE_SMOKE`）。
+#         ★ **玩家全程可自由走位 / 转头** —— 动画只动马，不碰玩家一个字节
+#         （`WL_DISSMOKE_TICKS` / `_UP` / `WL_FLEE_DIST` 5 / `WL_FLEE_TICKS` 10）
+#         ★ 死亡 / 下线**不播动画**（马直接消失）
+#     · **左键**：沿视线斩出一道**弧形剑气**（约 5 格长 × 1 格宽，攻击距离 10 格），
+#       对剑气内的敌人造成 **7 点伤害 + 一点点击退**（沿剑气方向推）；冷却 **0.5 秒**、**无任何提示词**
+#       音效 = **末影龙飞行** + **末影人传送**（同一时刻一起响）
+#     · **右键**：**1 秒蓄力**（期间玩家**无敌**、无法移动、**可以自由转视角挑方向**，
+#       周围有收拢粒子，且五匹马**前蹄全部抬起**）
+#       ★ 冲刺方向以**松手那一刻**为准；冲刺中**不锁视角**（`WL_DASH_LOCK_LOOK = false`）
+#         —— 锁视角是靠每刻 teleport 拽回镜头实现的，骑在马上时会让画面发顿发卡。
+#         转头不会改变冲刺方向，只是不再强行掰回你的镜头（想开就把它改回 true）
+#       → 朝朝向**冲刺 15 格**（40 刻 = 2 秒的位移动画，不是瞬移，整段 3 秒完成；
+#         冲刺那一刻前蹄落回地面），对路径上**宽 5 格**的敌人造成 **15 点伤害**；冷却 **10 秒**
+#       ★ **蓄力那 1 秒**玩家**头顶 2 格**浮出一匹**抬起前蹄的粒子马**
+#          （骨架线段表 `wlFxHorseSegs()`：后腿 / 背线 / 肚子 / 脖子 / 头 / 耳朵 /
+#            两条抬起的前腿 / 尾巴 / 鬃毛，另加一颗"眼睛"）
+#          ★ 画在"玩家右手方向 × Y"的竖直平面上 ⇒ **抬头就是标准侧影**；
+#            位置在头顶**偏前 0.9 格**（不是正正头顶）⇒ **完全不挡第一人称平视**
+#          `WL_FXHORSE_ON` / `_Y` 2.0 / `_FRONT` 0.9 / `_STEP` 0.11 / `_EVERY` 1；
+#          **冲刺一开始就没了**（★ 画在**前方 0.9 格**而不是正正头顶 ⇒ 不挡第一人称平视）
+#       ★ 冲刺期间**自动斩出 4 道剑气**（**不用按左键**、也不吃左键那 0.5 秒冷却），
+#         朝向 = **冲刺方向**（水平，不吃俯仰），在第 0 / 6 / 12 / 18 刻各斩一道，
+#         每道飞 20 刻 ⇒ **4 道全部在冲刺动画内斩完**（`WL_DASH_QI_ON` / `WL_DASH_QI_AT`）
+#         ★ 自动斩击**完全没有击退**（`WL_DASH_QI_KB_MUL = 0`；手动左键那道保留击退）
+#       ★ 蓄力无敌在「冲刺开始 / 冲刺结束 / 收阵 / 下线 / 死亡」时都会无条件解除，
+#         绝不会带出这段动作（invulnerable 不会自己过期，漏关 = 永久免伤）
+#         · 使用时提示「&6冲锋！」
+#         · 冷却中提示「&7奔袭调息，静待时机。」
+#     · 全程 5 匹马都**无敌**（穿梦境护腿的杀戮光环会跳过它们，不伤不弹）
+#   配方材料以外的说明：
+#     · 物品**不是消耗品**，可以反复上马
+#     · ★ **永不掉耐久**（2026-10-05）：已加进 GS_NODMG_IDS 清单 —— 取消
+#       PlayerItemDamageEvent + 每 10 刻把主/副手 damage 兜底补满。
+#       金剑原版只有 32 点耐久，不保护砍几十下就断了。做法和释梦/梦境套一致，
+#       **不改物品数据**（不 setUnbreakable）⇒ 照样能当材料、能进背包堆叠。
+#       （2026-10-07 曾改烈焰棒 ⇒ 本身无耐久；2026-10-08 第六批材质定稿
+#         **金剑 GOLDEN_SWORD**，金剑只有 32 点耐久 → 这套保护**确实在用**）
+#     · ★ 副手「五骊鞚」**无法交互**（2026-10-05）：右击生物一律取消（含盔甲架），
+#       拴绳系栅栏的 PlayerLeashEntityEvent 也单独拦了 —— **栓不了任何动物**；
+#       判定是"主手或副手拿着它"就取消，丢弃 / 拖拽 / 点击背包 依旧全拦。
+#     · ★ 物品**故意不写 `script:` 字段** —— 左键 / F 键都不是"物品右键"，
+#       Slimefun 的 onUse 收不到；而且带 script 时 RSC 会紧跟 e.cancel() 干扰右键。
+#       逻辑统一放在 scriptListener（gs_listener.js）自己注册的**同步监听器**里。
+GS_WULI_SPEAR:
+  item_group: gs_weapon
+  display_tier: 5            # ★ 第八十七批重排：8 → 5（用户「5五骊矟」）
+  placeable: false
+  recipe_type: GS_RT_BONE_RIDER   # ★ 第八十七批：配方页左边写「枯骸骑将掉落」
+  item:
+    name: "&6五骊矟"
+    material_type: saveditem     # ★ 第八十一批：改用存档物品（item_model 组件写不进 items.yml）
+    material: wls                #   → saveditems/wls.yml（本体金剑 + 金矛外观）
+    amount: 1
+    lore:
+      - "&8&l金锋裂风 · 五骊踏尘"
+      - "&e主手持有五骊矟按 &fF &e键唤马"
+      - "&7副手获得 &f五骊鞚&7"
+      - "&8主手持矟，副手持鞚"
+      - "&7召 &f4匹 &7骷髅马随行"
+      - "&e左键 &7斩出剑气，范围伤害并击退。"
+      - "&e右键 &7蓄力1秒，后向准星冲锋。"
+      - "&7沿途造成范围伤害，并斩出4道剑气。"
+      - "&8&l “五骊既至，锋不可当”"
+
+# ---------- 枯骸骑将（boss 召唤 · 凋零骷髅头颅 · 构思boss tier 1）----------
+#   2026-10-06 改名：物品「白骨骑将」→ **枯骸骑将**（lore：昔日戍边骑将，亡后魂骨不散）
+#     · 召唤出的**骷髅**改名 **枯骸将军**（出场提示：枯骸未朽，骑将仍征）
+#     · 召唤出的**骷髅马**改名 **璇骊**（出场提示：随将而行，一往无前）
+#     · 枯骸将军 / 璇骊 头顶各有**一条 boss 血条**（BossBar，实时反映各自血量）
+#     · 枯骸将军的**斩击改为出场 5 秒后才第一次使用**（BR_FIRST_QI），不再一召唤就糊脸
+#     · **新技能「伺骨」**：冷却 30 秒，召唤 3 只金套骷髅（各配一匹骷髅马「残驹」）
+#       详见 gs_boss_rider.js 顶部参数区
+#   右键 = 召唤一只 boss：**骷髅**骑在**骷髅马**上
+#     · 头戴**侦测器**、身穿**下界合金**全套（胸甲/护腿/靴子）、主手**金剑**
+#       （换掉骷髅自带的弓 ⇒ 只会近战，不再射箭）
+#     · 盔甲与剑全部 setUnbreakable(true) ⇒ **永不掉耐久**，死亡也一件都不掉
+#   血量：**boss 800 / 战马 450**（2026-10-06：500 / 250 → **800 / 450**）
+#   基础（普攻）伤害 **20 点**（2026-10-06：2 → 15 → **20**）
+#     ★ 金剑自带 +4 攻击力会叠加，所以属性 base 写成 (20 - 4)，最终值才正好 = 20 点
+#       （你的服若"怪物不吃武器属性加成"，把 BR_WEAPON_BONUS 改成 0.0）
+#   ★ **阵营**：枯骸将军 / 璇骊 / 伺骨 / 残驹 = 自己人，斩击、冲刺、凋零之首**都不会误伤**，
+#     伺骨也不会回头打 boss（`BR_ALLY = false` 可关）
+#   ★ **出场 BGM**：boss 周围 64 格内循环播放唱片 **Lena Raine - Pigstep**（猪灵堡垒遗迹那张，2:28）
+#     （`BR_MUSIC` / `BR_MUSIC_RANGE` / `BR_MUSIC_SOUND` 可调；万一没有 pigstep 自动退到 ward）
+#   技能 = **五骊矟的削弱版**，**全程没有任何提示词**
+#     · **斩击**：**7 点**伤害 / 冷却 **3.5 秒** / 射程 10 格（一点击退 + 横扫粒子）
+#       ★ **由 boss 射出、一路飞过去**（不是瞬间糊脸）：先举剑 0.3 秒，
+#         再以 0.35 格/刻推进 ⇒ 飞完 10 格约 1.45 秒，玩家看得见、躲得开
+#     · **冲刺**：**8 点**伤害 / 冷却 **30 秒** / 冲 **7 格**（1 秒动画，不是瞬移）/ **不无敌**
+#       ★ **无视防具`（BR_DASH_PIERCE = true`）**：盔甲 / 保护附魔 / 抗性**一律不减伤**
+#   ★ **原版掉落物全部删除**：骷髅的骨头 / 箭、骷髅马的骨头一律不掉
+#     （空战利品表 + 死亡事件里 getDrops().clear() 双保险），经验也不掉
+#   ★ **boss 死亡必掉「五骊矟」**（GS_WULI_SPEAR，掉在它倒下的地方）
+#   ★ **boss 死了 → 战马跟着一起死**；**战马先死 → 惹怒 boss**，解锁新能力：
+#     朝最近的玩家发射**凋零之首**（黑色未蓄力，**不会炸坏地形**），
+#     ★ **不破坏地形**：光靠 setCharged(false) 不够（原版凋零头命中必爆炸、威力硬编码），
+#       实际靠同步 `EntityExplodeEvent` **清空待破坏方块列表**（+ 1 刻后按快照还原兜底）；
+#       伤害仍由 `EntityDamageByEntityEvent` 结算 ⇒ **炸到人不炸地形**
+#     命中 **20 点伤害 + 凋零 II 5 秒**，冷却 4 秒；追踪 5 秒后自毁（不残留、不炸地形）
+#   **不能与方块交互**（手持时右键方块，方块功能一律取消），但**照样召唤 boss**
+#   ★ **消耗品**：召唤成功才扣 1 个（想改成无限用：gs_boss_rider.js 里 BR_CONSUME = false）
+#   ★ 每个玩家**同时只能有 1 只**活着的白骨骑将（再右键静默忽略），防连点刷爆
+#   ★ 打的是 `gs:boss` 标记（**不是** gs:summon）⇒ 梦境护腿的杀戮光环**照常能打到它**
+#   ★ 获取（2026-10-08 第二批改）：**万象归序·心智构象熔炼炉**合成
+#     1 凋零骷髅头颅 + 3 记忆碎片 + 37 梦境规则 → 枯骸骑将
+GS_BONE_RIDER:
+  item_group: gs_boss
+  display_tier: 1
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING
+  recipe:
+    1: {material: WITHER_SKELETON_SKULL,                       amount: 1}
+    2: {material_type: slimefun, material: GS_MEMORY_FRAGMENT, amount: 3}
+    5: {material_type: slimefun, material: GS_DREAM_RULE,      amount: 37}
+  script: gs_boss_rider
+  item:
+    name: "&8枯骸骑将"
+    material: WITHER_SKELETON_SKULL
+    lore:
+      - "&7昔日戍边骑将，亡后魂骨不散"
+
+GS_WEILONG:
+  item_group: gs_toy
+  display_tier: 5
+  placeable: false
+  recipe_type: MAGIC_WORKBENCH
+  recipe:
+    1: {material_type: slimefun, material: STAFF_ELEMENTAL_WIND, amount: 1}
+    2: {material_type: mc,       material: SKELETON_SKULL,       amount: 1}
+    3: {material_type: slimefun, material: STAFF_ELEMENTAL_WIND, amount: 1}
+    4: {material_type: mc,       material: TNT,                  amount: 1}
+    5: {material_type: mc,       material: IRON_CHESTPLATE,      amount: 1}
+    6: {material_type: mc,       material: TNT,                  amount: 1}
+    7: {material_type: slimefun, material: STEEL_THRUSTER,       amount: 1}
+    8: {material_type: mc,       material: BLAZE_ROD,            amount: 1}
+    9: {material_type: slimefun, material: STEEL_THRUSTER,       amount: 1}
+  item:
+    name: "&f威龙"
+    material: IRON_INGOT
+    lore:
+      - "&7我已就位，可以开始行动"
+
+# ==========================================================================
+# ---------- 篮球生成器（GS_BASKET_GEN · 构思玩具第 7 格 · 2026-10-10 第三十批新增）----------
+#   ★★★ 第八十八批：构念删除后玩具整体前移 ⇒ 8 → **7**。
+#   材质 **红色混凝土 RED_CONCRETE** ｜ 名字 &c篮球生成器 ｜ **可放置**（placeable: true）
+#   全部逻辑在 scripts/gs_listener.js 的 `gsBg*` 模块（和 gsBb* 是两套独立的表）：
+#     · **放下后** ⇒ 在这个方块**上方 1.5 格**生成一颗篮球
+#       （同一个展示实体渲染、同一套投篮 / 落地弹两下 / 防隧穿逻辑）
+#     · ★★ 第三十一批按用户澄清改成：**一台生成器只有一颗球**（GS_BG_MAX = 1）
+#       —— **多人抢同一颗**：谁都能捡，捡走后**不会**再长第二颗；球投出落地后
+#          别人可以再捡。用户原话："我说的十个人是打一场比赛用一颗球打"
+#          （第三十批曾是"最多同时 10 个人各拿一颗"，已作废）
+#     · **只有"停着的球"能捡**（生成点上待捡的 / 落地停住的）；
+#       已经绑在某人身上的球**捡不走** ⇒ 不存在"从别人身上抢球"
+#     · **离方块超过 32 格** ⇒ 自动送回生成器上方（GS_BG_RANGE）
+#     · 捡起后跟着玩家运球，右键投出；落地后别人可以再捡
+#     · **方块被破坏** ⇒ 它名下的球全部消失（实体也一起删掉，不留幽灵）
+#   ★ 生成器位置存在**世界 PDC**（gs:bg_nodes）⇒ 重启后仍然记得
+#   ★★ 第三十六批（本批）：
+#     · **获取 = 增强型工作台（ENHANCED_CRAFTING_TABLE）九宫格**：
+#         ┌──────┬──────┬──────┐
+#         │橙染料│黑染料│橙染料│   槽 1 / 2 / 3
+#         ├──────┼──────┼──────┤
+#         │粘液球│ 雪球 │粘液球│   槽 4 / 5 / 6
+#         ├──────┼──────┼──────┤
+#         │橙染料│黑染料│橙染料│   槽 7 / 8 / 9
+#         └──────┴──────┴──────┘
+#       橙染料 ORANGE_DYE ×4 ｜ 黑染料 BLACK_DYE ×2 ｜ 粘液球 SLIME_BALL ×2 ｜ 雪球 SNOWBALL ×1
+#     · **lore 整段删除**（需求："删除篮球生成器的lore"）⇒ 物品只剩名字与材质
+#     · ★★ 同批把**「你等着收我的律师函吧」（GS_LAWYER_LETTER）整段从这里删掉了**
+#       —— 它那套"穿胸甲自动出球"的脚本逻辑（gsBb*）**保留没删**，
+#          因为本生成器的物理 / 渲染全部复用它 ⇒ 只是再没有物品能触发律师函那条路。
+#   ★★ 本批改了物品本体（删 lore + 加配方）⇒ **旧物品不会自动更新**，
+#      想让玩家拿到干净的新物品请重新 `/sf give GS_BASKET_GEN`（或直接在增强型工作台里合成）
+# ==========================================================================
+GS_BASKET_GEN:
+  item_group: gs_toy
+  display_tier: 7
+  placeable: true
+  recipe_type: ENHANCED_CRAFTING_TABLE
+  recipe:
+    1: {material_type: mc, material: ORANGE_DYE, amount: 1}
+    2: {material_type: mc, material: BLACK_DYE,  amount: 1}
+    3: {material_type: mc, material: ORANGE_DYE, amount: 1}
+    4: {material_type: mc, material: SLIME_BALL, amount: 1}
+    5: {material_type: mc, material: SNOWBALL,   amount: 1}
+    6: {material_type: mc, material: SLIME_BALL, amount: 1}
+    7: {material_type: mc, material: ORANGE_DYE, amount: 1}
+    8: {material_type: mc, material: BLACK_DYE,  amount: 1}
+    9: {material_type: mc, material: ORANGE_DYE, amount: 1}
+  item:
+    name: "&c篮球生成器"
+    material: RED_CONCRETE
+    # ★★ 2026-10-12 第七十一批：按用户要求新增一行 lore（**不加任何颜色码**）
+    lore:
+      - "哇~真的是你啊~嗨嗨哟"
+
+# ---------- Bad Apple（兔子皮 RABBIT_HIDE + item_model 渲染成附魔金苹果 · 构思玩具第 10 格）----------
+#   分类：构思玩具 (gs_toy) —— 第 10 格（**紧接「借寿」第 9 格之后**）
+#     ★ 别被 items.yml 里的「1~7 + 9」骗了：**第 8 格不是空的** ——
+#       那是「**海水过滤器**」，它是**机器**，
+#       写在 `recipe_machines.yml` 里（`item_group: gs_toy` / `display_tier: 8`），
+#       所以 items.yml 这边看着像缺了一格。
+#     ★★★ 第八十八批：用户「删除构念，构思玩具全部往前移一格」
+#       ⇒ 构念（原第 1 格）整件删除、玩具整体前移 ⇒ Bad Apple **11 → 10**。
+#   获取：**魔法工作台（MAGIC_WORKBENCH）**九宫格 ——
+#     ★ 用户原话：「配方魔法工作台九宫格5原版苹果」
+#     ┌──────┬──────┬──────┐
+#     │  1   │  2   │  3   │
+#     ├──────┼──────┼──────┤
+#     │  4   │5 苹果│  6   │   ← **只有正中间第 5 格**：APPLE ×1
+#     ├──────┼──────┼──────┤
+#     │  7   │  8   │  9   │
+#     └──────┴──────┴──────┘
+#   材质：`material_type: saveditem` → `saveditems/ba.yml`
+#     ★ 存档物品本体是**兔子皮**（`minecraft:rabbit_hide`），
+#       靠 `minecraft:item_model: "minecraft:enchanted_golden_apple"`
+#       **在客户端渲染成附魔金苹果**。
+#       ⇒ 和「五骊矟」（金剑 + item_model 渲染成金矛）是**同一种做法**：
+#          `id` 决定**行为**，`item_model` 只决定**客户端长什么样**。
+#     ⚠ `saveditems/ba.yml` 是这件物品的一部分 —— 重装附属时不能只放
+#        yml + scripts，必须连 `saveditems/` 一起放（否则物品会变成空气 / 石头）。
+#   效果（见 scripts/gs_bad_apple.js）：
+#     · 右键：为**按的那个人自己**播放整首《Bad Apple!!!》
+#       （红石音乐，**36462 个音符 / 183.5 秒**）
+#       ★ 曲谱来自 `server\plugins\Bad Apple!!!.nbs`，
+#         已**离线转成脚本里的 SG_TL 表**并写死 ⇒ **运行时不用读 .nbs、无额外依赖**
+#         （转换工具：`_check/nbs_to_js.py`，配置 `_check/bad_apple_cfg.json`）
+#       ★ 音符盒只有 **0~24 共 25 档（2 个八度）**，本曲跨度 **71 个半音** ⇒
+#         取**全局平移 +7**（落进范围的音最多 = 87.9%），超出的音按八度折回。
+#         25 档是硬上限，换任何写法都躲不掉；折回会让那 12.1% 的音程有偏差。
+#     · **不消耗**物品（可以反复按）
+#     · ★★ **冷却 = 整首歌的时长**（用户：「冷却就是整首歌」）
+#       ⇒ 脚本里写的是 `SG_CD_MS = SG_LEN_MS` = **183536 毫秒 = 183.5 秒**，
+#         曲子放完的那一刻冷却正好走完（理论上可以无缝连播）
+#     · 冷却中**静默忽略**（不提示、不出声、不消耗）
+#     · **无法与任何方块交互**：手持本物品右键方块时，方块功能一律不触发
+#       （不开箱子 / 不耕田 / 不放方块 / 不点按钮…），只走本脚本的音效
+#     · 默认只有**按的人自己**听得到（`SG_OWNER_ONLY = true`）
+#     ★ 与「咒术回战」是**同一套播放引擎**（都由 `_check/nbs_to_js.py` 生成），
+#       区别只有两点：
+#         ① 本曲**不召唤任何生物**（咒术回战会召唤「宿瘫」+「五条舞」）；
+#         ② 本曲长得多（**183.5 秒** vs 43.5 秒）。
+# ==========================================================================
+GS_BAD_APPLE:
+  item_group: gs_toy
+  display_tier: 10
+  placeable: false
+  recipe_type: MAGIC_WORKBENCH
+  recipe:
+    # ★ 魔法工作台九宫格：**只有正中间第 5 格**放 1 个原版苹果（用户指定）
+    5: {material_type: mc, material: APPLE, amount: 1}
+  script: gs_bad_apple
+  item:
+    name: "&6Bad Apple"
+    material_type: saveditem
+    material: ba
+    amount: 1
+    lore:
+      - "&7掺冰冰"
+
+# ---------- 妄念（三阶段 boss 召唤 · **唤魔者头** · 构思boss tier 2）----------
+#   脚本：scripts/gs_boss_three.js（入口 onUse）
+#   ★ **材质 = saveditems/hmz.yml（存档物品 · 玩家头颅 · 唤魔者皮肤）** ★ 2026-10-12 第六十八批改
+#     来源：冷殇科技的存档物品 `hmz.yml`（`minecraft:player_head` + 唤魔者皮肤），
+#     这里**逐字复制**进本附属的 `saveditems/` —— 文件名即引用名。
+#     ★ 名字 / lore / PDC 都**不受它影响**（三条都已反编译核实）：
+#       · 名字 / lore —— `CommonUtils.readItem` 里 `if (!name.isBlank()) setDisplayName(name)`、
+#         `if (!lore.isEmpty()) setLore(lore)` ⇒ items.yml 的 `name` / `lore` **覆盖**存档物品自带的。
+#       · PDC —— `SlimefunItemStack(id, stack)` 的构造器会调
+#         `CustomItemDataService.setItemData(meta, id)` ⇒ `PersistentDataContainer.set`
+#         **无条件覆盖** ⇒ 存档物品里原本的 `EVOKER_HEAD` 会被改写成 `GS_WANGNIAN`。
+#       · 数量 —— `count: 64` 被下面的 `amount: 1` 覆盖（readItem 末尾 `stack.setAmount(amount)`）。
+#     ⚠ **`saveditems/hmz.yml` 是这件物品的一部分**，重装附属时不能只放 yml + scripts，
+#       必须把 saveditems/ 一起带上（GS.zip 里已经打进去了）。
+#   ★ **lore（★ 2026-10-12 第六十九批）**：用户原话四句，**一字没改**（只按本附属惯例加 `&7` 颜色码）：
+#     「三念归一 / 灾念入体 / 以念为意 / 魔念之力」。
+#     原来这里是 `lore: []`（空列表，鼠标悬停什么都不显示）⇒ 本批才补上这四行。
+#   ★ **获取（2026-10-08 第二批改）**：**万象归序·心智构象熔炼炉**
+#     —— **4 不死图腾 + 37 梦境规则 → 妄念**
+#   ★ **消耗品**：召唤成功才扣 1 个（想无限用 → gs_boss_three.js 里 BT_CONSUME = false）
+#   ★ **三阶段必须全都打死**才能再召唤第二个（只看这个玩家自己的那条线）
+#   右键 = 召唤**第一阶段**，一只死了接下一只：
+#     ------------------------------------------------------------------
+#     ① **幻念僧**（**掠夺者**，**空手本体射击** · **300 血** · 基础伤害 **15**）
+#        · 2026-10-06 原型由「唤魔者」改为「掠夺者」（唤魔者自带原版施法，去不干净）
+#        · ★ 2026-10-06 **弩去掉了**：原版掠夺者拿弩的装填太慢（≈1.9 秒且不受控），
+#          改为**本体每 1.5 秒射一支箭**，双手每拍强制清空；箭伤 **12 点**
+#        · 技能1 **追踪鳄鱼嘴**：一路追人的尖牙，命中 **15 点**，最远 **12 格**，CD **10 秒**
+#        · 技能2 **瞬影**：读条 **1 秒** → 出现在**玩家视角正后方 8 格** + **回 50 血**，CD **20 秒**
+#        · 死亡：原地留下一团**羊驼口水**，掉 **1 个妄想碎片**，**3 秒后**在死亡地点召唤 ↓
+#     ② **碎念执**（卫道士 · **800 血** · 基础伤害 **20**）
+#        · 技能1 **斩击**：**竖着的**一道刀光，伤害 **35 点**，**会破盾**，特效 **樱花瓣**，
+#          弹道快、射程 **4 格**、击退约 **3 格**，CD **10 秒**
+#          ★ **2026-10-06 修正**：方向原本在举刀前就锁死 ⇒ 现在**出手那一刻才定向**
+#        · ★ 技能2 **星环飞斧**（2026-10-06 新增，CD **12 秒**）：
+#          身上浮现**环绕星星粒子**、持续 **1.5 秒** → **飞出一把真斧子**
+#          （隐形盔甲架手持铁斧，边飞边转）：**最远 10 格**、伤害 **35 点**、**小小击退**、
+#          **直线不穿墙**（玻璃也挡得住）、**撞到方块 / 玩家就停**；
+#          ★ **方向在「出手那一刻」才锁** —— 蓄力那 1.5 秒只出粒子，玩家可自由跑位，
+#            斧头朝**出手瞬间**他所在的位置飞（出手后不再追踪）
+#          斧头停下的位置生成一只「**妄想**」（恼鬼 · **7 伤害 / 25 血**），
+#          **9 秒后处死**（防卡服），最多同时 3 只
+#          ★ 妄想**与卫道士同队** ⇒ 不吃斧子与樱花斩击的伤害，双方互不索敌
+#        · 死亡：死亡地点冲起一条**灵魂沙粒子柱**（3 秒窜上 **22 格**），
+#          掉 **3 个妄想碎片**，3 秒后召唤 ↓
+#     ③ **妄念魔**（劫掠兽 · **1000 血** · 基础伤害 **40**）
+#        · 技能1 **坠地**：原地漂浮蓄力 **1 秒** → 出现在**玩家头顶** → **1 秒后落地**，
+#          落地对 **3.5 格**内所有生物造成 **150 点**（★ **悬停开始后不追踪**，玩家跑得掉），
+#          CD **20 秒**
+#          ★ **2026-10-06 修正**：落点原本在**起手**就算好（蓄力整整 1 秒）⇒ 砸的是空气，
+#            现在**蓄力结束那一刻**才用目标当时的位置
+#        · **原技能2「龙息弹」已按需求删除**
+#        · 死亡：掉 **9 个妄想碎片**（**不掉精神力** —— 精神力改由唤梦机合成）
+#     ------------------------------------------------------------------
+#   ★★★ **三阶段通用技能「锁链拽回」—— 反挖三填一（2026-10-07 定稿）**
+#     · 玩家挖 1 格深的沟把 boss **卡住**，自己站沟沿安全输出
+#       ⇒ **boss 打不到人，人却打得到 boss**。这个技能治的就是这个
+#     · 读条 **1 秒**（拉锁链粒子）→ 把 **64 格内**的玩家**强制传送**到 boss
+#       **脚下 1.6 格**处围成一圈（**一定进 boss 的近战范围**），冷却 **18 秒**
+#     · ★ **不设距离门槛：64 格内一律全拉**
+#       （早期版本的「4 格内不拉」+「射程外才触发」恰好把唯一要拉的人放过了，已删除）
+#     · **无伤害**（纯控制）；单次最多 8 人；落点逐个判 `btSafeY` + `isPassable`
+#     · ★ `ref.dragged` 记「本轮已拉过谁」，**在 CD 好了那一刻清空**
+#       —— 不清的话第一次拉完所有人都进名单 ⇒ 这个技能一辈子只放一次
+#     可调：`BT_DRAG_CD` / `_READ` / `_RANGE` / `_RING` / `_CAP`
+#     ------------------------------------------------------------------
+#   ★ **掉落物（2026-10-08 第四批改）**：每阶段都掉 **妄想碎片**（唱片碎片材质）**1 / 3 / 8** 个
+#     （一轮共 12 个）；**36 个 + 1 个入梦可在唤梦机合成 1 个精神力**
+#   ★ **使用动画**：原来右键时会播的「不死图腾动画」**已按需求删除**。
+#   ★ **每个阶段各挂一条 BossBar**（幻念僧 / 碎念执 / 妄念魔），
+#     默认**只有召唤者本人看得见**（gs_boss_three.js 里 BT_BAR_ONLY_OWNER）
+#   ★ **全部阶段的原版掉落物一律清空**（绿宝石 / 铁斧 / 图腾 …），经验也不掉
+#   ★ 每个阶段**出场 4 秒内不放技能**（BT_FIRST_MS = 4000）
+#   ★ **破盾**照原版「斧头砍盾牌」的做法：`p.setCooldown(SHIELD, 5000)`（5 秒内举不起盾）
+#     + 按原版口径扣盾牌耐久（耐久归零就碎）
+#   ★ 手持时**不能与方块交互**，但照样召唤
+GS_WANGNIAN:
+  item_group: gs_boss
+  display_tier: 2
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING
+  recipe:
+    1: {material: TOTEM_OF_UNDYING,                       amount: 4}
+    5: {material_type: slimefun, material: GS_DREAM_RULE, amount: 37}
+  script: gs_boss_three
+  item:
+    name: "&5妄念"
+    material_type: saveditem     # ★ 第六十八批：改用存档物品（玩家头颅 · 唤魔者皮肤）
+    material: hmz                #   → saveditems/hmz.yml（从冷殇科技逐字复制过来）
+    amount: 1
+    lore:                        # ★ 第六十九批：用户原话四句（只加 &7 颜色码）
+      - "&7三念归一"
+      - "&7灾念入体"
+      - "&7以念为意"
+      - "&7魔念之力"
+# ---------- 幻翼boss（**幻翼** · 单阶段 · 构思boss tier 5）----------
+#   ★★ 第八十六批：构思boss 栏目重排 ⇒ 幻翼由**第 3 格挪到第 5 格**
+#     （1 枯骸骑将 · 2 妄念 · 3 暗影虫卵 · 4 守夜人的提灯 · **5 幻翼**）。
+#   脚本：scripts/gs_boss_phantom.js（入口 onUse）
+#   ★ 2026-10-09 第十三批：① 材质换成**存档物品**（红色旗帜 + 6 层图案）
+#     ★ 第十三批那个「红色旗帜」**已在第六十八批换成 `hy.yml`（幻翼头颅）**，此行仅作历史记录
+#     ② 新增技能⑤「蓄力冲刺撞击」 ③ 掉落改成固定 **11 件** ④ 补上构思机九宫格配方
+#   ★ **名字**：`\uFFFD\u4DCD\uA7508\uFFFDk\uA66D#\u4DCE`
+#     （前两个 \uFFFD 是需求原文里就带的替换符，**原样保留、没有做任何"修复"**；
+#      想换名只改 gs_boss_phantom.js 的 PH_NAME 一个常量 —— 那是 boss **头顶 / 血条**的名字，
+#      物品名在下面的 `item.name` 里单独写）
+#   ★ **材质**（★ 第六十八批改）：**存档物品**（`material_type: saveditem`）——
+#     来源：冷殇科技的存档物品 `hy.yml`（`minecraft:player_head` + 幻翼皮肤），
+#     这里**逐字复制**进本附属的 `saveditems/` —— 文件名即引用名。
+#     ★ 名字 / lore / PDC 与「妄念」同理：items.yml 的 `name` / `lore` 覆盖存档物品自带的，
+#       PDC 由 `SlimefunItemStack` 用**本物品的 id** 重写成 `GS_PHANTOM`，
+#       `count: 64` 被 `amount: 1` 覆盖。
+#     ⚠ **`saveditems/hy.yml` 是这件物品的一部分**，重装附属时必须一起带上（GS.zip 里已打进去）。
+#   ★ **体型**：幻翼 + 原版缩放属性 `Attribute.SCALE`（≈2.857）
+#     ⇒ 碰撞箱 **约 4.5 宽 × 2.5 高**（凋零是 0.9×3.5；原版缩放只能等比，做不到"瘦高"）。
+#     想让箱子更大/更"凋零量级"：改脚本里 PH_BOX_W 即可（缩放值自动反推）。
+#   ★ **血量 1000**（本服实体上限卡 1024 ⇒ 1000 写得进去）
+#   ★ **普攻 = 原版幻翼伤害**（不写 ATTACK_DAMAGE 属性 ⇒ 6 + 体型档 = **11 点**）
+#   ★ **技能**（数值全部照需求）：
+#     ① **坚守者冲击波** —— 蓄力 1 秒 → 一道冲击波，**原版伤害 10 点**（用真正的
+#        `DamageType.SONIC_BOOM` 结算）、射线最长 30 格、**打不穿墙**、击退照原版，冷却 **13 秒**
+#     ② **三枚龙息弹** —— **1 枚瞄准玩家**（瞄准"当前站位"直线飞，**不是追踪**）
+#        + **2 枚随机落点**（玩家周围 8 格）；用原版 `DragonFireball`
+#        ⇒ **留下的就是原版龙息**、伤害也是原版数值，冷却 **7 秒**
+#     ③ **三枚凋零之首** —— **1 枚追击玩家**（慢慢转向咬人，急转/绕柱子甩得掉）
+#        + **2 枚随机落点**；**不改伤害** ⇒ 原版凋零之首（命中 8 点 + 凋零 II）；
+#        ★★ **绝不破坏地形**（黑色未蓄力头 + setYield(0) + **清空 EntityExplodeEvent 的
+#        待破坏方块列表** 三层保险），飞 10 秒自毁，冷却 **11 秒**
+#     ④ **投掷三叉戟** —— 原版 `Trident` 弹体，**原版溺尸投掷伤害 8 点**；
+#        **在三叉戟的落点召唤一只原版闪电苦力怕**（`setPowered(true)`），冷却 **5 秒**
+#        ★ 闪电苦力怕**不会被 boss 的技能打到**（伤害按阵营免伤）；
+#          最多同时 **4** 只、出生 **60 秒**后自动消失（防卡服）
+#        ★★ 第六十三批：苦力怕的爆炸**不再破坏任何方块**（只炸人、不掉方块）
+#          —— 用户「第三格boss生成的闪电苦力怕删除破坏方块功能」，
+#            原来的 `PH_PET_GRIEF` 开关已**整个删除**，没有关掉再打开的口子
+#     ⑤ **蓄力冲刺撞击**（★ 第十三批新增）—— 蓄力 **1.5 秒**，期间放 **3 次烟花音效**
+#        （每 0.5 秒一次）→ 朝「**玩家那一刻所在的位置**」**直线冲刺**（2.2 格/刻 =
+#        **44 格/秒**，玩家跑速只有 5.6 ⇒ 基本躲不掉）→ **命中 55 点伤害**
+#        + **重锤猛击音效**（`item.mace.smash_ground_heavy`）+ 击退；
+#        **没撞到 / 撞墙 ⇒ 什么都不发生**。冷却 **17 秒**（★ 从**开始蓄力**那一刻算起）
+#   ★ **可视化血条**：一条 BossBar（进度 = 当前/1000），默认**只有召唤者本人看得见**
+#   ★ **消耗品**：召唤成功才扣 1 个；**每个玩家同时只能有 1 只**活着的
+#   ★ 手持时**不能与方块交互**，但照样召唤
+#   ★ **掉落物**（★ 第十三批改）：**清空原版掉落物**（幻翼膜等一律不掉），固定掉 **11 件（各 1 个）** ——
+#     重锤 · 三叉戟 · 龙蛋 · 下界之星 · 腐肉 · 火药 · 幽匿催发体 · 幻翼膜 ·
+#     本 boss 召唤物（`GS_PHANTOM` 自身）· 烟花火箭（飞行时间 1）· 鞘翅
+#   ★ **经验**（★ 第十三批 · 修订四）：**120000**（常量 `PH_DROP_XP`，原为 0）
+#   ★★ 「清空原版掉落」**只能靠死亡事件里的 `getDrops().clear()`** —— 1.21.11 **没有**
+#      `LootTables.EMPTY` 常量、也没有 `minecraft:empty` 这张表 ⇒ 老写法（置空战利品表）
+#      **静默失效**。同理本 boss 的 PDC 标记必须用 `NamespacedKey.fromString()`，
+#      **不能**用 `new NamespacedKey(plugin, name)`（GraalJS 下重载消歧义失败）。
+#   ★ **获取**（★ 第十三批补上）：**构思机**（多方块机器）里合成 —— 就是下面这段 `recipe:` 的九宫格。
+#     真正生效的那条在 `mb_machines.yml` 的 `GS_RULE_CONCEPTOR.recipes.phantom`，
+#     **两份的格位必须完全一致**（发射器是逐格比对的）。
+GS_PHANTOM:
+  item_group: gs_boss
+  display_tier: 5              # ★ 第八十六批：3 → 5（暗影虫卵挪到妄念后面、
+                               #   守夜人的提灯挪到暗影虫卵后面 ⇒ 幻翼整体顺延两格）
+  placeable: false
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  # ★ 九宫格（展示图，与 mb_machines.yml 的 phantom 配方**格位必须一致**）：
+  #   ┌──────────┬───────────┬───────────────┐
+  #   │ 三叉戟   │ 腐肉      │ 重锤          │
+  #   ├──────────┼───────────┼───────────────┤
+  #   │ 鞘翅     │ 幻翼膜    │ 火药          │
+  #   ├──────────┼───────────┼───────────────┤
+  #   │ 龙息     │ 回响碎片  │ 凋零骷髅头    │
+  #   └──────────┴───────────┴───────────────┘
+  recipe:
+    1: {material: TRIDENT,                amount: 1}
+    2: {material: ROTTEN_FLESH,           amount: 1}
+    3: {material: MACE,                   amount: 1}
+    4: {material: ELYTRA,                 amount: 1}
+    5: {material: PHANTOM_MEMBRANE,       amount: 1}
+    6: {material: GUNPOWDER,              amount: 1}
+    7: {material: DRAGON_BREATH,          amount: 1}
+    8: {material: ECHO_SHARD,             amount: 1}
+    9: {material: WITHER_SKELETON_SKULL,  amount: 1}
+  script: gs_boss_phantom
+  item:
+    name: "&8�䷍Ꝑ8�kꙭ#䷎"
+    material_type: saveditem          # ★ 第六十八批：改用存档物品（玩家头颅 · 幻翼皮肤）
+    material: hy                      #   → saveditems/hy.yml（从冷殇科技逐字复制过来）
+    amount: 1
+    glow: true
+    lore:
+      - "&7你只是怕了"
+
+# ==========================================================================
+# 暗影虫卵（GS_SHADOW_EGG · 阶段 boss 第 3 格 · 2026-10-13 第八十二批新增）
+#   ★ 用户原话（第八十二批）：
+#     「新增一个阶段boss，材质为
+#       ...\【冷殇科技】LengShangTech-1.2.1\saveditems\myr.yml，
+#       lore暂时留空，配方暂时留空」
+#     「暗影虫卵」（物品名，同日追加确认）
+#   ★ 材质：**存档物品** `saveditems/myr.yml`（从【冷殇科技】LengShangTech-1.2.1
+#     逐字复制过来，逐字节一致）。它的本体是**玩家头颅**（`id: minecraft:player_head`），
+#     靠 `minecraft:item_model` 之类的**数据组件**换外观 ⇒ items.yml 的 `item:`
+#     段根本表达不了组件，必须走 `material_type: saveditem`。
+#     ★★ 别和 `modelId` 搞混：`modelId` 是 **CustomModelData**，
+#         `minecraft:item_model` 是 1.21.4+ 的**数据组件**，两者不是一回事
+#         （第八十一批「五骊矟」踩过同一个坑，见那段注释）。
+#   ★ lore：**本批留空** —— `lore: []` 是空列表 ⇒ 鼠标悬停什么都不显示
+#     （项目惯例：留空就写 `lore: []`，别写 `lore:` 然后什么都不跟）
+#     ★★★ 第八十六批：**补上一行**（用户原话，只加 `&7`）——
+#       「lore：还有温度，还在蠕动」⇒ 不再是 `lore: []`。
+#   ★ 获取：**本批留空**（`recipe_type: "NULL"`）—— 用户「配方暂时留空」
+#     ★★★ 第八十六批：**改成在「万象归序」里合成**（用户「暗影虫卵配方：
+#       37个梦境规则+16个末影之眼在万象归序制作，放在妄念后面一格」）——
+#       配方类型由 `"NULL"` 改成 `GS_RT_MIND_SMELTING`，并补上九宫格。
+#   ★ 玩法：全部逻辑在 `scripts/gs_boss_shadow.js`，**三阶段**
+#       一阶段 末影螨「暗影巢虫」  150 血 · 伤害 16 · 命中给玩家凋零 II 5 秒
+#       二阶段 末影人「暗影猎手」  650 血 · 伤害 25 · 每 8 秒追踪龙息弹
+#                                  （40 伤 · **不留龙息团**）· 每 11 秒把玩家瞬移到身前
+#       三阶段 末影人「暗影女皇」 1000 血 · 伤害 33 · 每 7 秒把玩家瞬移到身前
+#                                  · 每 10 秒弹道箭（20 伤）· 落点生「暗影蠕虫」
+#                                  · 每 15 秒脚下 4 只「暗影蛆虫」·15 秒后死·留龙息团
+#       三阶段全程：原版掉落清空 ｜ 末影人**不索敌我们的末影螨** ｜
+#                   boss **不乱传送**、**不搬方块** ｜ 弹体**不炸地形**
+#   ★ 掉落：**本批留空** —— 三阶段全部打完什么都不掉（用户「先留空，以后补」）
+#   ★ 召唤：手持右键，**消耗 1 个**；每个玩家同时只能有 1 条线活着
+# ==========================================================================
+GS_SHADOW_EGG:
+  item_group: gs_boss
+  display_tier: 3              # ★ 第八十六批：4 → 3（用户「放在妄念后面一格」）
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING   # ★ 第八十六批：改在「万象归序」里合成
+  # ★ 万象归序九宫格（展示图，与 recipe_machines.yml 的 shadow_egg
+  #   **格位必须完全一致**）：
+  #   ┌──────────┬────────────┐
+  #   │ 末影之眼  │ 梦境规则    │   槽 1 ×16 / 槽 2 ×37
+  #   └──────────┴────────────┘
+  recipe:
+    1: {material_type: mc, material: ENDER_EYE,           amount: 16}
+    2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 37}
+  script: gs_boss_shadow
+  item:
+    name: "&5暗影虫卵"
+    material_type: saveditem   # ★ 玩家头颅 + 数据组件换外观 ⇒ 只能走存档物品
+    material: myr              #   → saveditems/myr.yml（从冷殇科技逐字复制）
+    amount: 1
+    lore:
+      - "&7还有温度，还在蠕动"
+
+# ==========================================================================
+# 守夜人的提灯（GS_NIGHT_LANTERN · 阶段 boss 第 4 格 · 2026-10-13 第八十六批新增）
+#   ★★★ 用户原话（逐字）：
+#     「新增boss，名字：守夜人的提灯，材质：灵魂灯笼，lore：摇摇晃晃，眼显微光
+#       配方：37个梦境规则+16个灵魂沙放在暗影虫卵后面一格」
+#   ★ 材质 **灵魂灯笼 SOUL_LANTERN**（用户指定「材质：灵魂灯笼」）—— 原版材质，
+#     **不需要 saveditem**。
+#   ★ lore **一行用户原话，一字未改**（只加了 `&7` 颜色码）。
+#   ★ 格位：**构思boss 第 4 格** —— 用户「放在暗影虫卵后面一格」；
+#     本批暗影虫卵已挪到妄念后面（第 3 格）⇒ 提灯正好接在第 4 格。
+#   ★ 获取：**万象归序·心智构象熔炼炉**（`GS_RT_MIND_SMELTING`）里合成 ——
+#     37 梦境规则 + 16 灵魂沙（用户指定；与暗影虫卵那条**同一种形状**）。
+#     真正生效的那条在 recipe_machines.yml 的 night_lantern，**格位必须一致**。
+#   ★ 玩法：全部逻辑在 `scripts/gs_boss_nightwatch.js`，**两阶段**
+#       一阶段 洞穴蜘蛛「巡夜守卫」  450 血 · 伤害 17 · 每 7 秒弹道箭
+#                                  （命中给中毒 II / 缓慢 III / 失明，各 3 秒）
+#                                  · 每 9 秒白色粒子飞天 → 直接出现在玩家背后
+#       二阶段 坚守者「守夜人」      900 血 · 伤害 44 · 在一阶段死亡位置**爬出来**
+#                                  （原版坚守者出场动画）
+#                                  · 每 8 秒把玩家瞬移到身前 + 控制视角 1 秒 + 20 伤
+#                                  · 每 15 秒召唤 7 只「守夜蝇」（幻翼 70 血 10 伤）
+#                                  · **出场即开始 90 秒倒计时**，到点对最近的玩家
+#                                    造成 **996 点**伤害并提示「夜深了」
+#       全程：原版掉落清空 ｜ **只对最近的玩家有仇恨** ｜ **取消原版冲击波**
+#   ★ 掉落：一阶段固定掉 **1 把月镰**；二阶段固定掉 **6 个血夜粒**
+#   ★ 召唤：手持右键，**消耗 1 个**；每个玩家同时只能有 1 条线活着
+# ==========================================================================
+GS_NIGHT_LANTERN:
+  item_group: gs_boss
+  display_tier: 4              # ★ 第八十六批：接在 暗影虫卵(3) 后面
+  placeable: false
+  recipe_type: GS_RT_MIND_SMELTING
+  # ★ 万象归序九宫格（展示图，与 recipe_machines.yml 的 night_lantern
+  #   **格位必须完全一致**）：
+  #   ┌──────────┬────────────┐
+  #   │ 灵魂沙    │ 梦境规则    │   槽 1 ×16 / 槽 2 ×37
+  #   └──────────┴────────────┘
+  recipe:
+    1: {material_type: mc, material: SOUL_SAND,           amount: 16}
+    2: {material_type: slimefun, material: GS_DREAM_RULE, amount: 37}
+  script: gs_boss_nightwatch
+  item:
+    name: "&5守夜人的提灯"
+    material: SOUL_LANTERN
+    amount: 1
+    glow: true
+    lore:
+      - "&7摇摇晃晃，眼显微光"
+
+# ==========================================================================
+# 致万千无言者（GS_VOICELESS · 构思武器第 2 格 · 2026-10-10 第三十七批新增）
+#   材质 **石镐 STONE_PICKAXE**（外观是"最普通的工具"，扣 lore 里"无人替他们呐喊"）
+#   ★ 玩法：全部逻辑在 gs_listener.js 的 `gsVo*` 模块里；物品**故意不写 script 字段**
+#     （工具材质右键会被原版抢走 useItemInHand ⇒ onUse 不稳定，
+#       而且带 script 时 RSC 会紧跟 e.cancel() 干扰右键，所以统一走同步监听器）
+#     · **被动 · 连击**：连击数用一条**灰色倒计时血条**计时，标题 `言 N/7`（整条灰色）；
+#       血条长度 = 剩余时间；**3 秒内攻击命中 ⇒ 连击 +1**（并重新计时），
+#       **3 秒未命中 ⇒ 连击 -1**（窗口重置，再等 3 秒才继续掉）⇒ 逐层衰减、不是一次清零
+#       ★★ 第四十批：**只有命中"活物"才算**（掉落物 / 经验球 / 展示实体 / 盔甲架
+#          一律不算）—— 否则对着地上一堆掉落物挥几下就能把连击无痛叠满。
+#          左键挥砍与右键「逝言」**两条路径都过这一关**（见 gsIsCombatTarget）。
+#     · **伤害随连击提高**：1 连击 = **7 点**，每多一层 **+1** ⇒ 满 7 连击 = **13 点**
+#       （`GS_VO_DMG_BASE` / `GS_VO_DMG_PER`，想改成长曲线只动这两个常量）
+#     · **左键**：挥砍（灰色弧光粒子），命中范围内生物按**当前连击**结算伤害；
+#       命中 ≥ 1 个生物 ⇒ 连击 +1。★ 手持时**原版近战那一下被取消**
+#       （怪不再被击退、不再吃 10 刻无敌帧，否则怪会被推出范围 ⇒ 连击断掉）
+#     · **右键「逝言」**：**蓄力 0.6 秒**（身上浮现附魔台漂浮文字粒子）后，
+#       朝**准星方向**挥出一道**灰色弧形斩击** ——
+#       最远 **7 格**、宽度 **3 格**、最多**穿透 4 个生物**、每个 **11 点**伤害；
+#       弹道划过的位置会**短暂残留附魔台文字粒子**
+#   ★ **获取**：**构思机**（多方块机器）里合成 —— 就是下面这段 `recipe:` 的九宫格。
+#     真正生效的那条在 `mb_machines.yml` 的 `GS_RULE_CONCEPTOR.recipes.voiceless`，
+#     **两份的格位必须完全一致**（发射器是逐格比对的）。
+#   ★★★ 第八十六批：**上面这套整个作废** —— 用户要求
+#     「暗影虫卵二阶段固定掉落一把致万千无言者，删除配方，改成击败二阶段暗影掉落」
+#     ⇒ 构思机那条配方已从 `mb_machines.yml` **删除**，本件改成**纯掉落物**：
+#       由两阶段 boss「守夜人的提灯」**不是**、而是**暗影虫卵（GS_SHADOW_EGG）
+#       第二阶段（暗影猎手）**死掉固定掉 **1 把**
+#       （实现在 scripts/gs_boss_shadow.js 的 sbPhaseEnd()，stage == 2 那一支）。
+#     配方页左边改用 `GS_RT_SHADOW_S2` 显示「击败二阶段暗影虫卵掉落」。
+#   ★ 手持时**挖不动方块**（LEFT_CLICK_BLOCK / BlockBreakEvent / BlockDamageEvent 全取消），
+#     右键也不与任何方块交互（石镐不许挖矿 / 不许开箱子）
+# ==========================================================================
+GS_VOICELESS:
+  item_group: gs_weapon
+  display_tier: 3            # ★ 第六十三批：2 → 3（残樱插到「入梦」后面 ⇒ 整体顺延一格）
+  placeable: false
+  # ★★★ 第八十六批：**构思机配方整个删除**（用户「暗影虫卵二阶段固定掉落
+  #   一把致万千无言者，**删除配方**，改成击败二阶段暗影掉落」）
+  #   ⇒ 从「构思机合成」改成**纯掉落物**；配方页左边写获取提示。
+  recipe_type: GS_RT_SHADOW_S2   # ★ 第八十六批：配方页左边写「击败二阶段暗影虫卵掉落」
+  item:
+    name: "&f致万千无言者"
+    material: STONE_PICKAXE
+    # ★ 2026-10-10 第三十八批：按需求打上「抢夺 3」（looting 3）
+    #   名称用**现代命名空间键名**（`minecraft:looting` 的小写形式），
+    #   与上面入梦/释梦的 sharpness / looting 同一套写法（RSC 走 addUnsafeEnchantment）。
+    enchantments:
+      - "looting 3"              # 抢夺 3
+    lore:
+      - "&7无人替他们呐喊，"
+      - "&7于是这柄剑替他们挥出。"
+      - "&7所有哀嚎，到此为止。"
+      # ★★ 2026-10-12 第七十一批：被动 / 右键 改成**橙色加粗**，后面**白色不加粗**
+      - "&6&l被动&r&f 伤害随着连击数提高"
+      - "&6&l右键&r&f 释放“逝言”"
+
+# ==========================================================================
+# 月镰（GS_MOON_SCYTHE · 构思武器 · 2026-10-09 新增）
+#   材质 **铁锄 IRON_HOE**（外观是园丁工具，正好扣 lore 里的设定）
+#   ★ 玩法：全部逻辑在 gs_listener.js 的 `gsMs*` 模块里；物品**故意不写 script 字段**
+#     （铁锄这类工具材质右键会被原版抢走 useItemInHand ⇒ onUse 不稳定，
+#       而且带 script 时 RSC 会紧跟 e.cancel() 干扰右键，所以统一走同步监听器）
+#     · **左键**：朝前方来一记**斜劈**（星星粒子，左斜 / 右斜交替）；
+#       命中范围 = **前方 3 格长 × 3 格宽**的矩形柱
+#       （★ 第十七批：原先是"沿视线每 0.6 格采一个柱"⇒ 等于一条线，打不到侧前方的怪），
+#       范围内生物 **11 点**伤害；**只要命中 ≥ 1 个生物** ⇒ 自己 +1 层「梦」
+#       ★ 第十八批：手持月镰时**原版近战那一下被取消**（怪不再被击退、不再吃 10 刻无敌帧，
+#         否则怪会被推出 3 格范围 ⇒ 叠层断掉）；技能这 11 点保留，
+#         但同样改成**不击退、不留无敌帧**
+#     · **梦（BossBar）**：层数 ≥ 1 时出现，标题 `梦 N/12`，
+#       血条长度 = 剩余时间（**越接近超时血越少**，时间用完直接清零）；
+#       7 秒内命中 ⇒ +1 并**重新计时**；满 **12 层** ⇒ 转 **30 秒**倒计时
+#     · **右键**：满 12 层时释放「噩梦」并清空层数 —— 从**大腿根部**同时射出
+#       **24 根紫色射线**（半径 5 格），范围内生物 **35 点**伤害 + **定身 3 秒**，
+#       身上竖起一根**紫色粒子柱**；未满 12 层时右键不做任何事
+#   ★ **获取**（★ 2026-10-09 补上）：**构思机**（多方块机器）里合成 —— 就是下面这段 `recipe:` 的九宫格。
+#     真正生效的那条在 `mb_machines.yml` 的 `GS_RULE_CONCEPTOR.recipes.moon_scythe`，
+#     **两份的格位必须完全一致**（发射器是逐格比对的）。
+#   ★★★ 第八十六批：**上面这套整个作废** —— 用户要求
+#     「一阶段固定掉落1把月镰（**删除月镰原有配方**）」
+#     ⇒ 构思机那条配方已从 `mb_machines.yml` **删除**，本件改成**纯掉落物**：
+#       由两阶段 boss「守夜人的提灯」**第一阶段（巡夜守卫 · 洞穴蜘蛛）**
+#       死掉固定掉 **1 把**
+#       （实现在 scripts/gs_boss_nightwatch.js 的 nwPhaseEnd()，stage == 1 那一支）。
+#     配方页左边改用 `GS_RT_NIGHTWATCH_S1` 显示「击败一阶段守夜人掉落」。
+#   ★ 手持时**挖不动方块**（LEFT_CLICK_BLOCK / BlockBreakEvent / BlockDamageEvent 全取消），
+#     右键也不与任何方块交互（铁锄耕不了地）
+# ==========================================================================
+GS_MOON_SCYTHE:
+  item_group: gs_weapon
+  display_tier: 4            # ★ 第六十三批：3 → 4（同上顺延）
+  placeable: false
+  # ★★★ 第八十六批：**构思机配方整个删除**（用户「一阶段固定掉落1把月镰
+  #   （**删除月镰原有配方**）」）⇒ 从「构思机合成」改成**纯掉落物**：
+  #   由两阶段 boss「守夜人的提灯」**第一阶段（巡夜守卫 · 洞穴蜘蛛）**
+  #   死掉固定掉 **1 把**（scripts/gs_boss_nightwatch.js 的 nwPhaseEnd()）。
+  #   配方页左边写获取提示。
+  recipe_type: GS_RT_NIGHTWATCH_S1   # ★ 第八十六批：配方页左边写「击败一阶段守夜人掉落」
+  item:
+    name: "&b月镰"
+    material: IRON_HOE
+    # ★ 2026-10-09 第二十一批：按需求打上「无限」（infinity 1）
+    #   —— 无限本是弓的附魔，RSC 走 addUnsafeEnchantment ⇒ 锄头上也挂得住
+    enchantments:
+      - "infinity 1"
+    lore:
+      # ★★ 2026-10-12 第七十一批：
+      #    · 第四行拆色：浅梦可触灰 · 深梦可伤白 · 终梦可杀红
+      #    · 白色 “” 引号 ⇒ 红色加粗 <>
+      #    · 「叠加型」三个字删除
+      # ★★ 2026-10-12 第七十五批（用户逐字）：
+      #    「月镰lore的尖括号改成白色，状态也改成白色，梦，噩梦改成红色加粗，
+      #      守夜人改成浅蓝，梦改成浅蓝，醒改成浅蓝，沉睡改成红色，剩下的改成灰色」
+      #    · 第 1 行：守夜人 → 浅蓝 &b，其余灰 &7
+      #    · 第 2 行：梦 / 醒 → 浅蓝 &b，其余灰 &7
+      #    · 第 3 行：沉睡 → 红 &c，其余灰 &7
+      #    · 第 4 行：**一个字没动** —— 「剩下的改成灰色」已当面确认
+      #              **只作用于前三行**，本行仍是第七十一批拆的 灰 / 白 / 红
+      #    · 左右键两行：尖括号 → 白 &f、`<梦>`/`<噩梦>` → 红加粗 &c&l、
+      #                  「状态」→ 白 &f；「挥砍，叠加」/「释放」保持第七十一批的白
+      - "&7月镰本不是武器，而是&b守夜人&7的园丁工具"
+      - "&7在&b梦&7与&b醒&7的夹缝里，月光也会弯曲"
+      - "&7它不割石头，只割&c沉睡"
+      - "&7浅梦可触，&f深梦可伤，&c终梦可杀"
+      - "&6&l左键&r&f 挥砍，叠加&f<&c&l梦&r&f>&r&f状态"
+      - "&6&l右键&r&f 释放&f<&c&l噩梦&r&f>"
+
+# ==========================================================================
+# 蚀月·死神梦镰（GS_ECLIPSE_SCYTHE · 构思武器第 4 格 · 2026-10-09 第十五批新增）
+#   ★ 第十九批调整（只动脚本参数，物品 lore / 配方均未变）：
+#     · 蚀月轮定身 ⇒「同一目标 3 秒内只定一次」（第一次命中定身，之后 3 秒只掉血）
+#     · 蚀月轮发射冷却 ⇒ 1 秒 改 **1.2 秒**
+#   ★ 第三十五批调整（同样只动脚本参数 + 本注释块，物品 lore / 配方 / 材质**一字未改**）：
+#     · 蚀月轮**弹速** ⇒ 每刻 0.35 格 → **0.5 格**（飞满 5 格约 0.7 秒 → 0.5 秒）
+#     · 蚀月轮**落地后存在 3 秒 → 1.5 秒**
+#     · 出伤频率 ⇒ **每 1 秒 → 每 0.5 秒**（⇒ 1.5 秒生命里共 3 发脉冲）
+#     · 定身 ⇒ 0.5 秒 → **0.6 秒**
+#     · 发射冷却 ⇒ 保持 **1.2 秒**（无变化）
+#     · 审判 ⇒ 倒计时/蓄力 3 秒 → **1.8 秒**（读条满才出伤），无敌同步改 1.8 秒
+#   ★ 下面这份注释描述的是**当前状态**；历史上每次调整都在本块内就地改对。
+#   材质 **下界合金锄 NETHERITE_HOE**（月镰的进阶版）
+#   ★ 玩法：全部逻辑在 gs_listener.js 的 `gsEc*` 模块里；物品**故意不写 script 字段**
+#     （锄类工具右键会被原版抢走 useItemInHand ⇒ onUse 不稳定，
+#       而且带 script 时 RSC 会紧跟 e.cancel() 干扰右键，统一走同步监听器）
+#     · **左键**：挥手劈砍并打出「蚀月轮」——
+#       ★ 第十七批：**普通左键（近战挥砍）命中也叠层** ——
+#         前方 3 格长 × 3 格宽内有可命中的生物 ⇒ +1 层「血」（**只叠层、不额外造成伤害**）
+#       ★ 第十八批：手持蚀月时**原版近战那一下被直接取消**
+#         ⇒ 怪不再被原版近战击退、也不再吃那 10 刻无敌帧，
+#         上面那条兜底从"补救"升级成"双保险"；蚀月轮的 14 点同样不击退、不留无敌帧
+#       沿**准星方向的完整三维向量**（含俯仰）射出一枚**水平红色圆环**（半径约 1 格），
+#       ★「水平」= **环自身恒为水平圆**（环平面永远平行地面），不是只能水平投出
+#         ⇒ 抬头就能把环打到天上打鸟
+#       射程 **5 格**（三维距离）、**不穿墙**（撞到实体方块就停）、**碰到生物即停**
+#       → **停下后原地存在 1.5 秒**（从停下那一刻开始算；★ 第三十五批：原 3 秒），
+#         期间**每 0.5 秒**（★ 第三十五批：原 1 秒）对
+#         圆环平面 ±1.8 格内**所有**生物来一发：**14 点**伤害 + 定身 **0.6 秒**
+#         （★ 第三十五批：原 0.5 秒）+ **无击退**
+#         ★ 第十八批：也**不留无敌帧**（打完立刻把 setNoDamageTicks 清 0）
+#         ★ 第十九批：定身再收一层 —— **只有第一次命中敌人才定身**，
+#           之后 **3 秒内**再打中同一目标**只掉血、不再定身**（伤害 / 叠层不受影响），
+#           3 秒后再命中 ⇒ 重新定身 0.6 秒
+#       → **每次伤害都 +1 层「血」**（1.5 秒生命 ⇒ 共 **3 发**脉冲）
+#       → 每次发射 **冷却 1.2 秒**（★ 第十九批：1 秒 → 1.2 秒）
+#       ★ 定身比出伤间隔略长是刻意的，但**必须靠「同目标 3 秒只定一次」兜底**：
+#         否则每 0.5 秒定身 0.6 秒 ⇒ 生物会被**永久定身**
+#     · **血（BossBar）**：层数 ≥ 1 时出现，**红色**标题 `血 N/23` + **红色血条**；
+#       血条长度 = 剩余时间（越接近超时越少）；7 秒内命中 ⇒ +1 并重新计时；
+#       满 **23 层** ⇒ 转 **35 秒**倒计时，标题后缀补金色「右键释放“审判”」
+#     · **右键**：满 23 层时释放「审判」并清空层数 ——
+#       以玩家为圆心生成**半径 8 格、持续 1.8 秒**的红 / 紫 / 白三色巨型法阵；
+#       阵内所有生物**全程定身**；★ 第三十五批：**蓄力读条 1.8 秒**，读条满后阵内
+#       所有生物（**不含玩家**）才被 **天降圆柱粒子**砸中，造成 **233 点**伤害
+#       （★ 第二十批：圆柱在星星之外再加 **紫 / 蓝 / 红**三色尘埃）；
+#       ★ 第二十批：审判期间**不再锁定视角**、**取消漂浮**
+#       ★ 第三十五批：**无敌固定 1.8 秒**（= 蓄力时长，读条结束同一刻解除）
+#       （原为「视角锁朝下 + 6 秒漂浮 II + 无敌保持到真正落地」）
+#     · 审判的 1.8 秒读条用**白色血条**，标题**只显示「审判」、不带秒数**
+#   ★ **获取**：**唤梦机**升级 —— 月镰 + 37 梦境锭，**514 秒**
+#     （真正生效的那条在 recipe_machines.yml 的 eclipse_scythe，排在释梦之后）
+#   ★ 手持时**挖不动方块**（LEFT_CLICK_BLOCK / BlockBreakEvent / BlockDamageEvent 全取消），
+#     右键也不与任何方块交互（锄类耕不了地）
+# ==========================================================================
+GS_ECLIPSE_SCYTHE:
+  item_group: gs_weapon
+  display_tier: 9            # ★ 第八十七批重排：6 → 9（用户「9蚀月轮」）
+  placeable: false
+  recipe_type: GS_RT_DREAM_SUMMONER
+  # ★★★ 第八十六批：右槽 37 梦境锭 → **60 血夜粒**（用户「蚀月配方改成
+  #   月镰+60血夜粒」）⇒ 左槽仍是**月镰**，**合成时间 514 秒不动**。
+  recipe:
+    1: {material_type: slimefun, material: GS_MOON_SCYTHE,       amount: 1}
+    2: {material_type: slimefun, material: GS_BLOOD_NIGHT_GRAIN, amount: 60}
+  item:
+    name: "&4蚀月·死神梦镰"
+    material: NETHERITE_HOE
+    # ★ 2026-10-09 第二十一批：按需求打上「无限」（infinity 1）
+    enchantments:
+      - "infinity 1"
+    lore:
+      - "&f月镰割开了梦后，噩梦不再飞出"
+      - "&f它被搅成了一团，钉在斩击的尽头"
+      # ★★ 2026-10-12 第七十一批：白色 “” 引号 ⇒ **尖括号 <>**；「叠加型」三个字删除
+      #    （前两行白字诗用户未提 ⇒ 一字未动）
+      # ★★★ 2026-10-12 第七十一批**修正 1**：用户「叠加是红色的，把蚀月轮，血，审判
+      #    改成红色加粗，其他的都是白色字体（不动左右键）」
+      #    ⇒ 尖括号**改白 &f**，只有「蚀月轮 / 血 / 审判」三个词是 **&c&l 红色加粗**，
+      #      「叠加」是 **&c 红色但不加粗**，其余正文一律白色；
+      #      「左键 / 右键」那两个橙色加粗标签**一字未动**（用户「不动左右键」）。
+      #    ★ 尖括号到底留不留、留的话什么颜色，已当面问过用户 ⇒ 选「尖括号改成白色」。
+      # ★★★ 第七十一批**修正 1-b**：用户「蚀月lore的左键里面，叠加还是红色，改成白色」
+      #    ⇒ 「叠加」由 &c 改成 **&f 白色**（用户改主意了）。
+      #      它前后的正文本来就已经是白的 ⇒ 直接沿用 `&f>` 之后的状态，不必再写颜色码。
+      - "&6&l左键&r&f 挥砍，释放<&c&l蚀月轮&f>，叠加<&c&l血&f>"
+      - "&6&l右键&r&f 释放<&c&l审判&f>"
+
+# ==========================================================================
+# 此刻·万籁俱寂（GS_SILENCE · 构思武器第 6 格 · 2026-10-10 第三十八批新增）
+#   ★★ 第五十三批**改名**：用户「此刻万籁俱寂改名叫**此刻·万籁俱寂**」
+#      ⇒ `name` 由 `&6此刻万籁俱寂` 改成 `&6此刻·万籁俱寂`（中间加一个间隔号「·」）。
+#      ★ 只有**显示名**变了，物品 ID（GS_SILENCE）与配方一律不动 ⇒ 已发出去的旧物品
+#        名字会自动跟着变（RSC 的物品名是渲染时取的，不是存在物品里的）。
+#   材质 **金镐 GOLDEN_PICKAXE**（金器易碎，扣"沉寂"的易逝感；原版只有 33 点耐久
+#   ⇒ 已纳入「永不掉耐久」清单）
+#   ★ 玩法：全部逻辑在 gs_listener.js 的 `gsSi*` 模块里；物品**故意不写 script 字段**
+#     （工具材质右键会被原版抢走 useItemInHand ⇒ onUse 不稳定，
+#       而且带 script 时 RSC 会紧跟 e.cancel() 干扰右键，所以统一走同步监听器）
+#
+#   【被动 · 连击「寂」】最高 **99** 连击；一条**红色** BossBar 计时：
+#     标题 `§c寂 §4N` —— **「寂」亮红（§c）+ 数字暗红（§4）**，
+#     ★ **不再用 `N/99` 表示上限**，直接就是那个数字（上限只在脚本里卡）；
+#     血条长度 = **剩余时间 / 7 秒**。
+#     **7 秒内命中 ⇒ 连击 +1**（并重新计时）；**7 秒未命中 ⇒ 直接清 0**
+#     （★ 与「致万千无言者」的逐层衰减不同：这一把是**一次清零**）。
+#     ★★ 第四十批：**只有命中"活物"才算**（掉落物 / 经验球 / 展示实体 / 盔甲架
+#       一律不算）—— 否则对着地上一堆掉落物挥几下就能把连击无痛叠满。
+#   【伤害随连击提高】**初始 17 点**，**每层 +2** ⇒ 满 99 连击 = 17 + 2×98 = **213 点**
+#     （`GS_SI_DMG_BASE` / `GS_SI_DMG_PER`，想改曲线只动这两个常量）
+#
+#   【左键 · 斩击】对**前方 宽 3 × 长 5 × 高 2** 的范围内所有生物造成伤害
+#     （★ 判定是整个长方体，不是一条线）；命中 ≥ 1 个生物 ⇒ 连击 +1。
+#     特效 = **附魔台文字**，走一道**斜劈弧线**，两刀一左一右交替：
+#       · 第 1 刀：从（长1 左1 高1）划到（长5 左3 高2）
+#       · 第 2 刀：从（长1 左3 高1）划到（长5 左1 高2）
+#       （★ 这里"左1 / 左2 / 左3"是**从左边数起的三条道**：左1 = 最左、左3 = 最右，
+#         即横向偏移 -1 / 0 / +1，正好落在 3 格宽的箱子里）
+#     ★ 手持时**原版近战那一下被取消**（怪不再被击退、不再吃 10 刻无敌帧，
+#       否则怪会被推出 5 格范围 ⇒ 连击断掉）
+#
+#   【右键 · 寂灭】★★ 第五十三批**整体重做**（用户：右键效果改成……）
+#     · 以**玩家自己**为圆心、半径 **7 格**的圆圈，圈内敌人**直接**吃伤害：
+#         `当前层数对应的伤害 × 2`
+#         （0 层也按 1 层算 ⇒ 保底 17×2 = **34**；满 99 层 = 213×2 = **426**）
+#     · **冷却 15 秒**
+#     · **不叠层** —— 层数仍然只靠左键斩击叠
+#     · 判定形状：**水平半径 ≤ 7** 且 **竖直差 ≤ 7**（扁圆柱）
+#     · 特效：一圈 7 格半径的附魔台文字（脚边 + 胸口各一圈），停留 0.4 秒
+#     ★★ 旧的「按住蓄力·噤声 / 松手追踪·噤言」那一整套**已整体删除**
+#     ★ lore 相应改成一行：`&6右键释放寂灭`
+#
+#   ★ **获取**：**唤梦机**升级 —— 致万千无言者 + **60 暗影宝珠**，**810 秒**
+#     （★ 第四十批：右槽由「45 梦境锭」改成 60 妄想碎片，时间不变；
+#        ★★★ 第八十五批：右槽再改成 **60 暗影宝珠**（用户「此刻万籁俱寂配方改成
+#          60个暗影宝珠+致万千无言者」）—— 左槽与 810 秒都**不动**。
+#       真正生效的那条在 recipe_machines.yml 的 utter_silence，**排在精神力之后**）
+#   ★ 手持时**挖不动方块**（LEFT_CLICK_BLOCK / BlockBreakEvent / BlockDamageEvent 全取消），
+#     右键也不与任何方块交互（金镐不许挖矿 / 不许开箱子）
+# ==========================================================================
+GS_SILENCE:
+  item_group: gs_weapon
+  display_tier: 8            # ★ 第八十七批重排：7 → 8（用户「8万籁俱寂」）
+  placeable: false
+  recipe_type: GS_RT_DREAM_SUMMONER
+  recipe:
+    1: {material_type: slimefun, material: GS_VOICELESS,   amount: 1}
+    2: {material_type: slimefun, material: GS_SHADOW_ORB,  amount: 60}
+  item:
+    name: "&6此刻·万籁俱寂"
+    material: GOLDEN_PICKAXE
+    # ★ 按需求打上「抢夺 7」（looting 7）—— 原版上限是 3，RSC 走 addUnsafeEnchantment
+    #   所以 7 级照样挂得住（同入梦/释梦的 looting 9 那套写法）
+    enchantments:
+      - "looting 7"              # 抢夺 7
+    lore:
+      # ★★ 2026-10-12 第七十一批：前两句**灰色斜体**；被动**白色加粗**、其后**橙色加粗**；
+      #    右键**橙色加粗**、其后**白色**
+      - "&7&o万千无言之后，世间终于彻底归于沉寂。"
+      - "&7&o不再需要谁替他们呐喊，只余下无边的静默。"
+      - "&f&l被动&r&6&l 连击无上限叠加伤害"
+      - "&6&l右键&r&f 释放寂灭"
+
+# ==========================================================================
+# 阎魔刀·改（GS_ENMA_BLADE · 构思武器第 9 格 · 2026-10-10 第四十一批新增）
+#   材质 **金剑 GOLDEN_SWORD**（金剑原版只有 33 点耐久 ⇒ 已纳入「永不掉耐久」清单）
+#   ★ 玩法：全部逻辑在 gs_listener.js 的 `gsEm*` 模块里；物品**故意不写 script 字段**
+#     （金剑右键会被原版抢走 useItemInHand ⇒ onUse 不稳定，统一走同步监听器）
+#   ★★ 第五十批：**有配方了** —— 用户点名用粘液科技原版机器**冶炼炉（SMELTERY）**：
+#     「配方：释梦，梦境头，梦境甲，梦境腿，梦境靴，精神力，蚀月，五骊矟，此刻万籁俱寂
+#       （考虑到冶炼炉可以无序合成所以没写九宫格），在smeltery（粘液科技原版机器冶炼炉）里制作」
+#     · 9 种材料各 **1 个**，放**发射器**里对着冶炼炉右键即可。
+#     · ★★ **冶炼炉是无序的** —— 已从 Slimefun-77ce3ba 反编译核实：
+#       `AbstractSmeltery.canCraft()` 对配方的每个材料**遍历整个发射器**找
+#       `SlimefunUtils.isItemSimilar` ⇒ **只看"有没有"，不看"在哪一格"**。
+#       ⇒ 下面 `recipe:` 的 1~9 只是**枚举序号**（YAML 键不能重复），
+#         玩家摆放顺序**随意**，写 9 条还是写 1 条带 amount: 9 效果一样。
+#     · 材料对照（全部是 Slimefun 物品 ⇒ `material_type: slimefun`）：
+#         1 释梦            = GS_RELEASE_DREAM
+#         2 梦境头（梦境头盔）= GS_DREAM_HELMET
+#         3 梦境甲（梦境盔甲）= GS_DREAM_ARMOR
+#         4 梦境腿（梦境护腿）= GS_DREAM_LEGGINGS
+#         5 梦境靴（梦境战靴）= GS_DREAM_BOOTS
+#         6 精神力          = GS_PSYCHIC_POWER
+#         7 蚀月（蚀月·死神梦镰）= GS_ECLIPSE_SCYTHE
+#         8 五骊矟          = GS_WULI_SPEAR
+#         9 此刻·万籁俱寂    = GS_SILENCE
+#     · ★ 冶炼炉**不需要电**、也不占配方机（recipe_machines.yml）—— 它是多方块结构机器，
+#       由 Slimefun 本体注册，RSC 只负责把配方挂到 `SMELTERY` 这个原版配方类型上。
+#     · 旧的 `recipe_type: "NULL"`（第四十一批「暂时不做配方」）已被本次替换。
+#
+#   【★★ 第五十批 · 手持增益】拿在**主手**就生效，**脱手立刻全部消失**
+#     用户：「给阎魔刀改加上手持可飞行，抗性4，生命恢复3，速度2，夜视
+#            （都是30秒，27秒续，不手持就立刻消失）」
+#     · 五种效果：**可飞行**（setAllowFlight）+ **抗性提升 IV** + **生命恢复 III**
+#       + **速度 II** + **夜视**
+#     · 一次给 **30 秒**，剩余不足 **27 秒**才续期 ⇒ 图标不会一闪一闪
+#       （`GS_EM_BUFF_TICKS` 600 刻 / `GS_EM_BUFF_REF` 540 刻）
+#     · **脱手立刻收走**：脉冲每 2 刻（0.1 秒）跑一次 ⇒ 最多 0.1 秒就没了
+#     · ★ 只收「本机制给的那一份」：玩家自己喝的同类药水一律不碰
+#       （`GS_EM_BUFF_EFF` 记药效清单、`GS_EM_BUFF_NV` 记夜视）
+#     · ★ 只关「我们开启过的」飞行：`GS_EM_BUFF_FLY` 记接管状态，
+#       避免误关喷气背包 / 其它插件给的飞行；**创造 / 旁观模式不动他们**。
+#     · ★ 退服 / `/rsc reload` 淘汰旧实例时也会**主动收干净**（不会把人悬在半空）。
+#
+#   【左键 · 居合斩】★ 六刀一循环，**不管有没有命中都往下走**
+#     判定范围 **宽 5 × 长 9 × 高 3**（前方长方体），每刀 **37 点**基础伤害
+#     （★★ 第五十一批：23 → **37**；演变 7 → 23 → 37）。
+#     特效**全部用紫色 + 蓝色粒子**（DUST），前五刀**全是弧**：
+#       ★★ 第四十五批起改成 **「画一个圆圈、把后面切掉」**（**用户的建议**：
+#          「第一刀，画一个竖着的圆圈，把后面切掉，那就是朝前的从下到上的半圆了」）
+#          ⇒ 圆面里只保留**朝前的那半边**（0° ~ 180°），后面那一半丢掉。
+#          ★ 这样既**朝前鼓**，又保住了**上下 / 斜向的走势**。
+#       ★ 圆面里"上轴"的倾斜角决定这一刀是竖的 / 斜的 / 横的；
+#         扫过的角度先后决定是"从下到上"还是"从上到下"。
+#       ★ **前方进深压扁到 `GS_EM_ARCH`(0.62)**（参考半圆来画、扁一点），
+#         但**上下 / 斜向的幅度保持整圆尺寸** ⇒ 走势是足的，只是进深浅一点。
+#       第 1 刀 上撩（**竖着的圆圈**切掉后面 ⇒ 从下到上）
+#       第 2 刀 横斩（**横着的圆圈**，右 → 左；★ 第四十六批：用户要求第二刀改成横斩）
+#       第 3 刀 左上 → 右下（**斜着的圆圈**，上轴往左偏 45°）
+#       第 4 刀 横斩（**横着的圆圈**，左 → 右）
+#       第 5 刀 左斜 / 右斜 / 竖斩 **三刀同时出现**，三条弧的**顶点撞在同一点**，
+#              而那个点就在**准星正前方**
+#       第 6 刀 以玩家为中心、沿**准星**画一个**半径 4.5 格、左高右低**的圆圈，
+#              并且**圆圈范围内再造成 77 点额外伤害**（与长方体的 37 点**叠加**，
+#              最多 37 + 77 = 114；★★ 第五十一批：55 → **77**，原为 23 + 55 = 78）
+#     · **特效存在 0.4 秒**（★ 第四十九批：0.6 → **0.4**，逐帧淡出）
+#     · **左键冷却 0.2 秒**（★ 第四十九批：0.5 → **0.2**）
+#       ★ 去抖门槛是 80ms，**小于** 200ms 的冷却 ⇒ 两者不打架
+#     · 血条显示当前是第几刀：`居合 N/6`
+#     · ★★ **必须完整打完 6 刀才能从第 1 刀重新开始**；
+#       中途停手 ⇒ **3 秒倒计时**走完就**清空**（下次又从第 1 刀起）
+#     · ★★ 特效与伤害**全部沿准星朝向**（含俯仰）⇒ 抬头打高处、低头打低处
+#
+#   【左键第六刀 · 次元斩】★★★ 第六十四批：整段从**右键**挪到**左键第六刀**
+#     （用户「右键的吸引改到左键的第六刀，删除冷却，只有第六刀才能砍出来这个技能」）
+#     ⇒ 只有打完第 6 刀才会额外放出这个领域；**冷却删除**（六刀一循环就是它的节奏）。
+#     在**身前第 4 格**落点处炸出**大范围**的左斜 / 横斩 / 竖斩 / 右斜四刀；
+#     以落点为心、**半径 3 格**内**每 0.5 秒造成 25 点**伤害
+#     （★ 第四十五批：9 → 25），**存在 1.2 秒**（★★ 第六十四批：4 秒 → 1.2 秒）；
+#     期间**不断把范围内的敌人往中心吸引**（反向速度拽回来）。
+#     ★ 粒子**刻意做稀**（层数 2、每条线 10 段、每 0.25 秒重画一次）。
+#
+#   【右键 · 锚点】★★ 第六十四批：从 **F 键**改到**右键**
+#     （用户「阎魔刀的锚点改成右键」）。记录按下右键那一刻的坐标（存脚本内存，按玩家分）。
+#     ★★ 第四十三批：**不再发聊天提示**，改成把坐标写进**这把刀自己的 lore**
+#        （末行 `锚点 » X, Y, Z · 世界名`；没记录时是 `锚点 » 未记录`）。
+#   【Shift + 右键 · 撕开裂缝】★★ 第六十四批：从 **Shift+F** 改到 **Shift+右键**
+#     （用户「撕裂空间改成shift+右键」）。在**身前 2 格**生成一道
+#     **长 7 × 宽 1 × 高 3** 的裂缝：
+#     · ★★ **冷却 5 秒 = 绘画 2 秒 + 滞留 3 秒**（第四十八批）
+#       ★ 冷却与裂缝总寿命**完全对齐** ⇒ 同一时刻只会存在一道裂缝。
+#     · **绘画 2 秒**：先用紫色粒子**从左到右**画出高 1.5 的横线，
+#       再**从上到下**画出中线上的竖线；
+#     · 画完在交叉点出现一个**填满的菱形**（不是只描边）
+#       ★★ 第四十六 ~ 四十八批按用户要求定死大小：**宽 5.0 × 高 1.6**
+#          ⇒ 半宽 2.50、半高 0.80，左右上下都**居中**在十字交点上
+#          ★ 裂缝「长7」的编号是 左1 ~ 左7 ⇒ 正中间就是**左4.0**（= 十字交点）
+#          ★ 尺寸演变：第四十六批 3.0×2.4 → 第四十七批 6.0×2.4
+#                     → 第四十八批 6.0-1=5.0 宽、2.4-0.8=1.6 高
+#          ★ 菱形半宽 2.50 < 裂缝半宽 3.50 ⇒ 完全落在裂缝里面
+#     · **留存 3 秒**，期间玩家**碰到菱形**即**传送到右键记录的锚点**（不提示、不显示文字）。
+# ==========================================================================
+GS_ENMA_BLADE:
+  item_group: gs_weapon
+  display_tier: 10           # ★ 第六十三批：9 → 10（同上顺延）
+  placeable: false
+  recipe_type: SMELTERY     # ★★ 第五十批：冶炼炉（粘液科技原版多方块机器 · **无序**）
+  recipe:
+    # ★ 冶炼炉是无序的（见上方说明）⇒ 这里的 1~9 只是枚举序号，玩家摆放顺序随意
+    1: {material_type: slimefun, material: GS_RELEASE_DREAM, amount: 1}    # 释梦
+    2: {material_type: slimefun, material: GS_DREAM_HELMET,  amount: 1}    # 梦境头盔
+    3: {material_type: slimefun, material: GS_DREAM_ARMOR,   amount: 1}    # 梦境盔甲
+    4: {material_type: slimefun, material: GS_DREAM_LEGGINGS, amount: 1}   # 梦境护腿
+    5: {material_type: slimefun, material: GS_DREAM_BOOTS,   amount: 1}    # 梦境战靴
+    6: {material_type: slimefun, material: GS_PSYCHIC_POWER, amount: 1}    # 精神力
+    7: {material_type: slimefun, material: GS_ECLIPSE_SCYTHE, amount: 1}   # 蚀月·死神梦镰
+    8: {material_type: slimefun, material: GS_WULI_SPEAR,    amount: 1}    # 五骊矟
+    9: {material_type: slimefun, material: GS_SILENCE,       amount: 1}    # 此刻·万籁俱寂
+  item:
+    name: "&5阎魔刀·改"
+    material: GOLDEN_SWORD
+    lore:
+      - "&7一生执此一刀，"
+      - "&7只为追寻更强的力量。"
+      - "&7最后以刀刃向己，"
+      - "&7一刀劈开自己的灵魂。"
+      - "&7所求的并非毁灭，"
+      - "&7而是一份纯粹的答案。"
+      # ★★ 2026-10-12 第七十一批：
+      #    · 左键**橙色加粗**，后面改白 —— 并把「居合斩」「次元斩」合成一行 `居合斩/次元斩`
+      #    · 原「&6第六刀&7次元斩」**整行删除**
+      #    · 右键**橙色加粗**、锚点**灰色**；Shift+右键**橙色加粗**、撕开裂缝**紫色**
+      #    · 手持**橙色加粗**、后面**白色**
+      #    · 前六行诗 + 末行动态锚点 ⇒ 用户说「剩下的不动」⇒ 一字未动
+      - "&6&l左键&r&f 居合斩/次元斩"
+      - "&6&l右键&r&7 锚点"
+      - "&6&lShift+右键&r&5 撕开裂缝"
+      # ★★ 第五十批：手持增益（拿在主手就生效，脱手立刻消失）
+      - "&6&l手持&r&f 飞行·抗性4·生命恢复3·速度2·夜视"
+      # ★★ 第四十三批：这一行是**动态**的 —— 按右键之后由 gsEmLoreSync() 原地替换成
+      #    实际坐标（`锚点 » X, Y, Z · 世界名`）。这里放的是"还没记录"的初始状态，
+      #    这样 /sf give 拿到手就看得见这一行，而不是等第一次同步才冒出来。
+      - "&8锚点 &7» &c未记录"
+
+# ==========================================================================
+# 借寿（发酵蛛眼 FERMENTED_SPIDER_EYE · 构思玩具第 9 格 · 2026-10-11 第五十六批新增）
+# --------------------------------------------------------------------------
+#   分类：构思玩具 (gs_toy) —— **display_tier: 9**
+#     ★ 第五十六批原本放在**构思武器**（gs_weapon 第 10 格）；
+#       ★★ 第五十九批按用户要求「借寿放到构思玩具」⇒ 改成 gs_toy 第 10 格
+#          （玩具 1~9 是 构造棒 / 假威斯 / 麦油酒 / 如听仙乐耳暂明 / 定我 /
+#            威龙 / 咒术回战 / 篮球生成器 / 海水过滤器）。
+#     ★★★ 第八十八批：用户「删除构念，构思玩具全部往前移一格」
+#       ⇒ 构念（原第 1 格）整件删除、玩具整体前移 ⇒ 借寿 **10 → 9**。
+#         现在的玩具是：1 假为思 / 2 麦友的酒 / 3 如听仙乐耳暂明 / 4 这你叮我 /
+#         5 威龙 / 6 咒术回战 / 7 篮球生成器 / **8 海水过滤器（机器）** /
+#         9 借寿 / 10 Bad Apple / 11 祖宗发射器。
+#   获取：**魔法工作台（MAGIC_WORKBENCH）九宫格**
+#     ┌────┬────┬────┐
+#     │ 纸 │骷髅│ 纸 │   槽 1 / 2 / 3   纸 = 原版纸 PAPER ｜ 骷髅 = 骷髅头颅 SKELETON_SKULL
+#     ├────┼────┼────┤
+#     │ 纸 │木棍│ 纸 │   槽 4 / 5 / 6   木棍 = 原版木棍 STICK
+#     ├────┼────┼────┤
+#     │ 纸 │绿宝│ 纸 │   槽 7 / 8 / 9   绿宝石 = 原版绿宝石 EMERALD
+#     └────┴────┴────┘
+#     即：**槽 1/3/4/6/7/9 = 纸 ×6**、**槽 2 = 骷髅头颅 ×1**、
+#         **槽 5 = 木棍 ×1**、**槽 8 = 绿宝石 ×1**
+#   材质：**发酵蛛眼** FERMENTED_SPIDER_EYE ｜ 名字 &5借寿
+#   lore：**&7都什么年代了还有人封建迷信**（用户原话，一字未改）
+# --------------------------------------------------------------------------
+#   右键效果（见 scripts/gs_borrow_life.js）：
+#     · 判定盒 **长 5 × 宽 5 × 高 2**，**沿准星的三维朝向**展开
+#       ★★ 第五十九批：原来只认**水平**前向（抬头/低头打不到）⇒ 用户要求
+#          「朝上朝下也能攻击」⇒ 改成**完整三维基向量**（和阎魔刀同一套口径）：
+#            长 5 沿 **准星方向 f**（含俯仰）｜ 宽 5 沿 **水平右向 r** ｜
+#            高 2 沿 **u = r × f**（垂直于 f/r 的"上"）
+#          ⇒ 抬头往天上打、低头往脚下打都能打到；平视时与旧版**完全等价**。
+#     · 盒内**所有生物**各吃 **1 点**伤害
+#       ★ **消失无敌帧**：打前 setNoDamageTicks(0)、打后再清一次 ⇒ 无视怪的受击无敌
+#       ★ 同时**不造成击退**（先存速度、打完还原）
+#     · **命中 n 只 ⇒ 自己回 1×n 点血**（上限受 Attribute.MAX_HEALTH 约束）
+#     · **吸血粒子**：被命中的生物在 **0.5 秒**内从**自己身上**冒出**红色粒子飞向玩家**
+#       （Particle.DUST + 暗红 DustOptions，每只各飞各的，带一点弧度和错位）
+#     · **每次施法**在聊天栏写一句提示词 **寿来 寿来 寿来**（用户指定）
+#     · **冷却 0.5 秒**（另有 150ms 去抖，避免一次右键的两个事件被算成两次）
+#       冷却中**静默忽略**（不提示、不出声、不消耗、不写提示词）
+#     · 物品**不消耗**，可以反复按
+#     · 默认**不打其它玩家**（BL_HIT_PLAYERS = false，和全项目其它武器一致，防误伤）
+#     · 目标筛选沿用「寂灭」那套：掉落物 / 经验球 / 展示实体 / 盔甲架一律不算
+#   ★ 可调参数全在 gs_borrow_life.js 顶部（BL_DMG / BL_HEAL_PER / BL_CD_MS /
+#     BL_SIP_TICKS / BL_SIP_PER_TICK / BL_HIT_PLAYERS / BL_CAST_MSG / BL_SOUND…）
+# ==========================================================================
+GS_BORROW_LIFE:
+  item_group: gs_toy
+  display_tier: 9            # ★ 第八十八批：10 → 9（构念删除后整体前移）
+  placeable: false
+  recipe_type: MAGIC_WORKBENCH
+  recipe:
+    # ★ 魔法工作台九宫格：1/3/4/6/7/9 = 纸，2 = 骷髅头颅，5 = 木棍，8 = 绿宝石
+    1: {material_type: mc, material: PAPER,          amount: 1}
+    2: {material_type: mc, material: SKELETON_SKULL, amount: 1}
+    3: {material_type: mc, material: PAPER,          amount: 1}
+    4: {material_type: mc, material: PAPER,          amount: 1}
+    5: {material_type: mc, material: STICK,          amount: 1}
+    6: {material_type: mc, material: PAPER,          amount: 1}
+    7: {material_type: mc, material: PAPER,          amount: 1}
+    8: {material_type: mc, material: EMERALD,        amount: 1}
+    9: {material_type: mc, material: PAPER,          amount: 1}
+  script: gs_borrow_life
+  item:
+    name: "&5借寿"
+    material: FERMENTED_SPIDER_EYE
+    lore:
+      - "&7都什么年代了还有人封建迷信"
+
+# ---------- 残樱（音乐唱片残片 MUSIC_DISC_RELIC · 单手持手枪 · 构思武器第 10 格）----------
+#   分类：构思武器 (gs_weapon) —— 第 10 格（精神力 / 余念绝响后面的下一格）
+#   获取：**构思机**（多方块机器 GS_RULE_CONCEPTOR）九宫格 ——
+#     ┌──────────┬──────────┬──────────┐
+#     │ 1 粉色染料│ 2 粉色染料│ 3 粉色染料│
+#     ├──────────┼──────────┼──────────┤
+#     │ 4 樱花树叶│ 5 牡丹    │ 6 樱花树叶│
+#     ├──────────┼──────────┼──────────┤
+#     │ 7 樱花树叶│ 8 樱花树苗│ 9 樱花树叶│
+#     └──────────┴──────────┴──────────┘
+#     ★ 用户原话：「配方为构思机九宫格123粉色染料，4769樱花树叶，5牡丹，8樱花树苗」
+#     ★ 真正生效的那条在 `mb_machines.yml` 的 `GS_RULE_CONCEPTOR.recipes.cherry`，
+#       两边格位必须一致（发射器逐格比对）。
+#   材质：音乐唱片残片 MUSIC_DISC_RELIC（`minecraft:music_disc_relic`）
+#         ★ 和余念绝响一样是**唱片**：非工具物品，不会被原版置 DENY 抢事件；
+#           右键唱片机那类原版行为会被我们的监听器统一 cancel，不会真的放歌。
+#   定位：**手枪**（用户「定位是手枪」）—— 单发点射、弹夹小、伤害中等。
+#   效果（实现见 scripts/gs_listener.js 的「残樱」同步监听器 + 常驻任务）：
+#     · 名字动态显示「残樱<弹药>」（**12 发**，无限备弹、无需携带弹药）
+#       ★★ 第六十四批：三连发模式时名字变成「残樱<弹药≡>」（多一个 ≡ 标记）
+#     · ★★ 第六十四批：**左键**开火 → 消耗弹药，朝准星方向射出一道**樱花射线**（原来在右键）
+#     · ★★★ 第六十五批：**按 F 键换弹**（回满 12）——
+#       F 的原版行为是「主副手交换」，被同步监听器拦下来当换弹（换手不会发生）；
+#       换弹期间无法再触发换弹（连按不会打断进度），弹夹已满时不换
+#       ★ Q 已恢复**原版丢弃**（不再拦 PlayerDropItemEvent）。
+#     · 换弹时名字显示「残樱<R>」；切换手持物会中断换弹、重新计时
+#     · 弹道：从**胸口**射出，方向跟随准星；视觉是一条 **CHERRY_LEAVES 樱花花瓣**射线，
+#       射程 **16 格**，撞墙 / 撞生物就停
+#     · 伤害 **8 点/发**（无受击间隔），命中即结算
+#     · ★★ 第六十四批：**右键切换开火方式**（单发 ↔ 三连发，**切换冷却 1 秒**）：
+#         · 单发：**0.2 秒/发**（200ms；★ 第六十四批：0.7 → 0.2）
+#         · 三连发：一次扳机 **3 发同时出膛**、一轮 **0.5 秒**，一轮扣 3 发弹药
+#           ★★★ 第六十四批修正 4：用户「残樱的三连发改成单发散射，名字的三条杠不变，
+#             但是射击方式改成三发特小幅度的散布同时发射，散布做到越远越大的效果，
+#             比如第6格开始明显散布，6格之内还是能指哪打哪」
+#             ⇒ 三发**同一刻**出膛，每发带一个**随距离变大**的横向偏移：
+#                 6 格内 0.20 格（三发基本重合在准星上 ⇒ 指哪打哪）
+#                 6 格起每远 1 格多散 0.13 格 ⇒ 满射程 16 格时 1.50 格（左右拉开 3 格）
+#             ★ 名字里的 ≡（三条杠）**不变**；节奏 0.5 秒一轮、一轮扣 3 发也**不变**。
+#       · **换弹 1.8 秒**（1800ms）
+#     · ★★★ 第六十五批：**F 键 = 换弹**（用户「把残樱和余念绝响的换弹改成f键」）
+#       —— 拦 PlayerSwapHandItemsEvent（F 的原版行为是主副手交换）。
+#       ★ 第六十四批时这里是「**没有 F 键功能**」（用户：「没有F键的功能」，
+#         按 F 就是原版换手、本武器不拦）；本批 F 改成换弹 ⇒ **必须注册换手事件**，
+#         拦下来做的是**换弹**、不是开镜。
+#       也没有「念力感知」开镜：副手不会被塞按钮。
+#     · 音效：开火 = **铜箱子关闭** block.copper_chest.close
+#             换弹 = **铜箱子打开** block.copper_chest.open
+#       ★ 两个音效键已在 paper-api **1.21.11** 的 org/bukkit/Sound 里
+#         用 javap -c 逐个核对（`BLOCK_COPPER_CHEST_CLOSE` / `_OPEN` 的 key 字符串）。
+#   ★ 弹药/换弹状态存在玩家 PDC（钥匙 gs:ch_*），跨 /rsc reload 不丢
+#   ★ 不写 script 字段：全部逻辑走 gs_listener 的同步监听器，避免 onUse 的 e.cancel 干扰
+GS_CHERRY:
+  item_group: gs_weapon
+  display_tier: 2            # ★ 第六十三批：10 → 2（用户「残樱放在武器的入梦后面」⇒ 插到入梦后面）
+  # ★★★ 第八十六批：**构思机配方整个删除**（用户「二阶段换成固定掉落掉落
+  #   一把残樱，**删除残樱配方**，改成击败二阶段妄念掉落」）
+  #   ⇒ 从「构思机合成」改成**纯掉落物**；配方页左边写获取提示。
+  recipe_type: GS_RT_WANGNIAN_S2   # ★ 第八十六批：配方页左边写「击败二阶段妄念掉落」
+  item:
+    name: "&d残樱<12>"
+    material: MUSIC_DISC_RELIC
+    lore:
+      # ★★ 2026-10-12 第七十一批：上面那段（花落无声 / 弹药带有花香）改**粉色 &d**；
+      #    左键 / 右键 / F键 改成**月镰那样的橙色加粗**，后面**白色不加粗**（字一个没动）
+      - "&d十六步内，花落无声"
+      - "&d弹药带有花香，洗净时间腐朽"
+      - "&6&l左键&r&f 开火"
+      - "&6&l右键&r&f 切换发射方式"
+      - "&6&lF键&r&f 换弹"
+# ==========================================================================
+# 祖宗发射器<?>（岩浆鸡唱片 MUSIC_DISC_LAVA_CHICKEN · 2026-10-12 第七十六批新增）
+# --------------------------------------------------------------------------
+#   用户原话（第七十六批）：
+#     「制作一个新物品，名字叫祖宗发射器<?>lore：
+#        （红色）再旅者·维什戴尔
+#        （白色）听说寄宿着一个仍然存活的死灵魂长老意识
+#        （红色）维什戴尔（白色）经常把他叫做（红色）老东西
+#        （橙色加粗）左键（白色）开火
+#        （橙色加粗）右键（白色）爆裂黎明
+#       常态下，祖宗发射器<?>为无限弹药（不改变?），射速1.3秒，右键开启技能后，
+#       技能状态下射速3秒，<>中间放入六个▼，代表6发弹药，打一发少一个，
+#       再次按下右键关闭技能变回常态，冷却18秒，防抖1秒
+#       可以朝玩家准星发射，射程24，不穿墙，撞到生物，墙体，射程后，
+#       造成半径为2.5格的爆炸，对所有范围内的生物（不包括自己）造成55点伤害
+#       爆裂黎明状态下，射程不变，不穿墙，可以朝玩家准星发射，撞到生物，墙体，
+#       射程后，造成半径为4.5格的爆炸，对所有范围内的生物（不包括自己）造成155点伤害」
+#     「弹速为0.8秒24格，常态射出红色粒子，开启技能后射出坚守者冲击波
+#       （没有伤害，撞到生物后出现爆炸）」
+#
+#   ★★★ 第七十九批改动（用户同一天追加）：
+#     · 常态伤害 55 → **35 点** ｜ 技能伤害 155 → **175 点**
+#     · 技能冷却 18 秒 → **12 秒**
+#     · ★★ 修「有时候会穿过玻璃板 / 铁栅栏之类的不完整方块」——
+#       根因是弹道**采样太稀**（每刻走 1.5 格却只看终点那一个方块，
+#       格子 1/4/7/10… 永远采不到），改成 World#rayTraceBlocks 扫掠求交。
+#     · 加**构思机九宫格配方**（1379 滚木 / 2 凋零骷髅头 / 4 回响碎片 /
+#       5 下界之星 / 6 弩 / 8 盔甲架）—— 从「暂无配方」变成能合出来。
+#
+#   ★★★ 第七十八批改动（用户同一天追加，**覆盖**上面的写法）：
+#     · lore 第 1 行「再旅者」→「**萨卡兹**」（★ **颜色不变**，仍是 &c 红）
+#     · 材质 音乐唱片 chirp → **岩浆鸡唱片 MUSIC_DISC_LAVA_CHICKEN**
+#     · 常态射速 1.3 秒 → **0.8 秒** ｜ 技能射速 3 秒 → **1.5 秒**
+#     ★ 其余（弹药 6 发 / 冷却 18 秒 / 防抖 1 秒 / 射程 24 / 伤害半径 / 名字）
+#       **一个字没动**。
+#
+#   分类：构思武器 (gs_weapon) —— 第 11 格（接在 阎魔刀·改(10) 后面）
+#   材质：**MUSIC_DISC_LAVA_CHICKEN**（岩浆鸡唱片）
+#         ★ 第七十六批是「唱片chirp」（用户当时指定）；第七十八批改成岩浆鸡唱片。
+#         ★ 它**仍然是音乐唱片** ⇒ 右键拦原版（不许插进唱片机）的逻辑照旧必须留着。
+#   获取：**暂无配方** —— 用户选「暂不给配方（先能用就行）」⇒ recipe_type: "NULL"
+#         （同 GS_WULI_SPEAR 第五十五批「配方删除留空」的写法）
+#   效果（**全部**实现在 scripts/gs_listener.js 的「祖宗发射器」段）：
+#     · 名字里的 `<>` 是**弹药显示器**（同残樱的 `<12>` / 余念绝响的 `<37>`）：
+#         常态 = `祖宗发射器<?>`（**无限弹药**，用户「不改变?」）
+#         技能 = `祖宗发射器<▼▼▼▼▼▼>`（6 个 ▼，**打一发少一个**）
+#       ★ 名字颜色用户没说 ⇒ 取 **&c 红**（与 lore 里「萨卡兹·维什戴尔」「老东西」
+#         的红色主题一致）。要改只动 gs_listener.js 的 gsAlNameFor 一处。
+#     · **左键 = 开火**（朝准星发射，弹道**真的会飞**：0.8 秒 24 格 = 30 格/秒）
+#       **右键 = 爆裂黎明 开 / 关**（防抖 1 秒，即 1 秒内不能再次右键）
+#     · 常态：射速 1.3 秒/发 · **无限弹药** · 拖尾是**红色粒子**（Particle.DUST）
+#       命中（生物 / 墙体 / 射程尽头）⇒ **半径 2.5 格**爆炸，范围内生物
+#       **55 点**伤害（**不包括自己**）
+#     · 爆裂黎明：射速 3 秒/发 · 只有 **6 发**（6 个 ▼）· 拖尾是
+#       **坚守者冲击波**（Particle.SONIC_BOOM）
+#       ★ 第七十七批已删掉灵魂沙粒子 SCULK_SOUL，只剩冲击波。
+#       ★ 弹体**本身没有伤害**，伤害**全部**来自引爆那一下：
+#         命中 ⇒ **半径 4.5 格**爆炸，范围内生物 **155 点**伤害（不包括自己）
+#     · 6 发打完 ⇒ **自动退出技能回常态**（用户已确认），并开始 **18 秒冷却**
+#       （★ 第七十七批起：冷却中按右键**静默失败**，聊天栏不提示任何东西）
+#     · 射程两种状态**相同**（24 格，用户「射程不变」）· **不穿墙**
+#       （撞到 solid 方块即引爆）· **不破坏地形**（用户已确认）
+#     · 爆炸**不用 world.createExplosion** —— 那个一定会破坏地形、还会炸伤自己；
+#       改成原版爆炸粒子 + 音效 + 手动 getNearbyEntities 逐个结算伤害，
+#       并按**球**距离二次过滤（getNearbyEntities 给的是**立方体**范围）
+#   ★ 物品**故意不写 `script:` 字段**（同残樱 / 余念绝响 / 五骊矟）——
+#     右键要拦下原版行为（**唱片右键可以插进唱片机**！），RSC 的 scriptListener
+#     回调延迟 1 tick、setCancelled 无效，只能用 PluginManager#registerEvent
+#     自己注册**同步监听器**。
+#   ★ 弹药 / 技能 / 冷却状态存玩家 PDC（钥匙 gs:al_*），跨 /rsc reload 不丢。
+# ==========================================================================
+GS_ANCESTOR_LAUNCHER:
+  # ★★★ 第八十七批·补 2：用户「祖宗发射器放到构思玩具最后一格」
+  #   ⇒ 由构思武器第 11 格**搬到构思玩具最后一格**。
+  # ★★★ 第八十八批：用户「删除构念，构思玩具全部往前移一格」
+  #   ⇒ 构念（原第 1 格）整件删除、玩具整体前移 ⇒ 本件 **12 → 11**
+  #     （玩具 1~7 + 机器8 + 借寿9 + Bad Apple10 ⇒ 本件接在最后 = **11**）。
+  item_group: gs_toy
+  display_tier: 11           # ★ 第八十八批：12 → 11（构思玩具最后一格）
+  # ---------- ★★★ 第七十九批：改成**构思机九宫格配方**（用户逐字）----------
+  #   「构思机九宫格配方：1379滚木，2凋零骷髅头，4回响碎片，5下届之星，6弩，8盔甲架」
+  #     ┌────────┬──────────────┬────────┐
+  #     │ 滚木   │ 凋零骷髅头   │ 滚木   │   槽 1 / 2 / 3
+  #     ├────────┼──────────────┼────────┤
+  #     │回响碎片│ 下界之星     │ 弩     │   槽 4 / 5 / 6
+  #     ├────────┼──────────────┼────────┤
+  #     │ 滚木   │ 盔甲架       │ 滚木   │   槽 7 / 8 / 9
+  #     └────────┴──────────────┴────────┘
+  #   ★ 用户写「下届之星」= 游戏里的**下界之星 NETHER_STAR**（错别字，按游戏内叫法落地）。
+  #   ★ 滚木是**粘液科技物品** ⇒ material_type: slimefun + GS_ROLLING_LOG_INGOT；
+  #     其余 5 种（凋零骷髅头 / 回响碎片 / 下界之星 / 弩 / 盔甲架）都是**原版材质**
+  #     ⇒ material_type: mc。
+  #   ★ 数量用户没说 ⇒ 一律 1 个。
+  #   ★★ 格位必须与 mb_machines.yml 里 ancestor_launcher 的 input **完全一致**
+  #      （发射器逐格比对，差一格就合不出来）。
+  #   ★ 九宫格正好排满 9 格，没有空格 ⇒ 不许再往发射器里多塞东西。
+  recipe_type: GS_RT_RULE_CONCEPTOR
+  recipe:
+    1: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+    2: {material_type: mc,       material: WITHER_SKELETON_SKULL, amount: 1}
+    3: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+    4: {material_type: mc,       material: ECHO_SHARD,            amount: 1}
+    5: {material_type: mc,       material: NETHER_STAR,           amount: 1}
+    6: {material_type: mc,       material: CROSSBOW,              amount: 1}
+    7: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+    8: {material_type: mc,       material: ARMOR_STAND,           amount: 1}
+    9: {material_type: slimefun, material: GS_ROLLING_LOG_INGOT, amount: 1}
+  item:
+    name: "&c祖宗发射器<?>"
+    material: MUSIC_DISC_LAVA_CHICKEN
+    lore:
+      # ★★ 2026-10-12 第七十六批（用户逐字）：
+      #    · 第 1 行 红 &c ｜ 第 2 行 白 &f
+      #    · 第 3 行 拆色：维什戴尔 红 &c · 经常把他叫做 白 &f · 老东西 红 &c
+      #    · 左键 / 右键 两行 = 橙色加粗标签 &6&l + 白色 &f 内容
+      - "&c萨卡兹·维什戴尔"
+      - "&f听说寄宿着一个仍然存活的死灵魂长老意识"
+      - "&c维什戴尔&f经常把他叫做&c老东西"
+      - "&6&l左键&r&f 开火"
+      - "&6&l右键&r&f 爆裂黎明"

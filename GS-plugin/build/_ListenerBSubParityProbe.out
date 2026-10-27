@@ -1,0 +1,196 @@
+=== ListenerB 子系统对账探针：开镜+余念绝响 / 残樱（原脚本 1119~2809）===
+脚本: ..\QHCGS\GS\GS\scripts\gs_listener.js
+日志: docs\参考服日志_构思技艺.txt
+
+      OK   脚本存在且行数 > 2809（原脚本共 14337 行）
+      OK   第 2044 行恰好是 gsPsychicStart();
+      OK   第 2809 行恰好是 gsCherryStart();
+      OK   原脚本前 2809 行能在桥接桩下求值（真 JS）
+[A] 常量对账：真 JS 顶层 var vs Java 字段（按名按值）
+      OK   GS_PSYCHIC_ID = "GS_PSYCHIC_POWER"
+      OK   GS_PSY_MUZZLE_Y = 1.2
+      OK   GS_PSY_AMMO = 37
+      OK   GS_PSY_FIRE_MS = 30
+      OK   GS_PSY_RELOAD_MS = 1500
+      OK   GS_PSY_RANGE = 25.0
+      OK   GS_PSY_HIT_R = 0.8
+      OK   GS_PSY_DMG_MIN = 3.0
+      OK   GS_PSY_DMG_MAX = 6.0
+      OK   GS_SCOPE_RADIUS = 0.22
+      OK   GS_SCOPE_DIST = 1.6
+      OK   GS_SCOPE_POINTS = 12
+      OK   GS_SCOPE_DEBOUNCE_MS = 800
+      OK   GS_SCOPE_FOCUS_TICKS = 600
+      OK   GS_SCOPE_FOCUS_REF = 540
+      OK   GS_SCOPE_NV_TICKS = 600
+      OK   GS_SCOPE_NV_REF = 540
+      OK   GS_CH_ID = "GS_CHERRY"
+      OK   GS_CH_AMMO = 12
+      OK   GS_CH_FIRE_MS = 200
+      OK   GS_CH_RELOAD_MS = 1800
+      OK   GS_CH_RANGE = 16.0
+      OK   GS_CH_DMG = 8.0
+      OK   GS_CH_MUZZLE_Y = 1.2
+      OK   GS_CH_STEP = 0.5
+      OK   GS_CH_HIT_R = 0.8
+      OK   GS_CH_BURST_N = 3
+      OK   GS_CH_BURST_MS = 300
+      OK   GS_CH_BURST_RANGE = 6.0
+      OK   GS_CH_SPREAD_BASE = 0.2
+      OK   GS_CH_SPREAD_SIDES = [0, -1, 1]
+      OK   GS_CH_SWITCH_MS = 1000
+      OK   GS_CH_SND_FIRE = "block.copper_chest.close"
+      OK   GS_CH_SND_RELOAD = "block.copper_chest.open"
+      OK   GS_CH_SND_SWITCH = "block.lever.click"
+      OK   常量对账条数 = 35（应为 35）
+      OK   GS_SCOPE_SCOPED_KEY = gs:psy_scoped
+      OK   GS_SCOPE_KEY = gs:psy_scope
+      OK   gs:psy_ammo
+      OK   gs:psy_lastshot
+      OK   gs:psy_reload
+      OK   gs:psy_shooting
+      OK   gs:ch_ammo
+      OK   gs:ch_lastshot
+      OK   gs:ch_reload
+      OK   gs:ch_shooting
+      OK   gs:ch_mode
+      OK   gs:ch_switch
+      OK   Java GS_PSY_DMG_HIP = 37.0 ⇔ 脚本里 'dmg = scoped ? 77.0 : 37.0'
+      OK   Java GS_PSY_SCOPED_RANGE = 77.0 ⇔ 脚本里 'range = scoped ? 77.0 : GS_PSY_RANGE'
+      OK   Java GS_PSY_STEP = 0.5 ⇔ 脚本里 'd += 0.5;'（余念绝响用字面量）
+      OK   Java GS_SCOPE_FOCUS_AMP = 9 ⇔ 脚本里 'cur.getAmplifier() === 9'
+      OK   ★ GS_PSY_DMG_MIN/MAX 只出现在日志拼接里（脚本里无第二处引用）
+
+[B] 日志行逐字节：真 JS 打出来的 / Java 的 / 参考服日志的
+      OK   真 JS 打出了「余念绝响监听器注册成功」那一行
+      OK   真 JS 打出了「余念绝响：单手持冲锋枪已启用」那一行
+      OK   真 JS 打出了「残樱监听器注册成功」那一行
+      OK   真 JS 打出了「残樱：单手持手枪已启用」那一行
+      OK   Java 注册行 == 真 JS 注册行
+      OK   Java 启用行 == 真 JS 启用行
+      OK   Java 注册行 == 真 JS 注册行（残樱）
+      OK   Java 启用行 == 真 JS 启用行（残樱）
+      OK   参考服日志有「余念绝响监听器注册成功」
+      OK   参考服日志有「余念绝响：单手持冲锋枪已启用」
+      OK   参考服日志有「残樱监听器注册成功」
+      OK   参考服日志有「残樱：单手持手枪已启用」
+      OK   Java 注册行 == 参考服日志行（余念绝响）
+      OK   Java 启用行 == 参考服日志行（余念绝响）
+      OK   Java 注册行 == 参考服日志行（残樱）
+      OK   Java 启用行 == 参考服日志行（残樱）
+      OK   ★ 残樱启用行以「F 换弹）」收尾（不是截断的「换弹 1.8 秒」）
+      OK   ★ 参考服日志那一行也以「F 换弹）」收尾
+      · JS 余念绝响启用行: [构思技艺] 余念绝响：单手持冲锋枪已启用（37 发，射速 2000 RPM，伤害 3~6，射程 25，左键开火，右键开镜（开/关，0.8 秒防抖，★ 不需要副手），F 换弹，Q 原版丢弃）
+      · JS 残樱启用行    : [构思技艺] 残樱：单手持手枪已启用（12 发，单发 0.2 秒/发 · 射程 16，三连发 3 发**同时出膛**（横向偏移固定 0.20 格，不随距离散布）· 射程 6 · 0.3 秒一轮，伤害 8，换弹 1.8 秒，左键开火，右键切换发射方式，F 换弹）
+
+[C] 数值 / 几何算式：真 JS 函数（mock 世界）vs Java 同一算式
+      OK   樱花射线采样点与 Java 算式逐值一致（108 组方向/侧向/射程，共 1908 个采样点）
+      OK   ★ 横向偏移全程恒定（不随距离散布）
+      OK   ★ 发射音效只在 side===0 那一发响一次（铜箱子关闭 1.0/1.4）
+      OK   命中判定盒三轴都传 GS_CH_HIT_R = 0.8
+      OK   命中筛选 [0] 命中序号 JS=-1 Java=-1
+      OK   未命中 [0] 没有结算任何伤害
+      OK   命中筛选 [1] 命中序号 JS=-1 Java=-1
+      OK   未命中 [1] 没有结算任何伤害
+      OK   命中筛选 [2] 命中序号 JS=9 Java=9
+      OK   命中 [2] 伤害 = GS_CH_DMG(8.0) 且带来源
+      OK   命中筛选 [3] 命中序号 JS=-1 Java=-1
+      OK   未命中 [3] 没有结算任何伤害
+      OK   命中筛选 [4] 命中序号 JS=-1 Java=-1
+      OK   未命中 [4] 没有结算任何伤害
+      OK   命中筛选 [5] 命中序号 JS=27 Java=27
+      OK   命中 [5] 伤害 = GS_CH_DMG(8.0) 且带来源
+      OK   命中筛选 [6] 命中序号 JS=-1 Java=-1
+      OK   未命中 [6] 没有结算任何伤害
+      OK   命中筛选 [7] 命中序号 JS=-1 Java=-1
+      OK   未命中 [7] 没有结算任何伤害
+      OK   命中筛选 [8] 命中序号 JS=9 Java=9
+      OK   命中 [8] 伤害 = GS_CH_DMG(8.0) 且带来源
+      OK   命中筛选 [9] 命中序号 JS=9 Java=9
+      OK   命中 [9] 伤害 = GS_CH_DMG(8.0) 且带来源
+      OK   命中筛选 10/10 组与 Java 判定一致
+      OK   残樱开火状态机（2688 组预状态：ammo×lastShotAgo×reloadAgo×mode）JS 与 Java 完全一致
+      OK   时钟稳定化：没有卡在同一毫秒外的组（不稳定 0 组）
+      OK   残樱开火确实发生过的组数 = 1008（> 0）
+      OK   射线参数与 Java 算式一致（三连发 正中/左/右 × 6 格 · 单发 正中 × 16 格）
+      OK   残樱切换开火方式（21 组：mode×switchAgo）JS 与 Java 完全一致
+      OK   切换方式时钟稳定化（不稳定 0 组）
+      OK   余念绝响射线采样点与 Java 算式逐值一致（腰射 25 格 / 开镜 77 格，共 1854 个采样点）
+      OK   发射音效 = block.stone_button.click_on 1.0/0.8，且从胸口响
+      OK   余念绝响命中伤害 腰射 = 37.0（硬编码，与 GS_PSY_DMG_MIN/MAX 无关）
+      OK   余念绝响命中伤害 开镜 = 77.0（硬编码，与 GS_PSY_DMG_MIN/MAX 无关）
+      OK   开镜准星圆周坐标与 Java 算式一致（20 个视线 × 12 个点 = 240 点，最大偏差 0.000e+00）
+      OK   圆周点数 = GS_SCOPE_POINTS = 12
+      OK   圆环半径 = GS_SCOPE_RADIUS = 0.22 / 距离 = 1.6
+      OK   开镜 0.8 秒防抖时序与 Java 闸门一致（t=[0, 100, 300, 700, 799, 800, 801, 1500, 1600, 1601, 2400, 3201] ⇒ 111110001101）
+      OK   防抖窗口 = GS_SCOPE_DEBOUNCE_MS = 800
+      OK   防抖判定：799ms 吞掉 / 800ms 放行
+      OK   防抖判定：没记录过 ⇒ 放行
+      OK   开镜「专注」续期节奏（resetOwned=false，11 组：缓慢/夜视各自判断，30 秒一次、低于 27 秒续期）
+      OK   开镜「专注」续期节奏（resetOwned=true，11 组：缓慢/夜视各自判断，30 秒一次、低于 27 秒续期）
+      OK   摘镜只收走本机制给的那一份（缓慢靠标记+amp9 兜底 / 夜视只认自己的标记）
+      OK   ★ 玩家自己给的夜视（非本机制）摘镜时绝不碰
+      OK   余念绝响开火状态机（504 组预状态：ammo×lastShotAgo×reloadAgo）JS 与 Java 完全一致
+      OK   时钟稳定化：没有卡在同一毫秒外的组（不稳定 0 组）
+      OK   开火过的组数 = 288（> 0）
+      OK   开火 ⇒ 弹药恰好 -1 且 lastShot 打点（504/504）
+      OK   物品显示名与 Java 算式一致（15 组：弹药 / 换弹中 ᴿ / 三连发 ≡）
+      OK   余念绝响名 = §d余念绝响<37>
+      OK   残樱三连发名 = §d残樱<12≡>
+      OK   残樱换弹中名 = §d残樱<12ᴿ>
+
+[D] 反向断言：钉住「不该存在的东西」
+      OK   ★ 真 JS 没打「余念绝响/残樱 已加载」这种行
+      OK   ★ 脚本本子系统区间里没有『已加载』字样
+      OK   ★ Java 的 PsychicSub/CherrySub 源码里没有『已加载』字样
+      OK   ★ 这两个子系统一共只打 4 行日志（2 注册 + 2 启用），实际 4
+      OK   ★ 原脚本区间里「已删除的键 / 函数」一个都没留下（19/19）
+      OK   Java 里也没有方法「GS_CH_BURST_GAP」
+      OK   Java 里也没有方法「GS_CH_SPREAD_D0」
+      OK   Java 里也没有方法「GS_CH_SPREAD_K」
+      OK   Java 里也没有方法「gsCherrySpreadAt」
+      OK   Java 里也没有方法「gsCherryBurstLeft」
+      OK   Java 里也没有方法「gsCherrySetBurstLeft」
+      OK   Java 里也没有方法「gsCherryBurstAgo」
+      OK   Java 里也没有方法「gsCherryMarkBurst」
+      OK   Java 里也没有方法「gsPsychicMarkQ」
+      OK   Java 里也没有方法「gsPsychicJustQ」
+      OK   Java 里也没有方法「gsCherryMarkQ」
+      OK   Java 里也没有方法「gsCherryJustQ」
+      OK   Java 里也没有方法「gsScopeMakeButton」
+      OK   Java 里也没有字段「GS_CH_BURST_GAP」
+      OK   Java 里也没有字段「GS_CH_SPREAD_D0」
+      OK   Java 里也没有字段「GS_CH_SPREAD_K」
+      OK   Java 里也没有字段「GS_PSY_Q_AT」
+      OK   Java 里也没有字段「GS_PSY_Q_GAP」
+      OK   Java 里也没有字段「GS_CH_Q_AT」
+      OK   Java 里也没有字段「GS_CH_Q_GAP」
+      OK   ★ 残樱的代码里完全不出现 gsScope* / GS_SCOPE_
+      OK   ★ 残樱的代码里没有 addPotionEffect（不给任何药效）
+      OK   ★ 残樱的代码里没有准星圆环（spawnParticle 只出现 1 次 = 画樱花）
+      OK   ★ 两个子系统都不注册 PlayerDropItemEvent（Q = 原版丢弃）
+      OK   ★ 两个子系统都不注册 InventoryClickEvent / InventoryDragEvent（副手按钮已删）
+      OK   ★ 挥手监听只认 ARM_SWING（脚本里 'type !== \'ARM_SWING\'' 出现 2 次）
+      OK   ★ Java 也只认 ARM_SWING（两处 !type.equals("ARM_SWING")）
+      OK   ★ Java 里没有任何「接受 OFF_ARM_SWING」的判定
+      OK   ★ 余念绝响区间里没有任何手持药效名（抗性/生命恢复/饱和/速度 已整段删除）
+      OK   ★ Java 两个文件都没有 ignoreCancelled = true
+      OK   ★ PsychicSub 恰好注册 4 个监听器（原脚本 4 处 registerEvent）
+      OK   ★ PsychicSub 4 个监听器全部 EventPriority.HIGHEST
+      OK   ★ PsychicSub 4 个监听器 ignoreCancelled 都是默认 false
+      OK   ★ CherrySub 恰好注册 4 个监听器（原脚本 4 处 registerEvent）
+      OK   ★ CherrySub 4 个监听器全部 EventPriority.HIGHEST
+      OK   ★ CherrySub 4 个监听器 ignoreCancelled 都是默认 false
+      OK   ★ GS_PSY_REGISTERED / GS_CH_REGISTERED 是**实例**字段（幂等闩锁，不是静态共享）
+      OK   ★ 类注释里写明了「原脚本 reload 会累积监听器，Java 版改为幂等注册」
+      OK   ★ 注册入口有幂等早退（if (GS_PSY_REGISTERED) return; / if (GS_CH_REGISTERED) return;）
+      OK   原脚本里 GS_PSY_REGISTERED 只出现在定义与置 true 两处
+      OK   原脚本里 GS_CH_REGISTERED 只出现在定义与置 true 两处
+      OK   ★ 脚本里 gsPsychicShoot 用硬编码 37.0/77.0（不是 GS_PSY_DMG_MIN/MAX）
+      OK   ★ Java 的 gsPsychicShoot 同样用 GS_PSY_DMG_SCOPED/GS_PSY_DMG_HIP
+      OK   ★ 脚本里三连发是 for 循环一次性出膛（没有 0.1 秒发间隔）
+      OK   ★ Java 里三连发也是同一个 for 循环
+      OK   ★ 命中筛选保留了历史分支 ARMOR_STAND / DROPPED_ITEM / ITEM（脚本 2 处 + Java 2 处）
+
+
+通过 180 ｜ 失败 0

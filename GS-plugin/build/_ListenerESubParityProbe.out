@@ -1,0 +1,416 @@
+=== ListenerE 子系统对账探针：致万千无言者 / 此刻万籁俱寂 / 阎魔刀·改 / 武器禁近战（原脚本 7791~10950）===
+脚本: ..\QHCGS\GS\GS\scripts\gs_listener.js
+日志: docs\参考服日志_构思技艺.txt
+
+      OK   脚本存在且行数 > 10950（原脚本共 14337 行）
+      OK   第 8599 行恰好是 gsVoStart();
+      OK   第 9279 行恰好是 gsSiStart();
+      OK   第 10837 行恰好是 gsEmStart();
+      OK   第 10950 行恰好是 gsWpnNoMeleeStart();
+      OK   ★ 假 RegistryAccess 注入成功（撑起 org.bukkit.Registry 的静态初始化）
+      OK   ★ 注入之后 Material.STONE.isSolid() = true / Material.AIR.isSolid() = false
+      OK   ★ 假服务器注入成功（Bukkit 私有静态字段 server）
+      OK   原脚本前 10950 行能在桥接桩下求值（真 JS）
+      OK   原脚本前 10950 行在「四个入口置空」下也能求值（用于读声明初值）
+[A] 常量对账：真 JS 顶层 var vs Java 字段（按名按值）
+      OK   GS_VO_ID = "GS_VOICELESS"
+      OK   GS_VO_NO_BREAK = true
+      OK   GS_VO_HIT_PLAYERS = false
+      OK   GS_VO_MAX = 7
+      OK   GS_VO_WINDOW = 3000
+      OK   GS_VO_DMG_BASE = 7.0
+      OK   GS_VO_DMG_PER = 1.0
+      OK   GS_VO_BAR_COL = "WHITE"
+      OK   GS_VO_SWING_R = 3.0
+      OK   GS_VO_SWING_W = 3.0
+      OK   GS_VO_SWING_H = 1.6
+      OK   GS_VO_SWING_CD = 320
+      OK   GS_VO_QI_CHARGE = 12
+      OK   GS_VO_QI_RANGE = 7.0
+      OK   GS_VO_QI_WIDE = 3.0
+      OK   GS_VO_QI_H = 1.8
+      OK   GS_VO_QI_PIERCE = 4
+      OK   GS_VO_QI_DMG = 11.0
+      OK   GS_VO_QI_STEP = 0.5
+      OK   GS_VO_QI_CD = 1200
+      OK   GS_VO_QI_TRAIL = 8
+      OK   GS_VO_QI_STACK = true
+      OK   GS_VO_QI_COL = [150, 150, 150]
+      OK   GS_VO_REGISTERED = false
+      OK   GS_VO_CLICK_AT = map(0)
+      OK   GS_VO_SWING_AT = map(0)
+      OK   GS_VO_FIRE_AT = map(0)
+      OK   GS_VO_CHARGING = map(0)
+      OK   GS_VO_ST = map(0)
+      OK   GS_VO_BARS = map(0)
+      OK   GS_VO_GEN = -1
+      OK   GS_SI_ID = "GS_SILENCE"
+      OK   GS_SI_NO_BREAK = true
+      OK   GS_SI_HIT_PLAYERS = false
+      OK   GS_SI_MAX = 99
+      OK   GS_SI_WINDOW = 7000
+      OK   GS_SI_DMG_BASE = 17.0
+      OK   GS_SI_DMG_PER = 2.0
+      OK   GS_SI_BAR_COL = "RED"
+      OK   GS_SI_WIDE = 3.0
+      OK   GS_SI_RANGE = 5.0
+      OK   GS_SI_H = 2.0
+      OK   GS_SI_SWING_CD = 320
+      OK   GS_SI_BURST_R = 7.0
+      OK   GS_SI_BURST_MUL = 2.0
+      OK   GS_SI_BURST_CD = 15000
+      OK   GS_SI_BURST_FX_MS = 400
+      OK   GS_SI_BURST_FX_N = 96
+      OK   GS_SI_REGISTERED = false
+      OK   GS_SI_CLICK_AT = map(0)
+      OK   GS_SI_SWING_AT = map(0)
+      OK   GS_SI_SIDE = map(0)
+      OK   GS_SI_ST = map(0)
+      OK   GS_SI_BARS = map(0)
+      OK   GS_SI_BURST_AT = map(0)
+      OK   GS_SI_BURST_FX = list(0)
+      OK   GS_SI_GEN = -1
+      OK   GS_EM_ID = "GS_ENMA_BLADE"
+      OK   GS_EM_NO_BREAK = true
+      OK   GS_EM_HIT_PLAYERS = false
+      OK   GS_EM_DMG = 37.0
+      OK   GS_EM_WIDE = 5.0
+      OK   GS_EM_RANGE = 9.0
+      OK   GS_EM_H = 3.0
+      OK   GS_EM_SLASH_N = 6
+      OK   GS_EM_CD = 200
+      OK   GS_EM_FX_MS = 400
+      OK   GS_EM_RESET_MS = 3000
+      OK   GS_EM_BAR_COL = "PURPLE"
+      OK   GS_EM_ARCH = 0.62
+      OK   GS_EM_S6_R = 4.5
+      OK   GS_EM_S6_TILT = -0.4
+      OK   GS_EM_S6_N = 64
+      OK   GS_EM_S6_DMG = 77.0
+      OK   GS_EM_S6_THICK = 3.0
+      OK   GS_EM_DS_DIST = 4.0
+      OK   GS_EM_DS_R = 3.0
+      OK   GS_EM_DS_DMG = 25.0
+      OK   GS_EM_DS_EVERY = 500
+      OK   GS_EM_DS_LIFE = 1200
+      OK   GS_EM_DS_PULL = 0.42
+      OK   GS_EM_DS_BIG = 3.0
+      OK   GS_EM_DS_RING_N = 48
+      OK   GS_EM_DS_DRAW_MS = 250
+      OK   GS_EM_CRACK_DIST = 2.0
+      OK   GS_EM_CRACK_HALF = 3.5
+      OK   GS_EM_CRACK_H = 3.0
+      OK   GS_EM_CRACK_MIDH = 1.5
+      OK   GS_EM_CRACK_DRAW = 2000
+      OK   GS_EM_CRACK_KEEP = 3000
+      OK   GS_EM_CRACK_CD = 5000
+      OK   GS_EM_DIA_R = 2.5
+      OK   GS_EM_DIA_H = 0.8
+      OK   GS_EM_TOUCH_R = 1.3
+      OK   GS_EM_BUFF_TICKS = 600
+      OK   GS_EM_BUFF_REF = 540
+      OK   GS_EM_S5_PF = 4.6
+      OK   GS_EM_S5_PL = 0.0
+      OK   GS_EM_S5_PH = 0.0
+      OK   GS_EM_REGISTERED = false
+      OK   GS_EM_ST = map(0)
+      OK   GS_EM_BARS = map(0)
+      OK   GS_EM_SWING_AT = map(0)
+      OK   GS_EM_CLICK_AT = map(0)
+      OK   GS_EM_CRACK_AT = map(0)
+      OK   GS_EM_ANCHOR = map(0)
+      OK   GS_EM_BUFF_FLY = map(0)
+      OK   GS_EM_BUFF_EFF = map(0)
+      OK   GS_EM_BUFF_NV = map(0)
+      OK   GS_EM_FX = list(0)
+      OK   GS_EM_FIELDS = list(0)
+      OK   GS_EM_CRACKS = list(0)
+      OK   GS_EM_GEN = -1
+      OK   GS_EM_C_PUR = null
+      OK   GS_EM_C_BLU = null
+      OK   GS_EM_C_DSR = null
+      OK   GS_EM_C_DSP = null
+      OK   GS_EM_LAST_PULSE = 0
+      OK   GS_WPN_NOMELEE = true
+      OK   GS_WPN_NL_PVP = false
+      OK   GS_WPN_IDS = list(5)
+      OK   GS_WPN_REGISTERED = false
+      OK   常量对账条数 = 122（应为 122）
+      OK   GS_VO_K_GEN = gs:vo_gen
+      OK   GS_SI_K_GEN = gs:si_gen
+      OK   GS_EM_K_GEN = gs:em_gen
+      OK   ★ GS_VO_PDT 在真 JS 里非 null = Java 省略这一半判断是有依据的
+      OK   ★ GS_SI_PDT 在真 JS 里非 null
+      OK   ★ GS_EM_PDT 在真 JS 里非 null
+      OK   ★ VoSub 里没有 GS_VO_PDT 字段（PDT 必然可用 = 只留 K_GEN != null 这一半）
+      OK   ★ SiSub 里没有 GS_SI_PDT 字段
+      OK   ★ EmSub 里没有 GS_EM_PDT 字段
+      OK   ★ GS_VO_ENCH 在真 JS 里初始为 null（懒探测）= Java 用闩锁 + 局部缓存
+      OK   ★ GS_VO_ENCH_TRIED 在真 JS 里初始为 false
+      OK   ★ GS_WPN_DMG_GUARD 声明在脚本 5967 行（属 ListenerCore，不属本区间）
+      OK   ★ ListenerCore 已有 gsWpnDmgGuard 字段（WpnNoMeleeSub 直接读它）
+      OK   ★ WpnNoMeleeSub 读的是 core.gsWpnDmgGuard（同一份守卫）
+      OK   Java VoSub.gsVoDmg 用的 GS_VO_DMG_BASE / PER / MAX ⇔ 脚本里 'GS_VO_DMG_BASE + GS_VO_DMG_PER * (k - 1)'
+      OK   Java SiSub.gsSiDmg ⇔ 脚本里 'GS_SI_DMG_BASE + GS_SI_DMG_PER * (k - 1)'
+      OK   Java GS_EM_ARCH = 0.62 ⇔ 脚本里 'sh.r * GS_EM_ARCH'
+      OK   ★ 六刀一循环 = GS_EM_SLASH_N(6) ⇔ 脚本里 'idx >= GS_EM_SLASH_N'
+
+[B] 日志行逐字节：真 JS 打出来的 / Java 的 / 参考服日志的
+      OK   ★★ 真 JS 启动后 GS_VO_GEN = 1（空 PDC = 第一次 bump 写出 1）
+      OK   ★★ 真 JS 启动后 GS_SI_GEN = 1
+      OK   ★★ 真 JS 启动后 GS_EM_GEN = 1
+      OK   ★★ 真 JS 的假世界 PDC 里确实写着 gs:vo_gen = 1
+      OK   ★★ 真 JS 的假世界 PDC 里确实写着 gs:si_gen = 1
+      OK   ★★ 真 JS 的假世界 PDC 里确实写着 gs:em_gen = 1
+      OK   ★ Java 侧空 PDC = gsVoGenBump() 得 1 并写回 PDC
+      OK   ★ Java 侧再 bump 一次 = 得 2（世代号真的在走，不是常量）
+      OK   ★ Java 侧三个子系统的世代号初值都是 -1（GS_VO_GEN / GS_SI_GEN / GS_EM_GEN）
+      OK   真 JS 打出了「致万千无言者监听器注册成功」那一行
+      OK   真 JS 打出了「致万千无言者（GS_VOICELESS）已加载」那一行
+      OK   真 JS 打出了「此刻万籁俱寂监听器注册成功」那一行
+      OK   真 JS 打出了「此刻万籁俱寂（GS_SILENCE）已加载」那一行
+      OK   真 JS 打出了「阎魔刀·改监听器注册成功」那一行
+      OK   真 JS 打出了「阎魔刀·改（GS_ENMA_BLADE）已加载」那一行
+      OK   真 JS 打出了「武器原版近战已取消」那一行
+      OK   Java 注册行 == 真 JS 注册行（致万千无言者）
+      OK   Java 已加载行 == 真 JS 已加载行（致万千无言者）
+      OK   Java 注册行 == 真 JS 注册行（此刻万籁俱寂）
+      OK   Java 已加载行 == 真 JS 已加载行（此刻万籁俱寂）
+      OK   Java 注册行 == 真 JS 注册行（阎魔刀·改）
+      OK   Java 已加载行 == 真 JS 已加载行（阎魔刀·改）
+      OK   Java 取消近战行 == 真 JS 那一行（武器禁近战）
+      OK   ★ 四行都带 [构思技艺] 前缀（由 gsDaLog 统一加，Java 行方法里不重复）
+      OK   参考服日志有「致万千无言者监听器注册成功」
+      OK   参考服日志有「致万千无言者已加载」
+      OK   参考服日志有「此刻万籁俱寂监听器注册成功」
+      OK   参考服日志有「此刻万籁俱寂已加载」
+      OK   参考服日志有「阎魔刀·改监听器注册成功」
+      OK   参考服日志有「阎魔刀·改已加载」
+      OK   参考服日志有「武器原版近战已取消」
+      OK   Java 注册行 == 参考服日志行（致万千无言者）
+      OK   Java 注册行 == 参考服日志行（此刻万籁俱寂）
+      OK   Java 注册行 == 参考服日志行（阎魔刀·改）
+      OK   Java 取消近战行 == 参考服日志行（武器禁近战）
+      OK   ★★ 参考服日志的世代号是运行期动态值（Vo=75 / Si=74 / Em=72，非 1）
+      OK   ★★ 探针里真 JS 的世代号是 1（空 PDC = 首轮）
+      OK   ★★ Java 已加载行 == 真 JS 已加载行（致万千无言者）
+      OK   ★★ 参考服「致万千无言者已加载」行把世代号换成 1 后 == Java 行（逐字节）
+      OK   ★★ 参考服「此刻万籁俱寂已加载」行把世代号换成 1 后 == Java 行（逐字节）
+      OK   ★★ 参考服「阎魔刀·改已加载」行把世代号换成 1 后 == Java 行（逐字节）
+      OK   ★★ 契约 §3 的「致万千无言者已加载」引用行带「…」（确实被截断过）
+      OK   ★★ 契约 §3 的「此刻万籁俱寂已加载」引用行带「…」
+      OK   ★★ 契约 §3 的「阎魔刀·改已加载」引用行带「…」
+      OK   ★★ 契约截断行（去「…」后）是 Java 行的前缀 —— 致万千无言者
+      OK   ★★ 契约截断行（去「…」后）是 Java 行的前缀 —— 此刻万籁俱寂
+      OK   ★★ 契约截断行（去「…」后）是 Java 行的前缀 —— 阎魔刀·改
+      OK   ★ 契约 §3 的「武器原版近战已取消」引用行**没有**「…」= 完整行逐字节相等
+      OK   ★ 契约 §3 的「阎魔刀·改已加载」引用行确实比 Java 行短（真被截断了）
+      OK   ★ 契约里明确写了「被截断 = 只能比对前缀」（不是靠猜）
+      OK   ★ 武器禁近战没有「已加载」行（参考服日志里查不到）
+      OK   ★ 武器禁近战没有「已加载」行（真 JS 也没打）
+      · 真 JS 致万千无言者已加载行: [构思技艺] 致万千无言者（GS_VOICELESS）已加载 · 挥砍 7~13 点（随连击 +1/层）/ 满 7 连击 / 窗口 3 秒 · 逝言 蓄力 0.6 秒 / 11 点 / 射程 7 格 / 宽 3 格 / 穿透 4 个 / 冷却 1.2 秒 · 附魔文字粒子 可用 · 世界世代号 1
+      · Java 致万千无言者已加载行: [构思技艺] 致万千无言者（GS_VOICELESS）已加载 · 挥砍 7~13 点（随连击 +1/层）/ 满 7 连击 / 窗口 3 秒 · 逝言 蓄力 0.6 秒 / 11 点 / 射程 7 格 / 宽 3 格 / 穿透 4 个 / 冷却 1.2 秒 · 附魔文字粒子 可用 · 世界世代号 1
+      · 参考服 致万千无言者那一行 : [构思技艺] 致万千无言者（GS_VOICELESS）已加载 · 挥砍 7~13 点（随连击 +1/层）/ 满 7 连击 / 窗口 3 秒 · 逝言 蓄力 0.6 秒 / 11 点 / 射程 7 格 / 宽 3 格 / 穿透 4 个 / 冷却 1.2 秒 · 附魔文字粒子 可用 · 世界世代号 75
+      · 真 JS 此刻万籁俱寂已加载行: [构思技艺] 此刻万籁俱寂（GS_SILENCE）已加载 · 斩击 17~213 点（随连击 +2/层 · 满 99 连击）/ 范围 宽3×长5×高2 / 窗口 7 秒（未命中**清 0**） · 寂灭 半径 7 格圆圈 × 2 倍伤害（34~426 点）· 冷却 15 秒 · 不叠层 · 附魔文字粒子 可用 · 世界世代号 1
+      · Java 此刻万籁俱寂已加载行: [构思技艺] 此刻万籁俱寂（GS_SILENCE）已加载 · 斩击 17~213 点（随连击 +2/层 · 满 99 连击）/ 范围 宽3×长5×高2 / 窗口 7 秒（未命中**清 0**） · 寂灭 半径 7 格圆圈 × 2 倍伤害（34~426 点）· 冷却 15 秒 · 不叠层 · 附魔文字粒子 可用 · 世界世代号 1
+      · 参考服 此刻万籁俱寂那一行 : [构思技艺] 此刻万籁俱寂（GS_SILENCE）已加载 · 斩击 17~213 点（随连击 +2/层 · 满 99 连击）/ 范围 宽3×长5×高2 / 窗口 7 秒（未命中**清 0**） · 寂灭 半径 7 格圆圈 × 2 倍伤害（34~426 点）· 冷却 15 秒 · 不叠层 · 附魔文字粒子 可用 · 世界世代号 74
+      · 真 JS 阎魔刀·改已加载行   : [构思技艺] 阎魔刀·改（GS_ENMA_BLADE）已加载 · 居合斩 37 点 / 范围 宽5×长9×高3 / 6 刀一循环（冷却 0.2 秒 · 特效 0.4 秒 · 停手 3 秒清空 · 前五刀「画圆圈切掉后面」成朝前半圆（下→上 / 横斩(右→左) / 左上→右下 / 横斩(左→右) / 三弧顶点相撞，前方进深压扁 0.62）· 第5刀三弧顶点相撞于前方 · 第6刀半径4.5 左高右低圆圈 + 圈内额外 77 点）· 朝向 全部沿准星（含俯仰）· 第六刀次元斩 身前 4 格 / 半径 3 格 / 画面=红紫色大圆环(半径3·48点) / 每 0.5 秒 25 点 / 存在 1.2 秒 / 无冷却 / 持续吸引 / 画面每 0.25 秒重画（粒子做稀） · 裂缝 长7×宽1×高3 / 绘画 2 秒 / 留存 3 秒 / 冷却 5 秒 / 菱形 宽5×高1.6 · 手持增益 可飞行+抗性IV+生命恢复III+速度II+夜视（一次 30 秒 · 剩余 27 秒续期 · 脱手立刻收走） · 右键=锚点（坐标写入 lore，不发聊天提示） · Shift+右键=裂缝 · F=原版换手 · 世界世代号 1
+      · Java 阎魔刀·改已加载行   : [构思技艺] 阎魔刀·改（GS_ENMA_BLADE）已加载 · 居合斩 37 点 / 范围 宽5×长9×高3 / 6 刀一循环（冷却 0.2 秒 · 特效 0.4 秒 · 停手 3 秒清空 · 前五刀「画圆圈切掉后面」成朝前半圆（下→上 / 横斩(右→左) / 左上→右下 / 横斩(左→右) / 三弧顶点相撞，前方进深压扁 0.62）· 第5刀三弧顶点相撞于前方 · 第6刀半径4.5 左高右低圆圈 + 圈内额外 77 点）· 朝向 全部沿准星（含俯仰）· 第六刀次元斩 身前 4 格 / 半径 3 格 / 画面=红紫色大圆环(半径3·48点) / 每 0.5 秒 25 点 / 存在 1.2 秒 / 无冷却 / 持续吸引 / 画面每 0.25 秒重画（粒子做稀） · 裂缝 长7×宽1×高3 / 绘画 2 秒 / 留存 3 秒 / 冷却 5 秒 / 菱形 宽5×高1.6 · 手持增益 可飞行+抗性IV+生命恢复III+速度II+夜视（一次 30 秒 · 剩余 27 秒续期 · 脱手立刻收走） · 右键=锚点（坐标写入 lore，不发聊天提示） · Shift+右键=裂缝 · F=原版换手 · 世界世代号 1
+      · 参考服 阎魔刀·改那一行    : [构思技艺] 阎魔刀·改（GS_ENMA_BLADE）已加载 · 居合斩 37 点 / 范围 宽5×长9×高3 / 6 刀一循环（冷却 0.2 秒 · 特效 0.4 秒 · 停手 3 秒清空 · 前五刀「画圆圈切掉后面」成朝前半圆（下→上 / 横斩(右→左) / 左上→右下 / 横斩(左→右) / 三弧顶点相撞，前方进深压扁 0.62）· 第5刀三弧顶点相撞于前方 · 第6刀半径4.5 左高右低圆圈 + 圈内额外 77 点）· 朝向 全部沿准星（含俯仰）· 第六刀次元斩 身前 4 格 / 半径 3 格 / 画面=红紫色大圆环(半径3·48点) / 每 0.5 秒 25 点 / 存在 1.2 秒 / 无冷却 / 持续吸引 / 画面每 0.25 秒重画（粒子做稀） · 裂缝 长7×宽1×高3 / 绘画 2 秒 / 留存 3 秒 / 冷却 5 秒 / 菱形 宽5×高1.6 · 手持增益 可飞行+抗性IV+生命恢复III+速度II+夜视（一次 30 秒 · 剩余 27 秒续期 · 脱手立刻收走） · 右键=锚点（坐标写入 lore，不发聊天提示） · Shift+右键=裂缝 · F=原版换手 · 世界世代号 72
+      · 契约 §3 阎魔刀·改引用行   : [构思技艺] 阎魔刀·改（GS_ENMA_BLADE）已加载 · 居合斩 37 点 / 范围 宽5×长9×高3 / 6 刀一循环（冷却 0.2 秒 · 特效 0.4 秒 · 停手 3 秒清空 · 前五刀「画圆圈切掉后面」…
+
+[C] 数值 / 几何算式：真 JS 函数（mock 世界 / mock 玩家）vs Java 同一算式
+      OK   ★ gsVoDmg(n) 全网格逐值相同（19 个输入：0/1/7/8/99/负数…）
+      OK   ★ gsSiDmg(n) 全网格逐值相同（19 个输入）
+      OK   ★ gsVoDmg 满层 = 13.0（7 + 6×1）
+      OK   ★ gsVoDmg 超上限仍夹到 13.0
+      OK   ★ gsSiDmg 满层 = 213.0（17 + 2×98）
+      OK   ★ gsSiDmg 超上限仍夹到 213.0
+      OK   ★ 两者下界都夹到第 1 层（gsVoDmg(0) = 7.0 / gsSiDmg(0) = 17.0）
+      OK   ★ gsEmNext(n) 全网格逐值相同（14 个输入）
+      OK   ★ 六刀一循环：gsEmNext(0..6) = 1,2,3,4,5,6,1（k<=0 → 1；否则 k%6+1）
+      OK   ★ 真 JS 的 gsEmNext 同一条式子（0→1 / 5→6 / 6→1 / 负数→1）
+      OK   ★ vo 窗口语义全网格逐值相同（18 组）
+      OK   ★ si 窗口语义全网格逐值相同（18 组）
+      OK   ★★ Vo 窗口刀口（真 JS）：until == now 就过期（7→6）/ 差 1ms 还没过期（7 保持）
+      OK   ★★ Vo 3 层过期 = 剩 2 层（逐层衰减）
+      OK   ★★ Si 3 层过期 = 剩 0 层（直接清 0）
+      OK   ★★ Java 侧同一对照：Vo 剩 2 层 / Si 剩 0 层
+      OK   ★★ Vo 掉到 0 的那一下才响 block.beacon.deactivate@0.6000000238418579/1.399999976158142
+      OK   ★★ Si 清 0 时响 block.beacon.deactivate@0.6000000238418579/1.2000000476837158
+      OK   ★★ Vo 掉到 0 时血条被藏起来（没有新建血条 = vis = -1）
+      OK   ★★ Vo 掉到非 0 时血条重置成满格（progOne = 1）
+      OK   ★ vo 加层语义全网格逐值相同（9 组）
+      OK   ★ si 加层语义全网格逐值相同（9 组）
+      OK   ★ Vo 满层音效 block.beacon.activate@0.8999999761581421/1.399999976158142
+      OK   ★ Si 满层音效 block.beacon.activate@0.8999999761581421/1.2000000476837158
+      OK   ★ Vo 封顶 7：gsVoAdd(7) 后仍是 7
+      OK   ★ Si 封顶 99：gsSiAdd(99) 后仍是 99
+      OK   ★ em 窗口语义全网格逐值相同（18 组）
+      OK   ★ Em 过期 = 清 0 并响 block.beacon.deactivate@0.5/1.399999976158142
+      OK   ★ vo 血条标题全网格逐字节相同（10 组）
+      OK   ★ si 血条标题全网格逐字节相同（10 组）
+      OK   ★ em 血条标题全网格逐字节相同（10 组）
+      OK   ★ Vo 标题整条灰色：§7 前缀
+      OK   ★ Si 标题「寂 N」不带 /99（§c 寂 + §4 数字）
+      OK   ★ Em 标题「居合 N/6」（§5 前缀）
+      OK   ★ gsVoBarColor() = WHITE
+      OK   ★ gsSiBarColor() = RED
+      OK   ★ gsEmBarColor() = PURPLE
+      OK   ★ gsMsBarStyle() = SEGMENTED_12
+      OK   ★ 三处 gsMsBarStyle() 一致（Vo/Si/Em 各自一份副本）
+      OK   ★ Vo 用 WHITE（原版 BarColor 没有灰色）
+      OK   ★ Si 用 RED
+      OK   ★ Em 用 PURPLE
+      OK   ★ GS_MS_C 13 个色码逐项相同（VoSub 副本 vs 真 JS）
+      OK   ★ SiSub / EmSub 的 GS_MS_C 副本与 VoSub 完全相同
+      OK   ★★ Vo 挥砍命中判定：真 JS 与 Java 逐格一致（590 组：命中 104 / 未命中 486，不一致 0）
+      OK   ★★ Vo 挥砍 14 段弧光粒子逐点一致（590 组）
+      OK   ★★ Vo 挥砍搜索盒（中心 = 脚 + 1.0、半长 = (3.8, 1.6, 3.8)）一致
+      OK   ★ Vo 挥砍音效 entity.player.attack.sweep 0.75/1.25 一致
+      OK   ★ 网格确实同时覆盖了命中和未命中（不是一边倒）
+      OK   ★★ Si 斩击命中判定：真 JS 与 Java 逐格一致（639 组：命中 87，不一致 0）
+      OK   ★★ Si 斩击 18 段弧线粒子逐点一致（639 组）
+      OK   ★★ Si 斩击搜索盒（中心 = 胸口、半长 = GS_SI_RANGE+1 = 6.0 立方体）一致
+      OK   ★ Si 斩击音效 entity.player.attack.sweep 0.8/1.1 一致
+      OK   ★ 网格覆盖了命中与未命中两侧
+      OK   ★ Si 斜劈左右交替（真 JS 1010 / Java [1, 0, 1, 0]；写进去的是**下一次**的值，所以首刀就是 1）
+      OK   ★ Si 挥砍 / 寂灭冷却闸全网格一致（8 组）
+      OK   ★★ Si 挥砍冷却 320ms 刀口（真 JS）：319ms 拒绝 / 320ms 放行
+      OK   ★ Si 挥砍冷却（Java 侧同结论，用离刀口的值）
+      OK   ★★ 寂灭命中判定：真 JS 与 Java 逐格一致（168 组：命中 64，不一致 0）
+      OK   ★★ 寂灭伤害 = gsSiDmg(层数) × 2（0 层保底 34 点）
+      OK   ★★ 寂灭右键**不叠层**（层数原样）
+      OK   ★ 寂灭圆圈特效点数 = 144（96 点 / 偶数索引补胸口圈）
+      OK   ★ 寂灭 0 层时伤害 = 34.0
+      OK   ★ 寂灭满层（99）伤害 = 426.0
+      OK   ★ 寂灭 15 秒冷却：14999ms 拒绝 / 15000ms 放行（真 JS）
+      OK   ★ 寂灭 15 秒冷却（Java 侧同结论）
+      OK   ★★ gsEmBasis 三维朝向基全网格逐值相同（45 组方向 × yaw）
+      OK   ★★ gsEmShape(0..5) 六刀形状逐值相同（圆弧圆心/半径/倾角/起止角 + 三条弧的两端与控制点）
+      OK   ★ 第 1~4 刀都是**圆弧**（cir = 1），第 5 刀是 3 条贝塞尔弧，第 6 刀为空（单独处理）
+      OK   ★ 第 5 刀三条弧的弧顶都落在同一个点 (GS_EM_S5_PF, PL, PH) = (4.6, 0, 0)
+      OK   ★ 第 5 刀三条弧的弧顶互相重合（「顶点相撞」）
+      OK   ★★ 圆弧采样点逐点相同（含 fade < 0.45 = 隔点画那一档）
+      OK   ★★ 二次贝塞尔弧采样点逐点相同（第 5 刀三条弧）
+      OK   ★★ 第 6 刀圆圈采样点逐点相同（含 fade 两档 + 倾斜坐标系）
+      OK   ★ 第 6 刀那几组基都是标准正交的（半径断言的前提）
+      OK   ★★ 第 6 刀圆圈半径恒为 GS_EM_S6_R = 4.5（实测最大 4.5000）
+      OK   ★ 第 6 刀采样点数 = GS_EM_S6_N = 64（fade 1.0 时）
+      OK   ★ 第 6 刀 fade < 0.45 时隔点画 = 32 点
+      OK   ★★ Em 出刀命中判定：真 JS 与 Java 逐格一致（424 组：命中 39，不一致 0；形状宽5×长9×高3+0.6 容差，且先过搜索盒）
+      OK   ★★ Em 出刀特效粒子逐点一致（六刀形状 + 淡出队列）
+      OK   ★★ Em 出刀搜索盒一致（中心 = 眼 + 准星×4.5、半长 = (5.3, 3.1, 5.3)）
+      OK   ★★ 六刀一循环推进 + 音效 + 淡出队列 + 次元斩触发全网格一致（7 次出刀）
+      OK   ★ 计数器走 1,2,3,4,5,6,1（第 6 刀之后回到第 1 刀）
+      OK   ★★ 只有第 6 刀才砍出次元斩（GS_EM_FIELDS 只在第 6 刀 +1；实际 0/0/1/0）
+      OK   ★ 第 6 刀多响一声 entity.evoker.cast_spell（实际 前五刀 1 声 / 第 6 刀 4 声 = 挥砍 + 第6刀专属 + 次元斩两声）
+      OK   ★ Em 出刀 / 裂缝冷却闸全网格一致（7 组）
+      OK   ★★ Em 出刀冷却 200ms 刀口（真 JS）：199ms 拒绝 / 200ms 放行（[0,1,0,1] / [19,2,1,1]）
+      OK   ★★ Em 裂缝冷却 5 秒刀口（真 JS）：4999ms 拒绝 / 5000ms 放行 / 5001ms 放行
+      OK   ★ Em 出刀冷却（Java 侧同结论，用离刀口的值）：100ms 拒绝 / 400ms 放行
+      OK   ★ Em 裂缝冷却（Java 侧同结论）：4000ms 拒绝 / 6000ms 放行
+      OK   ★★ 次元斩大圆环采样点逐点相同（含 fade / rot 相位两档）
+      OK   ★★ 次元斩大圆环是**正圆**（半径恒为 GS_EM_DS_BIG = 3.0，实测 3.0000~3.0000）
+      OK   ★ 大圆环点数 = GS_EM_DS_RING_N = 48（fade 1.0 时）
+      OK   ★ 大圆环 fade < 0.4 时隔点画 = 24 点
+      OK   ★ 次元斩领域单拍（存活 / 伤害 / 音效）全网格一致（8 组）
+      OK   ★ 领域单拍时 gsEmFieldTick 恒返回「留着」（寿命过滤在心跳里，不在这里）
+      OK   ★★ 真 JS 刀口：领域寿命差 1199 还活着 / 1200 就被心跳丢掉
+      OK   ★★ 真 JS 刀口：nextHit 差 0 与 -1 都打、差 +1 不打
+      OK   ★★ 真 JS 刀口：画面差 249 不重画 / 250 重画（阈值就是 GS_EM_DS_DRAW_MS = 250）
+      OK   ★★ 次元斩领域真心跳 gsEmPulse 全网格一致（11 组：存活 / 伤害 / 重画）
+      OK   ★ 领域寿命 1.2 秒：1.0 秒还在 / 1.2 秒起被心跳丢掉
+      OK   ★ 领域每 0.5 秒造成 25 点伤害（nextHit 到点那一拍才打）
+      OK   ★ 领域画面每 0.25 秒重画一次（差 50ms 不重画 / 差 400ms 重画）
+      OK   ★ 领域只吃半径 GS_EM_DS_R = 3 以内的目标（9 格外的怪不吃伤害）
+      OK   ★ 领域伤害 = GS_EM_DS_DMG = 25.0 点
+      OK   ★ 领域寿命常量 GS_EM_DS_LIFE = 1200（真 JS 与 Java 同值）
+      OK   ★ 领域伤害间隔常量 GS_EM_DS_EVERY = 500（真 JS 与 Java 同值）
+      OK   ★★ gsEmCrackPoint(l, h, f) 全网格逐值相同（长 7 / 宽 1 / 高 3 的立墙）
+      OK   ★ 裂缝生命周期（存活 / 撒点数）全网格一致（11 组）
+      OK   ★ 绘画前半段只画横线：100ms（进度 0.1）5 点 / 1000ms（进度 1.0）41 点
+      OK   ★ 过了 1000ms 才开始补竖线：1001ms 时 41 + 1 = 42 点
+      OK   ★ 2000ms 起画满横线(41) + 竖线(25) + 菱形（实测 221 点 > 66）
+      OK   ★ 留存 3 秒：5000ms 仍存活 / 5001ms 消失
+      OK   ★ c.used = true = 立刻返回 false（已用掉的裂缝直接回收）
+      OK   ★★ 药效续期判定（3 条主药效 + 夜视）全网格一致（864 组）
+      OK   ★★ 主药效「更强的同种药效不覆盖 / 同级且 > 27 秒不补」判定正确
+      OK   ★ 玩家身上速度 V（amp 4）时不再压成速度 II（amp 1）
+      OK   ★ 玩家身上同种药效剩 541 刻（> 540）= 不补发
+      OK   ★ 剩 540 刻（恰好 = REF）= 补发
+      OK   ★★ 夜视「别人给的 = 不触发 / 不接管 / 不登记」
+      OK   ★ 夜视自己那份剩 541 刻 = 接管但不补（1）
+      OK   ★ 夜视自己那份剩 540 刻 = 接管并补（2）
+      OK   ★ 没有夜视 = 接管并补（2）
+      OK   ★★ 脱手回收只收本机制给的那一份（getAmplifier() 对不上就跳过 = 玩家自己那份原样保留）
+      OK   ★★ 逝言弹道伤害全网格一致（11 点 / 每目标只吃一次 / 穿透上限 4）
+      OK   ★★ 逝言弹道步数全网格一致（射程 7 / 0.5 一格 / 撞墙即止）
+      OK   ★★ 逝言第一拍灰色弧形斩击 17 点逐点一致
+      OK   ★★ 逝言命中 ≥1 = 连击 +1（且只 +1，不是每命中一只 +1）
+      OK   ★ 正前方 3 格命中 1 只、每只 11 点（真 JS）
+      OK   ★ 空场 0 伤害且走满 14 拍（射程 7 / 每拍 0.5）（真 JS）
+      OK   ★ 8 格超出射程 = 0 伤害（真 JS）
+      OK   ★ 横向 2.2（到弹道轴垂距 1.7 > 1.5）擦过 = 0 伤害（真 JS）
+      OK   ★ 横向 1.9（垂距 1.4 ≤ 1.5）= 命中（真 JS）
+      OK   ★ 抬到 66.0（垂距 1.8 > 1.5）= 0 伤害（真 JS）
+      OK   ★ 压到 64.5（垂距 0.3）= 命中（真 JS）
+      OK   ★★ 穿透上限 4：5 个怪分散在不同拍上只吃 4 个（真 JS）
+      OK   ★ 撞墙即止（不穿墙）：墙在 3 格外时只走 5 拍（真 JS）
+      OK   ★★ 「命中 ≥1 = 连击 +1」是**按拍**算的，不是按怪：4 只站在同一拍 ⇒ 伤害 4 笔但 n = 1；分散在 4 拍 ⇒ n = 4
+      OK   ★ 蓄力 12 刻之后才放出去：真 JS 共 13 拍（12 拍蓄力 + 第 13 拍判定发射）、音效 4 声
+      OK   ★★ 蓄力期间把主手换掉 = 蓄力作废、不挥出去（也不还冷却：GS_VO_FIRE_AT 早已记下）
+      OK   ★ 蓄力期间 GS_VO_CHARGING 一直是 true（防重复触发），直到最后一拍删掉（1111111111110）
+      OK   ★ Vo 挥砍 / 逝言冷却 + 蓄力中闸全网格一致（6 组）
+      OK   ★★ Vo 挥砍 320ms 刀口（真 JS）：319ms 拒绝（[0,2,1,1]） / 320ms 放行（[15,3,1,1]）
+      OK   ★★ Vo 逝言 1200ms 刀口（真 JS）：1199ms 拒绝（[15,1,1,0]） / 1200ms 放行（[15,3,1,1]）
+      OK   ★★ Java 的 jsNum(double) 与 JS String(x) 逐值相同（30 个）
+      OK   ★ jsNum(7.0) = "7"（整数值不带 .0）
+      OK   ★ jsNum(0.62) = "0.62"
+      OK   ★ jsNum(1.0e21) 走指数写法（小写 e + 正号）
+      OK   ★ SiSub / EmSub 的 jsNum 与 VoSub 同结论
+      OK   ★ GS_WPN_IDS 五项逐项正确（月镰 / 蚀月 / 致万千无言者 / 此刻万籁俱寂 / 阎魔刀·改）
+      OK   ★ GS_WPN_IDS 是不可变列表（防误改）
+      OK   ★ 手里没东西时 gsWpnHold = false（真 JS 与 Java 同结论）
+      OK   ★ gsWpnHold 的 null 入参也安全返回 false（脚本里第一道就是 if (p == null) return false）
+      OK   ★ ListenerCore.gsWpnDmgGuard 初值 = 0
+      OK   ★ gsMsHurt 之后 guard 归零（try/finally 成对）
+      OK   ★ gsMsHurt 确实打出了伤害（guard 就是给这一下放行的）
+      OK   ★ GS_WPN_NOMELEE = true / GS_WPN_NL_PVP = false
+      OK   ★ 文案：已启用 · 对玩家 照常
+      OK   ★ 文案：已停用 · 对玩家 同样取消
+      OK   ★ 注册失败时**不打**成功行（Java 里 gsWpnNoMeleeStart 返回 false 就不打）
+
+[D] 反向断言：钉住「不该存在的东西」
+      OK   ★ 四段脚本都用 pm.registerEvent(...)（4 主路 + 4 兜底 = 8 处）且**没有第 5 个参数**（= ignoreCancelled 默认 false）
+      OK   ★ Java 侧四处都没有写 ignoreCancelled = true（默认 false 才对齐）
+      OK   ★ 四段脚本都用了 EventPriority.HIGHEST（主路 + 兜底各 4 = 8 处）
+      OK   ★ Java 侧四个监听器类都用 @EventHandler(priority = EventPriority.HIGHEST)
+      OK   ★ 四段脚本一共 3 处 runRepeating（武器禁近战没有心跳）
+      OK   ★ 三处心跳都是 runRepeating(xxxPulse, 20, 2)（delay 20 / period 2）
+      OK   ★ Java 侧三处 runRepeating 都是 (…, 20L, 2L)
+      OK   ★ 武器禁近战没有心跳（Java 侧也没有 runRepeating）
+      OK   ★★ 阎魔刀·改不接管 F 键 = 脚本里没有 PlayerSwapHandItemsEvent
+      OK   ★★ Java EmSub 的**代码**里也没有 PlayerSwapHandItemsEvent（只在注释里说明「不注册」）
+      OK   ★ 脚本注释里明确写着「F=原版换手」（证明这是刻意不接管）
+      OK   ★ GS_WPN_IDS 有 5 项（月镰 / 蚀月 / 致万千无言者 / 此刻万籁俱寂 / 阎魔刀·改）
+      OK   ★ 但日志文案里只列 4 把（照抄原脚本，不「修正」）
+      OK   ★ Java 日志文案也只列 4 把
+      OK   ★ 四个 Java 类里没有 System.out.println / System.err
+      OK   ★★ Vo 的窗口过期是**掉一层**（不是清零）—— 脚本里 'var n = (st.n | 0) - 1'
+      OK   ★★ Si 的窗口过期是**直接清 0** —— 脚本里 gsSiClear(p)
+      OK   ★★ Java VoSub 也是 -1（逐层衰减）
+      OK   ★★ Java SiSub 也是 gsSiClear（清 0）
+      OK   ★ 脚本里没有 gsSiNearest / gsSiSilence / gsSiChase 这些被删掉的名字
+      OK   ★ Java SiSub 的**代码**里也没有这些名字（注释里点名说明「本类里没有」）
+      OK   ★ 脚本里没有 GS_EM_DS_AT（次元斩改成挂在领域对象上的 nextHit）
+      OK   ★ Java EmSub 的代码里也没有 GS_EM_DS_AT
+      OK   ★ 脚本里没有 GS_EM_BUFF_KB（击退那套已删除）
+      OK   ★ Java EmSub 的代码里也没有 GS_EM_BUFF_KB（注释里点名说明已删除）
+      OK   ★ 脚本的 gsWpnNoMelee 有 5 道闸：开关 / 守卫 / 取消 / 攻击者 / 武器
+      OK   ★ Java WpnNoMeleeSub 同样 5 道闸
+      OK   ★★ setCancelled(true) 处数逐段对齐：脚本 Vo4/Si4/Em4/Wpn1 = 13，Java 同数
+      OK   ★ WpnNoMeleeSub 里唯一的 setCancelled 就在 gsWpnNoMelee 方法体里
+
+
+通过 392 ｜ 失败 0

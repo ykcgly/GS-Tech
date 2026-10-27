@@ -1,0 +1,5 @@
+name: GSBookTest
+version: '1.0.0'
+main: booktest.BookTest
+api-version: '1.21'
+description: 一次性验证 BookMeta 的已废弃 String API 在 Paper 1.21.11 上是否可用

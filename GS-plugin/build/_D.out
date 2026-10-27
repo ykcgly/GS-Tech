@@ -1,0 +1,212 @@
+原脚本: D:\qq下载\粘液科技自用\GSPlugin\..\QHCGS\GS\GS\scripts\gs_listener.js
+  [OK] 整个原脚本（14337 行）能在桥接桩下求值（真 JS，含 gsMsStart / gsEcStart / gsIsCombatTarget）
+
+[A] 常量对账：原脚本顶层 var vs Java 字段（按名按值，双向）
+  [OK] GS_MS_ID = GS_MOON_SCYTHE
+  [OK] GS_MS_REACH = 3.0
+  [OK] GS_MS_WIDE = 3.0
+  [OK] GS_MS_TALL = 1.6
+  [OK] GS_MS_DMG = 11.0
+  [OK] GS_MS_SWING_CD = 320
+  [OK] GS_MS_MAX = 12
+  [OK] GS_MS_WINDOW = 7000
+  [OK] GS_MS_FULL_WIN = 30000
+  [OK] GS_MS_NO_BREAK = true
+  [OK] GS_MS_HIT_PLAYERS = false
+  [OK] GS_MS_NM_RAYS = 24
+  [OK] GS_MS_NM_R = 5.0
+  [OK] GS_MS_NM_Y = 0.9
+  [OK] GS_MS_NM_DMG = 35.0
+  [OK] GS_MS_NM_LOCK = 3000
+  [OK] GS_MS_LOCK_STICK = 4.0
+  [OK] GS_MS_NM_COL = [150,60,255]
+  [OK] GS_MS_K_DREAM = gs:ms_dream
+  [OK] GS_MS_K_UNTIL = gs:ms_until
+  [OK] GS_MS_K_FULL = gs:ms_full
+  [OK] GS_MS_K_GEN = gs:ms_gen
+  [OK] GS_MS_C 颜色表逐项一致（13 项）: RED=ok DARK_RED=ok GOLD=ok YELLOW=ok GREEN=ok AQUA=ok BLUE=ok LIGHT_PURPLE=ok PURPLE=ok WHITE=ok GRAY=ok DARK_GRAY=ok BLACK=ok
+  [OK] GS_EC_ID = GS_ECLIPSE_SCYTHE
+  [OK] GS_EC_NO_BREAK = true
+  [OK] GS_EC_HIT_PLAYERS = false
+  [OK] GS_EC_W_RANGE = 5.0
+  [OK] GS_EC_W_R = 1.0
+  [OK] GS_EC_W_STEP = 0.5
+  [OK] GS_EC_W_DMG = 14.0
+  [OK] GS_EC_W_PULSE = 500
+  [OK] GS_EC_W_LOCK = 600
+  [OK] GS_EC_W_LOCK_CD = 3000
+  [OK] GS_EC_W_H = 1.8
+  [OK] GS_EC_W_STACK_PER_HIT = false
+  [OK] GS_EC_W_LIFE = 1500
+  [OK] GS_EC_W_CD = 1200
+  [OK] GS_EC_W_GAP = 0.35
+  [OK] GS_EC_SW_HIT = true
+  [OK] GS_EC_SW_R = 3.0
+  [OK] GS_EC_SW_W = 3.0
+  [OK] GS_EC_SW_H = 1.6
+  [OK] GS_EC_MAX = 23
+  [OK] GS_EC_WINDOW = 7000
+  [OK] GS_EC_FULL_WIN = 35000
+  [OK] GS_EC_BLOOD_COL = RED
+  [OK] GS_EC_J_R = 8.0
+  [OK] GS_EC_J_TICKS = 36
+  [OK] GS_EC_J_DMG = 233.0
+  [OK] GS_EC_J_INV = 36
+  [OK] GS_EC_J_MAX_TARGETS = 60
+  [OK] GS_EC_W_COL = [235,30,40]
+  [OK] GS_EC_J_COL_R = [235,40,40]
+  [OK] GS_EC_J_COL_P = [150,60,255]
+  [OK] GS_EC_J_COL_W = [245,245,245]
+  [OK] GS_EC_J_COL_B = [70,110,255]
+  [OK] GS_EC_K_BLOOD = gs:ec_blood
+  [OK] GS_EC_K_UNTIL = gs:ec_until
+  [OK] GS_EC_K_FULL = gs:ec_full
+  [OK] MsSub 没有凭空多出来的常量
+  [OK] EcSub 没有凭空多出来的常量
+  [OK] GS_MS_DMG = 11.0
+  [OK] GS_MS_REACH = 3.0 / GS_MS_WIDE = 3.0 / GS_MS_TALL = 1.6
+  [OK] GS_MS_MAX = 12 / GS_MS_NM_DMG = 35.0 / GS_MS_NM_R = 5.0 / GS_MS_NM_LOCK = 3000
+  [OK] GS_EC_W_DMG = 14.0 / GS_EC_W_PULSE = 500 / GS_EC_W_STEP = 0.5
+  [OK] GS_EC_W_LOCK = 600 / GS_EC_W_LOCK_CD = 3000 / GS_EC_W_LIFE = 1500 / GS_EC_W_CD = 1200
+  [OK] GS_EC_MAX = 23 / GS_EC_J_DMG = 233.0 / GS_EC_J_R = 8.0
+  [OK] GS_EC_J_TICKS = 36 / GS_EC_J_INV = 36（1.8 秒）
+  [OK] GS_EC_J_MAX_TARGETS = 60
+  [OK] GS_MS_NO_BREAK / GS_EC_NO_BREAK = true
+  [OK] GS_MS_HIT_PLAYERS / GS_EC_HIT_PLAYERS = false
+  [OK] GS_EC_W_STACK_PER_HIT = false（死代码分支）
+  [OK] GS_EC_SW_HIT = true（普通左键叠层开着）
+
+[B] 日志行对账：Java 静态方法 vs 真 JS 跑出来的行 vs 参考服日志
+  [OK] 真 JS 跑出了 6 行月镰/蚀月日志
+  [OK] 月镰注册行 vs 真 JS（37 字符，逐字节相等）
+  [OK] 月镰状态行 vs 真 JS（世代号=1）（42 字符，逐字节相等）
+  [OK] 月镰加载行 vs 真 JS（92 字符，逐字节相等）
+  [OK] 蚀月注册行 vs 真 JS（43 字符，逐字节相等）
+  [OK] 蚀月状态行 vs 真 JS（32 字符，逐字节相等）
+  [OK] 蚀月加载行 vs 真 JS（215 字符，逐字节相等）
+  [OK] 参考服日志里 6 行都在（第 28~33 行）
+  [OK] 月镰注册行 vs 参考服日志（37 字符，逐字节相等）
+  [OK] 月镰加载行 vs 参考服日志（92 字符，逐字节相等）
+  [OK] 蚀月注册行 vs 参考服日志（43 字符，逐字节相等）
+  [OK] 蚀月状态行 vs 参考服日志（32 字符，逐字节相等）
+  [OK] ★ 参考服日志的蚀月加载行 = 215 字符（**未被截断**，可逐字节比）
+  [OK] 蚀月加载行 vs 参考服日志（逐字节，无截断）（215 字符，逐字节相等）
+  [OK] ★ 参考服日志的月镰加载行 = 92 字符（**未被截断**）
+  [OK] 月镰状态行前缀逐字节正确
+  [OK] 月镰状态行的世代号是正整数（参考服为 96，**不写死**）: "96"
+  [OK] 蚀月状态行（pdcOk=false 分支）（26 字符，逐字节相等）
+  [OK] 月镰状态行（pdcOk=false，世代号 96）（37 字符，逐字节相等）
+
+[C] 数值/几何对账：真 JS 函数 vs Java（挥砍 / 蚀月轮 / 脉冲 / 圆环 / 噩梦 / 法阵）
+  [OK] 挥砍几何 + 命中集 + 粒子 + 音效（20 组）
+  [OK] 普通左键命中数 + 叠层（16 组）
+  [OK] 伤害脉冲命中集 + 14 点伤害 + 定身调用（14 组）
+  [OK] 圆环点数 + 逐点坐标（10 组，含钳位 8/200 与 gap<=0）
+  [OK] gsEcRingCount 扫描 8×8×... 组（400 半径 × 8 点距）
+  [OK] 停下后的伤害脉冲拍号（真 gsEcHold 跑整条链 vs gsEcHoldPulseTicks，11 组）
+  [OK] 停下后画环拍数（真 gsEcHold vs gsEcHoldTicks，11 组）
+  [OK] ★ 1.5 秒生命里脉冲落在第 1,6,11 拍（每 5 拍一发 ⇒ 1.5 秒里 3 发；原脚本注释写的「每 0.5 秒 / 第 1、11、21 刻」是错的）
+  [OK] 蚀月轮圆环点数 真 JS=18 / Java=18
+  [OK] 蚀月轮无碰撞时第 10 拍停下（真 gsEcWheel vs gsEcWheelStopTick）
+  [OK] 蚀月轮飞行 + 停下整条链的粒子/音效/伤害计数（6 个方向）
+  [OK] 蚀月轮撞墙 ⇒ 第 1 拍就停（6 个方向，粒子数 = (1+15)×18）
+  [OK] 噩梦：24 根射线粒子 + 35 点伤害 + 定身 3000ms（13 组）
+  [OK] 噩梦：未满 12 层 ⇒ 返回 false 且不产生任何粒子/伤害
+  [OK] 噩梦：真 JS 未满层也返回 false
+  [OK] 法阵：3 圈同心圆 + 8 辐条×8 点 + 中心 2 点（3 组）
+  [OK] 法阵定身：半径 8 圆形判定 + 800ms（两边同值）+ 不画柱（2 组）
+  [OK] 斜劈粒子：14 点 + f/s/h 三条插值 + 左右交替（5 组）
+  [OK] 斜劈粒子共 15 个点（i=0..14）
+  [OK] 蚀月轮定身间隔 3000ms（4 组时刻序列，含边界 3999/4000）
+  [OK] 蚀月轮定身时长 = 600ms 且 col = null（只定身、不画柱）
+  [OK] 天降圆柱层高序列（16.0 → -0.2，步长 -0.7，共 24 层，逐值比对）
+  [OK] 天降圆柱层数 = 24 层
+  [OK] ★ 安全阀是「n++ 之后才 break」⇒ 实际最多 61 个目标（照抄，别修）
+
+[D] 反向断言：钉住「不该存在的东西」与两处已修缺陷
+  [OK] ★★ 月镰：PDC 读写全炸时写 5 层仍读回 5 层（内存权威）
+  [OK] ★★ 月镰：写 0 层 ⇒ 内存条目被删（读回 0）
+  [OK] ★★ 月镰：内存空 + PDC 炸 ⇒ 安全返回 0 层
+  [OK] ★★ 蚀月：PDC 读写全炸时写 7 层仍读回 7 层（内存权威）
+  [OK] ★★ 蚀月：写 0 层 ⇒ 内存条目被删
+  [OK] ★★ 蚀月：PDC 全炸时连打 23 次 ⇒ 层数到 23 且 full=1（第 24 次不再涨）
+  [OK] ★★ 蚀月：满层后再打 ⇒ 层数仍是 23（只刷倒计时）
+  [OK] ★ Java gsMsGenNow：拿不到世界（无服务器）⇒ 返回 null（不是 0、不抛）
+  [OK] ★ Java gsMsGenBump：读不到世代号 ⇒ 从 0 起算、变成 1（不抛）
+  [OK] ★ 桩里的 getWorlds() 是 List 语义（.get(0) 可用），且 GS_MS_PDT / GS_MS_K_GEN 都拿到了
+  [OK] ★ 真 JS gsMsGenNow：世界 PDC 里没写过 ⇒ 返回 0（不是 null），实得 [0]
+  [OK] ★ 真 JS gsMsGenNow：世界 PDC 炸掉 ⇒ 返回 null（读不到 ≠ 0），实得 [null]
+  [OK] ★ 真 JS gsMsGenBump：读不到世代号 ⇒ 从 0 起算、变成 1
+  [OK] ★ Java 与脚本同构：`(v == null) ? 0 : v` 这段三元表达式两边都在
+  [OK] ★ 原脚本 gsEcStart 里没有 runRepeating
+  [OK] ★ Java EcSub 里没有注册心跳（只在类注释里说明）
+  [OK] ★ Java MsSub 用 GS.runRepeating(this::gsMsPulse, 20, 2)（delay=20 / period=2，两个参数不同 —— 照抄，别当成 20/20）
+  [OK] ★ 原脚本 GS_EC_PET 只出现 3 次（声明 + 赋值 + 兜底），没有读取 ⇒ 纯死代码
+  [OK] ★ 原脚本 GS_EC_PE 只出现 3 次（声明 + 赋值 + 兜底），没有读取 ⇒ 纯死代码
+  [OK] ★ 原脚本里没有任何 `GS_EC_PET.` / `GS_EC_PE(` 的**使用**（只写不读）
+  [OK] ★ Java 版没有移植这两个死变量（没有字段声明、没有赋值）
+  [OK] ★ 审判不用漂浮药效：Java EcSub 里没有任何药效**调用**
+  [OK] ★ 原脚本 EC 段里也没有真的 new 过 PotionEffect
+  [OK] ★ gsEcLockView 已删除且没有复活（JS 里没有函数定义）
+  [OK] ★ gsEcInvulnUntilLand 已删除且没有复活（JS 里没有函数定义）
+  [OK] ★ Java EcSub 里同样没有这两个函数（连名字都不带括号出现）
+  [OK] ★ Java EcSub 里没有 setPotionEffect / addPotionEffect
+  [OK] ★ 原脚本 MS 交互处理体不检查 e.isCancelled()（脚本 6730 行有注释解释：检查了就变成「必须点方块才放得出来」）
+  [OK] ★ 原脚本 EC 交互处理体不检查 e.isCancelled()
+  [OK] ★ Java MsSub 交互处理体不检查 isCancelled()
+  [OK] ★ Java EcSub 交互处理体不检查 isCancelled()
+  [OK] ★ Java 两处 @EventHandler 都没写 ignoreCancelled = true（JS 无第 5 参 ⇒ 默认 false）
+  [OK] ★ 原脚本 MS 段里 Priority.HIGHEST 出现 2 次（reg 的正常路 + JavaAdapter 兜底路）
+  [OK] ★ 原脚本 EC 段里 Priority.HIGHEST 出现 2 次
+  [OK] ★ 原脚本 MS 的 reg() 被调用 4 次（定义 1 次 + 调用 4 次 = 5）
+  [OK] ★ 原脚本 EC 的 reg() 被调用 4 次
+  [OK] ★ Java MsSub 的 4 个事件处理体全是 HIGHEST
+  [OK] ★ Java EcSub 的 4 个事件处理体全是 HIGHEST
+  [OK] ★ Java 两处都没有 NORMAL/LOW/LOWEST/MONITOR 之类其它优先级
+  [OK] ★ Java MsSub$Sync 有 4 个 @EventHandler(priority = EventPriority.HIGHEST)（Sync.onInteract 方法 1 个）
+  [OK] ★ Java EcSub$Sync 有 4 个 @EventHandler(priority = EventPriority.HIGHEST)
+  [OK] ★ Java 两个 Sync 都 implements Listener
+  [OK] ★ Java 用 GS_MS_REGISTERED 闩锁做幂等注册
+  [OK] ★ Java 用 GS_EC_REGISTERED 闩锁做幂等注册
+  [OK] ★ Java MsSub 里没有 System.out.println
+  [OK] ★ Java EcSub 里没有 System.out.println
+  [OK] ★ EC 注册了 PlayerInteractEvent
+  [OK] ★ MS 注册了 PlayerInteractEvent
+  [OK] ★ EC 注册了 PlayerAnimationEvent
+  [OK] ★ MS 注册了 PlayerAnimationEvent
+  [OK] ★ EC 注册了 BlockBreakEvent
+  [OK] ★ MS 注册了 BlockBreakEvent
+  [OK] ★ EC 注册了 BlockDamageEvent
+  [OK] ★ MS 注册了 BlockDamageEvent
+  [OK] ★ 原脚本 MS 在注册时判 GS_MS_NO_BREAK（6790 行）
+  [OK] ★ 原脚本 EC 在注册时判 GS_EC_NO_BREAK（7729 行）
+  [OK] ★ Java MsSub 把开关挪进了两个处理体的第一行（2 处「原脚本的注册期开关」）
+  [OK] ★ Java EcSub 把开关挪进了两个处理体的第一行（2 处「原脚本的注册期开关」）
+  [OK] ★ 原脚本的 NO_BREAK 常量恒为 true（⇒ 这个差异不改变任何可观察行为）
+  [OK] ★ org.bukkit.entity.Item 确实声明了 getHealth()（⇒ MS 的探针挡不住掉落物，必须保留这条已知缺陷；EC 用 gsIsCombatTarget 挡住了）
+  [OK] ★ 而且 Item **不是** Damageable（所以不能用 instanceof 判）
+  [OK] ★ MsSub 因此必须用反射探 getHealth（不能 instanceof Damageable）
+  [OK] ★ EcSub 的 gsEcCanHit 里有 gsIsCombatTarget 这道闸
+  [OK] ★ 原脚本 gsMsHurt 与 gsEcHurtNoKb 的函数体逐字相同
+  [OK] ★ Java EcSub 的 gsEcHurtNoKb 直接委托 ListenerCore.gsMsHurt
+  [OK] ★ Java 两处血条标题都经过 gsMsTitle2 变成纯字符串
+  [OK] ★ Java EcSub 里没有把 Component / Adventure 塞给 setTitle（无 import、无 Component.xxx）
+  [OK] ★ Java MsSub 里没有把 Component / Adventure 塞给 setTitle（无 import、无 Component.xxx）
+  [OK] ★ 原脚本 gsEcWheel 的 step 里只有 touch 判定，没有 gsEcHurtNoKb
+  [OK] ★ Java EcSub 的飞行 Runnable 里同样没有 gsEcHurtNoKb
+  [OK] ★ 原脚本 gsEcWheel 用 dir.getY() 参与方向（完整三维）
+  [OK] ★ Java EcSub 同样用了 dir.getY()
+  [OK] ★ 原脚本 gsEcMelee 里没有任何 gsEcHurtNoKb / damage 调用
+  [OK] ★ Java EcSub 的 gsEcMelee 里同样没有 gsEcHurtNoKb
+  [OK] ★ 原脚本审判：gsEcField 在 gsEcSmite 之前（蓄力）
+  [OK] ★ 原脚本审判：出伤延迟 GS_EC_J_TICKS、无敌解除延迟 GS_EC_J_INV
+  [OK] ★ Java 审判：gsEcField 在 gsEcSmite 之前
+  [OK] ★ Java 审判：两个 runLater 延迟分别是 GS_EC_J_TICKS / GS_EC_J_INV
+  [OK] ★ 整个 EC 段里没有 runRepeating
+  [OK] ★ 整个 MS 段里恰好有 1 处 runRepeating
+  [OK] ★ Java MsSub 类注释记录了「层数权威在内存」这条修复
+  [OK] ★ Java EcSub 类注释记录了「心跳由月镰驱动」这条结构差异
+  [OK] ★ Java EcSub 类注释记录了「监听器改为幂等注册」
+  [OK] ★ Java EcSub 类注释列出了死代码（GS_EC_PET / GS_EC_PE）
+
+通过 201 ｜ 失败 0
